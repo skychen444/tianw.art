@@ -38,16 +38,49 @@ function buildRewrite(v,index){
 
 variants.forEach((v,i)=>{const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',buildRewrite(v,i));p.setAttribute('class','rewrite-path r'+(i+1));rewriteGroup.appendChild(p)});
 const rewritePaths=[...document.querySelectorAll('.rewrite-path')];
-let prepared=false,sequencePlayed=false,sequenceRunning=false;
+let prepared=false,sequencePlayed=false,sequenceRunning=false,interactionLocked=false,snapAnimating=false;
+
 function prep(){[commit,...rewritePaths,...navMarks].forEach(p=>{const len=p.getTotalLength();p.dataset.len=len;p.style.strokeDasharray=len;p.style.strokeDashoffset=len});prepared=true}
 function draw(path,t){if(!prepared)prep();const len=+path.dataset.len;path.style.opacity=t>0?1:0;path.style.strokeDashoffset=len*(1-C(t))}
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 function animateDraw(path,duration=520){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=C((now-start)/duration);draw(path,E(t));if(t<1)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)})}
 function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forEach(el=>{el.style.opacity=0;el.style.transform='translateY(.18em)'});answer.style.opacity=0;answer.style.transform='translateY(18px)';[commit,...rewritePaths,...navMarks].forEach(p=>draw(p,0))}
+
+function stopUserScroll(e){if(interactionLocked)e.preventDefault()}
+function stopKeys(e){
+  if(!interactionLocked)return;
+  if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' ','Spacebar'].includes(e.key))e.preventDefault();
+}
+addEventListener('wheel',stopUserScroll,{passive:false});
+addEventListener('touchmove',stopUserScroll,{passive:false});
+addEventListener('keydown',stopKeys,{passive:false});
+
+function snapToSecondScene(duration=360){
+  if(snapAnimating)return Promise.resolve();
+  snapAnimating=true;
+  const max=Math.max(1,sceneWrap.offsetHeight-innerHeight);
+  const target=sceneWrap.offsetTop+max*.56;
+  const startY=scrollY;
+  const delta=target-startY;
+  const start=performance.now();
+  return new Promise(resolve=>{
+    function frame(now){
+      const t=C((now-start)/duration);
+      scrollTo(0,startY+delta*E(t));
+      if(t<1)requestAnimationFrame(frame);
+      else{snapAnimating=false;resolve()}
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
 async function playSequence(){
   if(sequencePlayed||sequenceRunning)return;
   sequenceRunning=true;
-  await wait(260);
+  interactionLocked=true;
+
+  await snapToSecondScene(360);
+  await wait(180);
   for(const el of letters){el.style.opacity=1;el.style.transform='translateY(0)';await wait(125)}
   await wait(420);
   answer.style.opacity=1;answer.style.transform='translateY(0)';
@@ -58,8 +91,10 @@ async function playSequence(){
   await animateDraw(navMarks[0],360);
   await wait(220);
   await animateDraw(navMarks[1],360);
+
   sequencePlayed=true;
   sequenceRunning=false;
+  interactionLocked=false;
 }
 
 function update(){
@@ -77,7 +112,12 @@ function update(){
   const nin=E(C((p-.44)/.10));nav.style.opacity=nin;nav.style.transform=`translateY(${M(-7,0,nin)}px)`;
 
   if(p>.52&&!sequencePlayed&&!sequenceRunning)playSequence();
-  if(p<.08&&sequencePlayed&&!sequenceRunning)resetSequence();
+
+  // Once the sequence has finished, returning toward the opening clears the
+  // second-scene typography before the large opening identity comes back.
+  if(p<.40&&sequencePlayed&&!sequenceRunning){
+    resetSequence();
+  }
 }
 
 addEventListener('scroll',update,{passive:true});
