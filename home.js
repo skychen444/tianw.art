@@ -39,27 +39,44 @@ function buildRewrite(v,index){
 
 variants.forEach((v,i)=>{const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',buildRewrite(v,i));p.setAttribute('class','rewrite-path r'+(i+1));rewriteGroup.appendChild(p)});
 const rewritePaths=[...document.querySelectorAll('.rewrite-path')];
-let prepared=false,sequencePlayed=false,sequenceTimer=null;
+let prepared=false,sequencePlayed=false,sequenceRunning=false;
 function prep(){[commit,...rewritePaths,...navMarks].forEach(p=>{const len=p.getTotalLength();p.dataset.len=len;p.style.strokeDasharray=len;p.style.strokeDashoffset=len});prepared=true}
 function draw(path,t){if(!prepared)prep();const len=+path.dataset.len;path.style.opacity=t>0?1:0;path.style.strokeDashoffset=len*(1-C(t))}
-function resetSequence(){clearTimeout(sequenceTimer);sequencePlayed=false;letters.forEach(el=>{el.style.opacity=0;el.style.transform='translateY(.18em)'});answer.style.opacity=0;answer.style.transform='translateY(18px)';[commit,...rewritePaths,...navMarks].forEach(p=>draw(p,0))}
-function animateDraw(path,duration=520){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=C((now-start)/duration);draw(path,E(t));if(t<1)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)})}
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
-async function playSequence(){if(sequencePlayed)return;sequencePlayed=true;
-  for(const el of letters){el.style.opacity=1;el.style.transform='translateY(0)';await wait(115)}
-  await wait(350);answer.style.opacity=1;answer.style.transform='translateY(0)';await wait(650);
-  await animateDraw(commit,600);await wait(420);
-  for(let i=0;i<rewritePaths.length;i++){await animateDraw(rewritePaths[i],720);await wait(i===rewritePaths.length-1?560:420)}
-  await animateDraw(navMarks[0],360);await wait(220);await animateDraw(navMarks[1],360)
+function animateDraw(path,duration=520){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=C((now-start)/duration);draw(path,E(t));if(t<1)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)})}
+function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forEach(el=>{el.style.opacity=0;el.style.transform='translateY(.18em)'});answer.style.opacity=0;answer.style.transform='translateY(18px)';[commit,...rewritePaths,...navMarks].forEach(p=>draw(p,0))}
+async function playSequence(){
+  if(sequencePlayed||sequenceRunning)return;
+  sequenceRunning=true;
+  await wait(180);
+  for(const el of letters){el.style.opacity=1;el.style.transform='translateY(0)';await wait(125)}
+  await wait(420);
+  answer.style.opacity=1;answer.style.transform='translateY(0)';
+  await wait(700);
+  await animateDraw(commit,650);
+  await wait(450);
+  for(let i=0;i<rewritePaths.length;i++){
+    await animateDraw(rewritePaths[i],760);
+    await wait(i===rewritePaths.length-1?620:440);
+  }
+  await animateDraw(navMarks[0],360);
+  await wait(220);
+  await animateDraw(navMarks[1],360);
+  sequencePlayed=true;
+  sequenceRunning=false;
 }
+
 function update(){
-  const max=sceneWrap.offsetHeight-innerHeight,r=sceneWrap.getBoundingClientRect(),p=C(-r.top/max),mobile=innerWidth<=760;
-  const tr=E(C((p-.02)/.50));
-  const sx=mobile?20:innerWidth*.033,sy=innerHeight*(mobile?.58:.57),ex=mobile?20:Math.max(22,innerWidth*.033),ey=mobile?22:Math.max(22,innerWidth*.033),ss=mobile?Math.min(104,innerWidth*.22):Math.min(260,Math.max(96,innerWidth*.15)),es=mobile?12:Math.max(12,Math.min(16,innerWidth*.009));
+  const max=Math.max(1,sceneWrap.offsetHeight-innerHeight),r=sceneWrap.getBoundingClientRect(),p=C(-r.top/max),mobile=innerWidth<=760;
+  const tr=E(C((p-.02)/.46));
+  const sx=mobile?20:innerWidth*.033,sy=innerHeight*(mobile?.58:.545),ex=mobile?20:Math.max(22,innerWidth*.033),ey=mobile?22:Math.max(22,innerWidth*.033),ss=mobile?Math.min(104,innerWidth*.22):Math.min(260,Math.max(96,innerWidth*.15)),es=mobile?12:Math.max(12,Math.min(16,innerWidth*.009));
   nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
   const fade=C((p-.08)/.24);role.style.opacity=1-fade;loc.style.opacity=1-fade;
-  const nin=E(C((p-.46)/.12));nav.style.opacity=nin;nav.style.transform=`translateY(${M(-7,0,nin)}px)`;
-  if(p>.58&&!sequencePlayed)playSequence();
-  if(p<.12&&sequencePlayed)resetSequence();
+  const nin=E(C((p-.44)/.10));nav.style.opacity=nin;nav.style.transform=`translateY(${M(-7,0,nin)}px)`;
+  if(p>.50&&!sequencePlayed&&!sequenceRunning)playSequence();
+  if(p<.08&&sequencePlayed&&!sequenceRunning)resetSequence();
 }
-addEventListener('scroll',update,{passive:true});addEventListener('resize',()=>{prepared=false;update()});prep();resetSequence();update();
+
+addEventListener('scroll',update,{passive:true});
+addEventListener('resize',()=>{prepared=false;update()});
+prep();resetSequence();update();
