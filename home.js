@@ -45,7 +45,8 @@ function prep(){[commit,...rewritePaths,...navMarks].forEach(p=>{const len=p.get
 function draw(path,t){if(!prepared)prep();const len=+path.dataset.len;path.style.opacity=t>0?1:0;path.style.strokeDashoffset=len*(1-C(t))}
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 function animateDraw(path,duration=520){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=C((now-start)/duration);draw(path,E(t));if(t<1)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)})}
-function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forEach(el=>{el.style.opacity=0;el.style.transform='translateY(.18em)'});answer.style.opacity=0;answer.style.transform='translateY(18px)';[commit,...rewritePaths,...navMarks].forEach(p=>draw(p,0))}
+function fadeIn(el,duration=900){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=E(C((now-start)/duration));el.style.opacity=t;el.style.transform='translateY(0)';if(t<1)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)})}
+function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forEach(el=>{el.style.opacity=0;el.style.transform='translateY(.18em)'});answer.style.opacity=0;answer.style.transform='translateY(0)';[commit,...rewritePaths,...navMarks].forEach(p=>draw(p,0))}
 
 function alignAnswerToQuestion(){
   const q=question.getBoundingClientRect();
@@ -89,10 +90,14 @@ async function playSequence(){
 
   await snapToSecondScene(360);
   alignAnswerToQuestion();
-  await wait(180);
-  for(const el of letters){el.style.opacity=1;el.style.transform='translateY(0)';await wait(125)}
-  await wait(420);
-  answer.style.opacity=1;answer.style.transform='translateY(0)';
+  await wait(260);
+  for(const el of letters){
+    el.style.opacity=1;
+    el.style.transform='translateY(0)';
+    await wait(190);
+  }
+  await wait(620);
+  await fadeIn(answer,950);
   await wait(720);
   await animateDraw(commit,650);
   await wait(450);
