@@ -114,8 +114,8 @@ async function playSequence(){
 function update(){
   const max=Math.max(1,sceneWrap.offsetHeight-innerHeight),r=sceneWrap.getBoundingClientRect(),p=C(-r.top/max),mobile=innerWidth<=760;
   const tr=E(C((p-.02)/.46));
-  const sx=mobile?20:innerWidth*.033,sy=innerHeight*(mobile?.58:.545),ex=mobile?20:Math.max(22,innerWidth*.033),ey=mobile?22:Math.max(22,innerWidth*.033),ss=mobile?Math.min(92,innerWidth*.195):Math.min(228,Math.max(84,innerWidth*.132)),es=mobile?12:Math.max(12,Math.min(16,innerWidth*.009));
-  nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.05,0,tr)+'em';
+  const sx=mobile?20:innerWidth*.033,sy=innerHeight*(mobile?.60:.565),ex=mobile?20:Math.max(22,innerWidth*.033),ey=mobile?22:Math.max(22,innerWidth*.033),ss=mobile?Math.min(80,innerWidth*.17):Math.min(194,Math.max(76,innerWidth*.112)),es=mobile?12:Math.max(12,Math.min(16,innerWidth*.009));
+  nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.047,0,tr)+'em';
 
   alignAnswerToQuestion();
 
