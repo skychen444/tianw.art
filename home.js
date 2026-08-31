@@ -8,6 +8,7 @@ const nameEl=document.querySelector('.hero-name');
 const role=document.querySelector('.role');
 const loc=document.querySelector('.location');
 const nav=document.querySelector('.home-nav');
+const question=document.querySelector('.question');
 const letters=[...document.querySelectorAll('.question span')];
 const answer=document.querySelector('.answer');
 const commit=document.querySelector('#commit');
@@ -46,6 +47,13 @@ function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 function animateDraw(path,duration=520){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=C((now-start)/duration);draw(path,E(t));if(t<1)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)})}
 function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forEach(el=>{el.style.opacity=0;el.style.transform='translateY(.18em)'});answer.style.opacity=0;answer.style.transform='translateY(18px)';[commit,...rewritePaths,...navMarks].forEach(p=>draw(p,0))}
 
+function alignAnswerToQuestion(){
+  const q=question.getBoundingClientRect();
+  const scene=document.querySelector('.scene').getBoundingClientRect();
+  answer.style.left=(q.left-scene.left)+'px';
+  answer.style.right='auto';
+}
+
 function stopUserScroll(e){if(interactionLocked)e.preventDefault()}
 function stopKeys(e){
   if(!interactionLocked)return;
@@ -80,6 +88,7 @@ async function playSequence(){
   interactionLocked=true;
 
   await snapToSecondScene(360);
+  alignAnswerToQuestion();
   await wait(180);
   for(const el of letters){el.style.opacity=1;el.style.transform='translateY(0)';await wait(125)}
   await wait(420);
@@ -103,6 +112,8 @@ function update(){
   const sx=mobile?20:innerWidth*.033,sy=innerHeight*(mobile?.58:.545),ex=mobile?20:Math.max(22,innerWidth*.033),ey=mobile?22:Math.max(22,innerWidth*.033),ss=mobile?Math.min(104,innerWidth*.22):Math.min(260,Math.max(96,innerWidth*.15)),es=mobile?12:Math.max(12,Math.min(16,innerWidth*.009));
   nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
 
+  alignAnswerToQuestion();
+
   const fade=C((p-.08)/.24);role.style.opacity=1-fade;loc.style.opacity=1-fade;
 
   const dark=E(C((p-.10)/.38));
@@ -113,13 +124,11 @@ function update(){
 
   if(p>.52&&!sequencePlayed&&!sequenceRunning)playSequence();
 
-  // Once the sequence has finished, returning toward the opening clears the
-  // second-scene typography before the large opening identity comes back.
   if(p<.40&&sequencePlayed&&!sequenceRunning){
     resetSequence();
   }
 }
 
 addEventListener('scroll',update,{passive:true});
-addEventListener('resize',()=>{prepared=false;update()});
-prep();resetSequence();update();
+addEventListener('resize',()=>{prepared=false;alignAnswerToQuestion();update()});
+prep();resetSequence();alignAnswerToQuestion();update();
