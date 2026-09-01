@@ -55,9 +55,9 @@ function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forE
 
 function alignAnswerToQuestion(mobile){
   if(mobile){
-    answer.style.left='22px';
+    answer.style.left='30px';
     answer.style.right='auto';
-    answer.style.top='68svh';
+    answer.style.top='45svh';
     answer.style.transformOrigin='left top';
     answer.style.transform='rotate(90deg)';
     return;
@@ -113,7 +113,7 @@ function update(){
     nameEl.style.letterSpacing=M(-.06,0,tr)+'em';
     nameEl.style.transformOrigin='left top';
     nameEl.style.transform=`rotate(${M(90,0,tr)}deg)`;
-    answerText.style.fontSize='clamp(22px,6.2vw,29px)';
+    answerText.style.fontSize='clamp(26px,7.2vw,34px)';
   }else{
     const sx=innerWidth*.033,sy=innerHeight*.545,ex=Math.max(22,innerWidth*.033),ey=Math.max(22,innerWidth*.033),ss=Math.min(218,Math.max(82,innerWidth*.126)),es=Math.max(12,Math.min(16,innerWidth*.009));
     nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
