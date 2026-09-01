@@ -79,11 +79,10 @@ function alignAnswerToQuestion(){
 }
 
 function alignOpeningMeta(){
-  const n=nameEl.getBoundingClientRect();
   const t=tEl.getBoundingClientRect();
   const s=scene.getBoundingClientRect();
-  const gap=innerWidth<=760?8:10;
-  const y=n.bottom-s.top+gap;
+  const gap=innerWidth<=760?14:16;
+  const y=t.bottom-s.top+gap;
   role.style.left=(t.left-s.left)+'px';
   role.style.top=y+'px';
   loc.style.top=y+'px';
