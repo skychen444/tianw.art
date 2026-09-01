@@ -7,6 +7,7 @@ const mix=(a,b,t)=>Math.round(M(a,b,t));
 const sceneWrap=document.querySelector('.scene-wrap');
 const scene=document.querySelector('.scene');
 const nameEl=document.querySelector('.hero-name');
+const tEl=document.querySelector('.hero-name .t');
 const role=document.querySelector('.role');
 const loc=document.querySelector('.location');
 const nav=document.querySelector('.home-nav');
@@ -79,9 +80,13 @@ function alignAnswerToQuestion(){
 
 function alignOpeningMeta(){
   const n=nameEl.getBoundingClientRect();
+  const t=tEl.getBoundingClientRect();
   const s=scene.getBoundingClientRect();
   const gap=innerWidth<=760?8:10;
-  role.style.top=(n.bottom-s.top+gap)+'px';
+  const y=n.bottom-s.top+gap;
+  role.style.left=(t.left-s.left)+'px';
+  role.style.top=y+'px';
+  loc.style.top=y+'px';
 }
 
 function stopUserScroll(e){if(interactionLocked)e.preventDefault()}
