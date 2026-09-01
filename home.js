@@ -135,7 +135,7 @@ async function playSequence(){
 function update(){
   const max=Math.max(1,sceneWrap.offsetHeight-innerHeight),r=sceneWrap.getBoundingClientRect(),p=C(-r.top/max),mobile=innerWidth<=760;
   const tr=E(C((p-.02)/.46));
-  const sx=mobile?20:innerWidth*.033,sy=innerHeight*(mobile?.58:.545),ex=mobile?20:Math.max(22,innerWidth*.033),ey=mobile?22:Math.max(22,innerWidth*.033),ss=mobile?Math.min(96,innerWidth*.20):Math.min(238,Math.max(90,innerWidth*.138)),es=mobile?12:Math.max(12,Math.min(16,innerWidth*.009));
+  const sx=mobile?20:innerWidth*.033,sy=innerHeight*(mobile?.58:.545),ex=mobile?20:Math.max(22,innerWidth*.033),ey=mobile?22:Math.max(22,innerWidth*.033),ss=mobile?Math.min(91,innerWidth*.19):Math.min(228,Math.max(86,innerWidth*.132)),es=mobile?12:Math.max(12,Math.min(16,innerWidth*.009));
   nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
 
   alignAnswerToQuestion();
