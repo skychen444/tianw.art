@@ -4,7 +4,7 @@
   .home .hero-name{
     left:22px;
     top:82svh;
-    font-size:clamp(76px,22vw,98px);
+    font-size:clamp(94px,28vw,118px);
     line-height:.84;
     letter-spacing:-.06em;
     transform-origin:left top;
@@ -17,10 +17,11 @@
     line-height:1;
     text-align:right;
   }
-  .home .role{top:70svh}
-  .home .location{top:74svh}
-  .home .home-nav{right:20px;top:21px;gap:16px}
-  .home .home-nav a{font-size:12px}
+  .home .role{top:76svh}
+  .home .location{top:80svh}
+  .home .home-nav{right:20px;top:29px;gap:18px}
+  .home .home-nav a{font-size:14px}
+  .home .home-nav svg{top:.35em;height:27px}
   .home .question{
     left:auto;
     right:20px;
@@ -30,15 +31,16 @@
     text-align:right;
   }
   .home .answer{
-    left:20px;
+    left:22px;
     right:auto;
-    top:60svh;
+    top:68svh;
     width:max-content;
-    max-width:calc(100vw - 56px);
+    max-width:none;
     text-align:left;
+    transform-origin:left top;
   }
   .home .answer-text{
-    font-size:clamp(17px,4.8vw,22px);
+    font-size:clamp(22px,6.2vw,29px);
     white-space:nowrap;
     line-height:1;
   }
