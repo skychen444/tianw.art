@@ -82,8 +82,8 @@ function alignOpeningMeta(){
   const t=tEl.getBoundingClientRect();
   const s=scene.getBoundingClientRect();
   const mobile=innerWidth<=760;
-  const gap=mobile?18:22;
-  const stemInset=t.width*(mobile?.15:.16);
+  const gap=mobile?18:42;
+  const stemInset=t.width*(mobile?.15:.29);
   const y=t.bottom-s.top+gap;
   role.style.left=(t.left-s.left+stemInset)+'px';
   role.style.top=y+'px';
