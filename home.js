@@ -81,9 +81,11 @@ function alignAnswerToQuestion(){
 function alignOpeningMeta(){
   const t=tEl.getBoundingClientRect();
   const s=scene.getBoundingClientRect();
-  const gap=innerWidth<=760?14:16;
+  const mobile=innerWidth<=760;
+  const gap=mobile?18:22;
+  const stemInset=t.width*(mobile?.15:.16);
   const y=t.bottom-s.top+gap;
-  role.style.left=(t.left-s.left)+'px';
+  role.style.left=(t.left-s.left+stemInset)+'px';
   role.style.top=y+'px';
   loc.style.top=y+'px';
 }
