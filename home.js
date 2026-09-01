@@ -14,6 +14,7 @@ const nav=document.querySelector('.home-nav');
 const question=document.querySelector('.question');
 const letters=[...document.querySelectorAll('.question span')];
 const answer=document.querySelector('.answer');
+const answerText=document.querySelector('.answer-text');
 const commit=document.querySelector('#commit');
 const rewriteGroup=document.querySelector('#rewrites');
 const navMarks=[...document.querySelectorAll('.home-nav path')];
@@ -73,22 +74,24 @@ function alignAnswerToQuestion(mobile){
   if(mobile){
     answer.style.left='20px';
     answer.style.right='auto';
+    answer.style.top='51.5svh';
     return;
   }
   const q=question.getBoundingClientRect();
   const s=scene.getBoundingClientRect();
   answer.style.left=(q.left-s.left)+'px';
   answer.style.right='auto';
+  answer.style.top='74.7vh';
 }
 
 function alignOpeningMeta(mobile){
   if(mobile){
     role.style.left='auto';
     role.style.right='22px';
-    role.style.top='70svh';
+    role.style.top='76svh';
     loc.style.left='auto';
     loc.style.right='22px';
-    loc.style.top='74svh';
+    loc.style.top='80svh';
     return;
   }
   const t=tEl.getBoundingClientRect();
@@ -142,14 +145,20 @@ function update(){
   const max=Math.max(1,sceneWrap.offsetHeight-innerHeight),r=sceneWrap.getBoundingClientRect(),p=C(-r.top/max),mobile=innerWidth<=760;
   const tr=E(C((p-.02)/.46));
   if(mobile){
-    const sx=22,sy=innerHeight*.82,ex=20,ey=22,ss=Math.min(98,Math.max(76,innerWidth*.22)),es=12;
+    const ss=Math.min(98,Math.max(82,innerWidth*.235));
+    const sx=ss+18,sy=innerHeight*.18,ex=20,ey=22,es=12;
     nameEl.style.left=M(sx,ex,tr)+'px';
     nameEl.style.top=M(sy,ey,tr)+'px';
     nameEl.style.fontSize=M(ss,es,tr)+'px';
     nameEl.style.letterSpacing=M(-.06,0,tr)+'em';
+    nameEl.style.transformOrigin='left top';
+    nameEl.style.transform=`rotate(${M(90,0,tr)}deg)`;
+    answerText.style.fontSize='clamp(21px,5.8vw,27px)';
   }else{
     const sx=innerWidth*.033,sy=innerHeight*.545,ex=Math.max(22,innerWidth*.033),ey=Math.max(22,innerWidth*.033),ss=Math.min(218,Math.max(82,innerWidth*.126)),es=Math.max(12,Math.min(16,innerWidth*.009));
     nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
+    nameEl.style.transform='none';
+    answerText.style.fontSize='';
   }
   alignOpeningMeta(mobile);
   alignAnswerToQuestion(mobile);
