@@ -55,9 +55,9 @@ function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forE
 
 function alignAnswerToQuestion(mobile){
   if(mobile){
-    answer.style.left='72px';
+    answer.style.left='60px';
     answer.style.right='auto';
-    answer.style.top='18svh';
+    answer.style.top='22svh';
     answer.style.transformOrigin='left top';
     answer.style.transform='rotate(90deg)';
     return;
@@ -106,17 +106,19 @@ function update(){
   const tr=E(C((p-.02)/.46));
   if(mobile){
     const ss=Math.min(118,Math.max(94,innerWidth*.28));
-    const sx=ss+18,sy=innerHeight*.14,ex=20,ey=29,es=14;
+    const sx=ss+18,sy=innerHeight*.14,ex=20,ey=29,es=15;
     nameEl.style.left=M(sx,ex,tr)+'px';
     nameEl.style.top=M(sy,ey,tr)+'px';
     nameEl.style.fontSize=M(ss,es,tr)+'px';
     nameEl.style.letterSpacing=M(-.06,0,tr)+'em';
+    nameEl.style.lineHeight='1';
     nameEl.style.transformOrigin='left top';
     nameEl.style.transform=`rotate(${M(90,0,tr)}deg)`;
-    answerText.style.fontSize='clamp(30px,8vw,38px)';
+    answerText.style.fontSize='clamp(34px,8.8vw,46px)';
   }else{
     const sx=innerWidth*.033,sy=innerHeight*.545,ex=Math.max(22,innerWidth*.033),ey=Math.max(22,innerWidth*.033),ss=Math.min(218,Math.max(82,innerWidth*.126)),es=Math.max(12,Math.min(16,innerWidth*.009));
     nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
+    nameEl.style.lineHeight='';
     nameEl.style.transform='none';
     answerText.style.fontSize='';
   }
