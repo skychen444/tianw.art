@@ -20,30 +20,32 @@
   .home .role{top:76svh}
   .home .location{top:80svh}
   .home .home-nav{right:20px;top:29px;gap:18px}
-  .home .home-nav a{font-size:14px}
+  .home .home-nav a{font-size:15px;line-height:1}
   .home .home-nav svg{top:.35em;height:27px}
   .home .question{
     left:58%;
     right:auto;
-    top:34svh;
-    transform:translateX(-50%);
-    font-size:clamp(52px,14.5vw,68px);
+    top:45svh;
+    transform:translate(-50%,-50%);
+    font-size:clamp(68px,17vw,88px);
     line-height:.9;
+    letter-spacing:-.055em;
     text-align:center;
   }
   .home .answer{
-    left:72px;
+    left:60px;
     right:auto;
-    top:18svh;
+    top:22svh;
     width:max-content;
     max-width:none;
     text-align:left;
     transform-origin:left top;
   }
   .home .answer-text{
-    font-size:clamp(30px,8vw,38px);
+    font-size:clamp(34px,8.8vw,46px);
     white-space:nowrap;
-    line-height:1;
+    line-height:.94;
+    letter-spacing:-.03em;
   }
-  .home .rewrite-svg{left:-2.5%;right:auto;top:50%;width:105%;height:160px}
+  .home .rewrite-svg{left:-2%;right:auto;top:50%;width:103%;height:160px}
 }
