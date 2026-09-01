@@ -61,40 +61,49 @@ function revealQuestion(duration=2200,stagger=135){
         el.style.opacity=t;
         if(local>=1)finished++;
       });
-      if(finished===letters.length||now-start>=duration){
-        letters.forEach(el=>{el.style.opacity=1});
-        resolve();
-      }else requestAnimationFrame(frame);
+      if(finished===letters.length||now-start>=duration){letters.forEach(el=>{el.style.opacity=1});resolve();}
+      else requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
   });
 }
 function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forEach(el=>{el.style.opacity=0});answer.style.opacity=0;answer.style.transform='translateY(0)';[commit,...rewritePaths,...navMarks].forEach(p=>draw(p,0))}
 
-function alignAnswerToQuestion(){
+function alignAnswerToQuestion(mobile){
+  if(mobile){
+    answer.style.left='20px';
+    answer.style.right='auto';
+    return;
+  }
   const q=question.getBoundingClientRect();
   const s=scene.getBoundingClientRect();
   answer.style.left=(q.left-s.left)+'px';
   answer.style.right='auto';
 }
 
-function alignOpeningMeta(){
+function alignOpeningMeta(mobile){
+  if(mobile){
+    role.style.left='auto';
+    role.style.right='22px';
+    role.style.top='70svh';
+    loc.style.left='auto';
+    loc.style.right='22px';
+    loc.style.top='74svh';
+    return;
+  }
   const t=tEl.getBoundingClientRect();
   const s=scene.getBoundingClientRect();
-  const mobile=innerWidth<=760;
-  const gap=mobile?18:42;
-  const stemInset=t.width*(mobile?.15:.29);
+  const gap=42;
+  const stemInset=t.width*.29;
   const y=t.bottom-s.top+gap;
   role.style.left=(t.left-s.left+stemInset)+'px';
+  role.style.right='auto';
   role.style.top=y+'px';
   loc.style.top=y+'px';
 }
 
 function stopUserScroll(e){if(interactionLocked)e.preventDefault()}
-function stopKeys(e){
-  if(!interactionLocked)return;
-  if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' ','Spacebar'].includes(e.key))e.preventDefault();
-}
+function stopKeys(e){if(!interactionLocked)return;if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' ','Spacebar'].includes(e.key))e.preventDefault()}
 addEventListener('wheel',stopUserScroll,{passive:false});
 addEventListener('touchmove',stopUserScroll,{passive:false});
 addEventListener('keydown',stopKeys,{passive:false});
@@ -104,27 +113,19 @@ function snapToSecondScene(duration=520){
   snapAnimating=true;
   const max=Math.max(1,sceneWrap.offsetHeight-innerHeight);
   const target=sceneWrap.offsetTop+max*.56;
-  const startY=scrollY;
-  const delta=target-startY;
-  const start=performance.now();
+  const startY=scrollY,delta=target-startY,start=performance.now();
   return new Promise(resolve=>{
-    function frame(now){
-      const t=E(C((now-start)/duration));
-      scrollTo(0,startY+delta*t);
-      if(t<1)requestAnimationFrame(frame);
-      else{snapAnimating=false;resolve()}
-    }
+    function frame(now){const t=E(C((now-start)/duration));scrollTo(0,startY+delta*t);if(t<1)requestAnimationFrame(frame);else{snapAnimating=false;resolve()}}
     requestAnimationFrame(frame);
   });
 }
 
 async function playSequence(){
   if(sequencePlayed||sequenceRunning)return;
-  sequenceRunning=true;
-  interactionLocked=true;
-
+  sequenceRunning=true;interactionLocked=true;
   await snapToSecondScene(520);
-  alignAnswerToQuestion();
+  const mobile=innerWidth<=760;
+  alignAnswerToQuestion(mobile);
   await wait(460);
   await revealQuestion();
   await wait(760);
@@ -132,43 +133,35 @@ async function playSequence(){
   await wait(860);
   await animateDraw(commit,920);
   await wait(620);
-  for(let i=0;i<rewritePaths.length;i++){
-    await animateDraw(rewritePaths[i],980);
-    await wait(i===rewritePaths.length-1?820:560);
-  }
-  await animateDraw(navMarks[0],520);
-  await wait(300);
-  await animateDraw(navMarks[1],520);
-
-  sequencePlayed=true;
-  sequenceRunning=false;
-  interactionLocked=false;
+  for(let i=0;i<rewritePaths.length;i++){await animateDraw(rewritePaths[i],980);await wait(i===rewritePaths.length-1?820:560)}
+  await animateDraw(navMarks[0],520);await wait(300);await animateDraw(navMarks[1],520);
+  sequencePlayed=true;sequenceRunning=false;interactionLocked=false;
 }
 
 function update(){
   const max=Math.max(1,sceneWrap.offsetHeight-innerHeight),r=sceneWrap.getBoundingClientRect(),p=C(-r.top/max),mobile=innerWidth<=760;
   const tr=E(C((p-.02)/.46));
-  const sx=mobile?20:innerWidth*.033,sy=innerHeight*(mobile?.58:.545),ex=mobile?20:Math.max(22,innerWidth*.033),ey=mobile?22:Math.max(22,innerWidth*.033),ss=mobile?Math.min(87,innerWidth*.182):Math.min(218,Math.max(82,innerWidth*.126)),es=mobile?12:Math.max(12,Math.min(16,innerWidth*.009));
-  nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
-
-  alignOpeningMeta();
-  alignAnswerToQuestion();
-
+  if(mobile){
+    const sx=22,sy=innerHeight*.82,ex=20,ey=22,ss=Math.min(98,Math.max(76,innerWidth*.22)),es=12;
+    nameEl.style.left=M(sx,ex,tr)+'px';
+    nameEl.style.top=M(sy,ey,tr)+'px';
+    nameEl.style.fontSize=M(ss,es,tr)+'px';
+    nameEl.style.letterSpacing=M(-.06,0,tr)+'em';
+  }else{
+    const sx=innerWidth*.033,sy=innerHeight*.545,ex=Math.max(22,innerWidth*.033),ey=Math.max(22,innerWidth*.033),ss=Math.min(218,Math.max(82,innerWidth*.126)),es=Math.max(12,Math.min(16,innerWidth*.009));
+    nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
+  }
+  alignOpeningMeta(mobile);
+  alignAnswerToQuestion(mobile);
   const fade=C((p-.08)/.24);role.style.opacity=1-fade;loc.style.opacity=1-fade;
-
   const dark=E(C((p-.10)/.38));
   document.body.style.backgroundColor=`rgb(${mix(241,16,dark)},${mix(240,16,dark)},${mix(236,16,dark)})`;
   document.body.style.color=`rgb(${mix(10,244,dark)},${mix(10,243,dark)},${mix(10,239,dark)})`;
-
   const nin=E(C((p-.44)/.10));nav.style.opacity=nin;nav.style.transform=`translateY(${M(-7,0,nin)}px)`;
-
   if(p>.52&&!sequencePlayed&&!sequenceRunning)playSequence();
-
-  if(p<.40&&sequencePlayed&&!sequenceRunning){
-    resetSequence();
-  }
+  if(p<.40&&sequencePlayed&&!sequenceRunning)resetSequence();
 }
 
 addEventListener('scroll',update,{passive:true});
-addEventListener('resize',()=>{prepared=false;alignOpeningMeta();alignAnswerToQuestion();update()});
-prep();resetSequence();alignOpeningMeta();alignAnswerToQuestion();update();
+addEventListener('resize',()=>{prepared=false;const mobile=innerWidth<=760;alignOpeningMeta(mobile);alignAnswerToQuestion(mobile);update()});
+prep();resetSequence();update();
