@@ -23,7 +23,7 @@
   .home .home-nav a{font-size:14px}
   .home .home-nav svg{top:.35em;height:27px}
   .home .question{
-    left:50%;
+    left:58%;
     right:auto;
     top:34svh;
     transform:translateX(-50%);
@@ -32,16 +32,16 @@
     text-align:center;
   }
   .home .answer{
-    left:30px;
+    left:72px;
     right:auto;
-    top:45svh;
+    top:18svh;
     width:max-content;
     max-width:none;
     text-align:left;
     transform-origin:left top;
   }
   .home .answer-text{
-    font-size:clamp(26px,7.2vw,34px);
+    font-size:clamp(30px,8vw,38px);
     white-space:nowrap;
     line-height:1;
   }
