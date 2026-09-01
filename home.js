@@ -1,9 +1,11 @@
 const C=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
 const M=(a,b,t)=>a+(b-a)*t;
 const E=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const S=t=>1-Math.pow(1-C(t),3);
 const mix=(a,b,t)=>Math.round(M(a,b,t));
 
 const sceneWrap=document.querySelector('.scene-wrap');
+const scene=document.querySelector('.scene');
 const nameEl=document.querySelector('.hero-name');
 const role=document.querySelector('.role');
 const loc=document.querySelector('.location');
@@ -44,14 +46,36 @@ let prepared=false,sequencePlayed=false,sequenceRunning=false,interactionLocked=
 function prep(){[commit,...rewritePaths,...navMarks].forEach(p=>{const len=p.getTotalLength();p.dataset.len=len;p.style.strokeDasharray=len;p.style.strokeDashoffset=len});prepared=true}
 function draw(path,t){if(!prepared)prep();const len=+path.dataset.len;path.style.opacity=t>0?1:0;path.style.strokeDashoffset=len*(1-C(t))}
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
-function animateDraw(path,duration=520){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=C((now-start)/duration);draw(path,E(t));if(t<1)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)})}
-function fadeIn(el,duration=900){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=E(C((now-start)/duration));el.style.opacity=t;el.style.transform='translateY(0)';if(t<1)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)})}
-function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forEach(el=>{el.style.opacity=0;el.style.transform='translateY(.18em)'});answer.style.opacity=0;answer.style.transform='translateY(0)';[commit,...rewritePaths,...navMarks].forEach(p=>draw(p,0))}
+function animateDraw(path,duration=700){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=S((now-start)/duration);draw(path,t);if(t<.999)requestAnimationFrame(frame);else{draw(path,1);resolve()}}requestAnimationFrame(frame)})}
+function fadeIn(el,duration=1200){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=E(C((now-start)/duration));el.style.opacity=t;el.style.transform='translateY(0)';if(t<1)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)})}
+function revealQuestion(duration=2550,stagger=170){
+  return new Promise(resolve=>{
+    const start=performance.now();
+    const letterDuration=980;
+    function frame(now){
+      let finished=0;
+      letters.forEach((el,i)=>{
+        const local=C((now-start-i*stagger)/letterDuration);
+        const t=E(local);
+        el.style.opacity=t;
+        el.style.transform=`translateY(${M(.10,0,t)}em)`;
+        el.style.filter=`blur(${M(2,0,t)}px)`;
+        if(local>=1)finished++;
+      });
+      if(finished===letters.length||now-start>=duration){
+        letters.forEach(el=>{el.style.opacity=1;el.style.transform='translateY(0)';el.style.filter='blur(0)'});
+        resolve();
+      }else requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  });
+}
+function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forEach(el=>{el.style.opacity=0;el.style.transform='translateY(.1em)';el.style.filter='blur(2px)'});answer.style.opacity=0;answer.style.transform='translateY(0)';[commit,...rewritePaths,...navMarks].forEach(p=>draw(p,0))}
 
 function alignAnswerToQuestion(){
   const q=question.getBoundingClientRect();
-  const scene=document.querySelector('.scene').getBoundingClientRect();
-  answer.style.left=(q.left-scene.left)+'px';
+  const s=scene.getBoundingClientRect();
+  answer.style.left=(q.left-s.left)+'px';
   answer.style.right='auto';
 }
 
@@ -64,7 +88,7 @@ addEventListener('wheel',stopUserScroll,{passive:false});
 addEventListener('touchmove',stopUserScroll,{passive:false});
 addEventListener('keydown',stopKeys,{passive:false});
 
-function snapToSecondScene(duration=360){
+function snapToSecondScene(duration=520){
   if(snapAnimating)return Promise.resolve();
   snapAnimating=true;
   const max=Math.max(1,sceneWrap.offsetHeight-innerHeight);
@@ -74,8 +98,8 @@ function snapToSecondScene(duration=360){
   const start=performance.now();
   return new Promise(resolve=>{
     function frame(now){
-      const t=C((now-start)/duration);
-      scrollTo(0,startY+delta*E(t));
+      const t=E(C((now-start)/duration));
+      scrollTo(0,startY+delta*t);
       if(t<1)requestAnimationFrame(frame);
       else{snapAnimating=false;resolve()}
     }
@@ -88,23 +112,22 @@ async function playSequence(){
   sequenceRunning=true;
   interactionLocked=true;
 
-  await snapToSecondScene(360);
+  await snapToSecondScene(520);
   alignAnswerToQuestion();
-  await wait(260);
-  for(const el of letters){
-    el.style.opacity=1;
-    el.style.transform='translateY(0)';
-    await wait(190);
-  }
+  await wait(420);
+  await revealQuestion();
+  await wait(820);
+  await fadeIn(answer,1250);
+  await wait(900);
+  await animateDraw(commit,920);
   await wait(620);
-  await fadeIn(answer,950);
-  await wait(720);
-  await animateDraw(commit,650);
-  await wait(450);
-  for(let i=0;i<rewritePaths.length;i++){await animateDraw(rewritePaths[i],760);await wait(i===rewritePaths.length-1?650:450)}
-  await animateDraw(navMarks[0],360);
-  await wait(220);
-  await animateDraw(navMarks[1],360);
+  for(let i=0;i<rewritePaths.length;i++){
+    await animateDraw(rewritePaths[i],980);
+    await wait(i===rewritePaths.length-1?820:560);
+  }
+  await animateDraw(navMarks[0],520);
+  await wait(300);
+  await animateDraw(navMarks[1],520);
 
   sequencePlayed=true;
   sequenceRunning=false;
@@ -114,7 +137,7 @@ async function playSequence(){
 function update(){
   const max=Math.max(1,sceneWrap.offsetHeight-innerHeight),r=sceneWrap.getBoundingClientRect(),p=C(-r.top/max),mobile=innerWidth<=760;
   const tr=E(C((p-.02)/.46));
-  const sx=mobile?20:innerWidth*.033,sy=innerHeight*(mobile?.58:.545),ex=mobile?20:Math.max(22,innerWidth*.033),ey=mobile?22:Math.max(22,innerWidth*.033),ss=mobile?Math.min(104,innerWidth*.22):Math.min(260,Math.max(96,innerWidth*.15)),es=mobile?12:Math.max(12,Math.min(16,innerWidth*.009));
+  const sx=mobile?20:innerWidth*.033,sy=innerHeight*(mobile?.58:.545),ex=mobile?20:Math.max(22,innerWidth*.033),ey=mobile?22:Math.max(22,innerWidth*.033),ss=mobile?Math.min(100,innerWidth*.21):Math.min(248,Math.max(92,innerWidth*.143)),es=mobile?12:Math.max(12,Math.min(16,innerWidth*.009));
   nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
 
   alignAnswerToQuestion();
