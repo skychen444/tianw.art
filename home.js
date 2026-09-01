@@ -77,6 +77,13 @@ function alignAnswerToQuestion(){
   answer.style.right='auto';
 }
 
+function alignOpeningMeta(){
+  const n=nameEl.getBoundingClientRect();
+  const s=scene.getBoundingClientRect();
+  const gap=innerWidth<=760?8:10;
+  role.style.top=(n.bottom-s.top+gap)+'px';
+}
+
 function stopUserScroll(e){if(interactionLocked)e.preventDefault()}
 function stopKeys(e){
   if(!interactionLocked)return;
@@ -138,6 +145,7 @@ function update(){
   const sx=mobile?20:innerWidth*.033,sy=innerHeight*(mobile?.58:.545),ex=mobile?20:Math.max(22,innerWidth*.033),ey=mobile?22:Math.max(22,innerWidth*.033),ss=mobile?Math.min(87,innerWidth*.182):Math.min(218,Math.max(82,innerWidth*.126)),es=mobile?12:Math.max(12,Math.min(16,innerWidth*.009));
   nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
 
+  alignOpeningMeta();
   alignAnswerToQuestion();
 
   const fade=C((p-.08)/.24);role.style.opacity=1-fade;loc.style.opacity=1-fade;
@@ -156,5 +164,5 @@ function update(){
 }
 
 addEventListener('scroll',update,{passive:true});
-addEventListener('resize',()=>{prepared=false;alignAnswerToQuestion();update()});
-prep();resetSequence();alignAnswerToQuestion();update();
+addEventListener('resize',()=>{prepared=false;alignOpeningMeta();alignAnswerToQuestion();update()});
+prep();resetSequence();alignOpeningMeta();alignAnswerToQuestion();update();
