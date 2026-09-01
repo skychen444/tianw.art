@@ -55,9 +55,9 @@ function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forE
 
 function alignAnswerToQuestion(mobile){
   if(mobile){
-    answer.style.left='30px';
+    answer.style.left='72px';
     answer.style.right='auto';
-    answer.style.top='45svh';
+    answer.style.top='18svh';
     answer.style.transformOrigin='left top';
     answer.style.transform='rotate(90deg)';
     return;
@@ -106,14 +106,14 @@ function update(){
   const tr=E(C((p-.02)/.46));
   if(mobile){
     const ss=Math.min(118,Math.max(94,innerWidth*.28));
-    const sx=ss+18,sy=innerHeight*.14,ex=20,ey=22,es=12;
+    const sx=ss+18,sy=innerHeight*.14,ex=20,ey=29,es=14;
     nameEl.style.left=M(sx,ex,tr)+'px';
     nameEl.style.top=M(sy,ey,tr)+'px';
     nameEl.style.fontSize=M(ss,es,tr)+'px';
     nameEl.style.letterSpacing=M(-.06,0,tr)+'em';
     nameEl.style.transformOrigin='left top';
     nameEl.style.transform=`rotate(${M(90,0,tr)}deg)`;
-    answerText.style.fontSize='clamp(26px,7.2vw,34px)';
+    answerText.style.fontSize='clamp(30px,8vw,38px)';
   }else{
     const sx=innerWidth*.033,sy=innerHeight*.545,ex=Math.max(22,innerWidth*.033),ey=Math.max(22,innerWidth*.033),ss=Math.min(218,Math.max(82,innerWidth*.126)),es=Math.max(12,Math.min(16,innerWidth*.009));
     nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
