@@ -55,9 +55,11 @@ function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forE
 
 function alignAnswerToQuestion(mobile){
   if(mobile){
-    answer.style.left='26px';
+    const fs=parseFloat(getComputedStyle(answerText).fontSize)||52;
+    const phraseWidth=answerText.scrollWidth;
+    answer.style.left=(fs*.84)+'px';
     answer.style.right='auto';
-    answer.style.top='19svh';
+    answer.style.top=Math.max(innerHeight*.16,innerHeight-phraseWidth+10)+'px';
     answer.style.transformOrigin='left top';
     answer.style.transform='rotate(90deg)';
     return;
@@ -106,8 +108,13 @@ function update(){
   const tr=E(C((p-.02)/.46));
   if(mobile){
     const ss=Math.min(118,Math.max(94,innerWidth*.28));
+    answerText.style.fontSize='clamp(46px,11.5vw,58px)';
+    alignAnswerToQuestion(true);
     const qLeft=question.getBoundingClientRect().left;
-    const sx=ss+18,sy=innerHeight*.14,ex=Math.max(30,qLeft),ey=35,es=15;
+    const answerEdge=parseFloat(answer.style.left)||48;
+    const gapMid=(answerEdge+qLeft)/2;
+    const ex=C(gapMid-25,52,92);
+    const sx=ss+18,sy=innerHeight*.14,ey=35,es=15;
     nameEl.style.left=M(sx,ex,tr)+'px';
     nameEl.style.top=M(sy,ey,tr)+'px';
     nameEl.style.fontSize=M(ss,es,tr)+'px';
@@ -115,7 +122,6 @@ function update(){
     nameEl.style.lineHeight='1';
     nameEl.style.transformOrigin='left top';
     nameEl.style.transform=`rotate(${M(90,0,tr)}deg)`;
-    answerText.style.fontSize='clamp(38px,9.8vw,50px)';
   }else{
     const sx=innerWidth*.033,sy=innerHeight*.545,ex=Math.max(22,innerWidth*.033),ey=Math.max(22,innerWidth*.033),ss=Math.min(218,Math.max(82,innerWidth*.126)),es=Math.max(12,Math.min(16,innerWidth*.009));
     nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
@@ -124,7 +130,7 @@ function update(){
     answerText.style.fontSize='';
   }
   alignOpeningMeta(mobile);
-  alignAnswerToQuestion(mobile);
+  if(!mobile)alignAnswerToQuestion(false);
   const fade=C((p-.08)/.24);role.style.opacity=1-fade;loc.style.opacity=1-fade;
   const dark=E(C((p-.10)/.38));
   document.body.style.backgroundColor=`rgb(${mix(241,16,dark)},${mix(240,16,dark)},${mix(236,16,dark)})`;
