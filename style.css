@@ -19,33 +19,33 @@
   }
   .home .role{top:76svh}
   .home .location{top:80svh}
-  .home .home-nav{right:20px;top:29px;gap:18px}
+  .home .home-nav{right:30px;top:35px;gap:18px}
   .home .home-nav a{font-size:15px;line-height:1}
   .home .home-nav svg{top:.35em;height:27px}
   .home .question{
-    left:58%;
+    left:61%;
     right:auto;
-    top:45svh;
+    top:46svh;
     transform:translate(-50%,-50%);
-    font-size:clamp(68px,17vw,88px);
-    line-height:.9;
-    letter-spacing:-.055em;
+    font-size:clamp(74px,18.5vw,94px);
+    line-height:.88;
+    letter-spacing:-.06em;
     text-align:center;
   }
   .home .answer{
-    left:60px;
+    left:26px;
     right:auto;
-    top:22svh;
+    top:19svh;
     width:max-content;
     max-width:none;
     text-align:left;
     transform-origin:left top;
   }
   .home .answer-text{
-    font-size:clamp(34px,8.8vw,46px);
+    font-size:clamp(38px,9.8vw,50px);
     white-space:nowrap;
-    line-height:.94;
-    letter-spacing:-.03em;
+    line-height:.92;
+    letter-spacing:-.032em;
   }
-  .home .rewrite-svg{left:-2%;right:auto;top:50%;width:103%;height:160px}
+  .home .rewrite-svg{left:-1.5%;right:auto;top:50%;width:102%;height:160px}
 }
