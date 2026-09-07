@@ -55,11 +55,13 @@ function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forE
 
 function alignAnswerToQuestion(mobile){
   if(mobile){
-    const fs=parseFloat(getComputedStyle(answerText).fontSize)||52;
+    const viewportH=window.visualViewport?window.visualViewport.height:window.innerHeight;
+    const fs=parseFloat(getComputedStyle(answerText).fontSize)||58;
     const phraseWidth=answerText.scrollWidth;
+    const bottomCrop=12;
     answer.style.left=(fs*.84)+'px';
     answer.style.right='auto';
-    answer.style.top=Math.max(innerHeight*.16,innerHeight-phraseWidth+10)+'px';
+    answer.style.top=Math.max(96,viewportH-phraseWidth+bottomCrop)+'px';
     answer.style.transformOrigin='left top';
     answer.style.transform='rotate(90deg)';
     return;
@@ -108,7 +110,7 @@ function update(){
   const tr=E(C((p-.02)/.46));
   if(mobile){
     const ss=Math.min(118,Math.max(94,innerWidth*.28));
-    answerText.style.fontSize='clamp(46px,11.5vw,58px)';
+    answerText.style.fontSize='clamp(52px,12.5vw,64px)';
     alignAnswerToQuestion(true);
     const qLeft=question.getBoundingClientRect().left;
     const answerEdge=parseFloat(answer.style.left)||48;
@@ -142,4 +144,5 @@ function update(){
 
 addEventListener('scroll',update,{passive:true});
 addEventListener('resize',()=>{prepared=false;const mobile=innerWidth<=760;alignOpeningMeta(mobile);alignAnswerToQuestion(mobile);update()});
+if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(innerWidth<=760)alignAnswerToQuestion(true)});
 prep();resetSequence();update();
