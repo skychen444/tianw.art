@@ -33,19 +33,19 @@
     text-align:center;
   }
   .home .answer{
-    left:26px;
+    left:46px;
     right:auto;
-    top:19svh;
+    top:16svh;
     width:max-content;
     max-width:none;
     text-align:left;
     transform-origin:left top;
   }
   .home .answer-text{
-    font-size:clamp(38px,9.8vw,50px);
+    font-size:clamp(46px,11.5vw,58px);
     white-space:nowrap;
-    line-height:.92;
-    letter-spacing:-.032em;
+    line-height:.9;
+    letter-spacing:-.035em;
   }
-  .home .rewrite-svg{left:-1.5%;right:auto;top:50%;width:102%;height:160px}
+  .home .rewrite-svg{left:-1%;right:auto;top:50%;width:101%;height:160px}
 }
