@@ -106,7 +106,8 @@ function update(){
   const tr=E(C((p-.02)/.46));
   if(mobile){
     const ss=Math.min(118,Math.max(94,innerWidth*.28));
-    const sx=ss+18,sy=innerHeight*.14,ex=30,ey=35,es=15;
+    const qLeft=question.getBoundingClientRect().left;
+    const sx=ss+18,sy=innerHeight*.14,ex=Math.max(30,qLeft),ey=35,es=15;
     nameEl.style.left=M(sx,ex,tr)+'px';
     nameEl.style.top=M(sy,ey,tr)+'px';
     nameEl.style.fontSize=M(ss,es,tr)+'px';
