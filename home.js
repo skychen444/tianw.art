@@ -56,12 +56,19 @@ function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forE
 function alignAnswerToQuestion(mobile){
   if(mobile){
     const viewportH=window.visualViewport?window.visualViewport.height:window.innerHeight;
-    const fs=parseFloat(getComputedStyle(answerText).fontSize)||58;
-    const phraseWidth=answerText.scrollWidth;
-    const bottomCrop=12;
-    answer.style.left=(fs*.84)+'px';
+    const topGap=132;
+    const bottomGap=24;
+    let fs=parseFloat(getComputedStyle(answerText).fontSize)||58;
+    let phraseWidth=answerText.scrollWidth;
+    const available=Math.max(360,viewportH-topGap-bottomGap);
+    if(phraseWidth>available){
+      fs=Math.max(44,fs*(available/phraseWidth));
+      answerText.style.fontSize=fs+'px';
+      phraseWidth=answerText.scrollWidth;
+    }
+    answer.style.left=(fs+14)+'px';
     answer.style.right='auto';
-    answer.style.top=Math.max(96,viewportH-phraseWidth+bottomCrop)+'px';
+    answer.style.top=topGap+'px';
     answer.style.transformOrigin='left top';
     answer.style.transform='rotate(90deg)';
     return;
@@ -113,7 +120,7 @@ function update(){
     answerText.style.fontSize='clamp(52px,12.5vw,64px)';
     alignAnswerToQuestion(true);
     const qLeft=question.getBoundingClientRect().left;
-    const answerEdge=parseFloat(answer.style.left)||48;
+    const answerEdge=parseFloat(answer.style.left)||62;
     const gapMid=(answerEdge+qLeft)/2;
     const ex=C(gapMid-25,52,92);
     const sx=ss+18,sy=innerHeight*.14,ey=35,es=15;
@@ -144,5 +151,5 @@ function update(){
 
 addEventListener('scroll',update,{passive:true});
 addEventListener('resize',()=>{prepared=false;const mobile=innerWidth<=760;alignOpeningMeta(mobile);alignAnswerToQuestion(mobile);update()});
-if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(innerWidth<=760)alignAnswerToQuestion(true)});
+if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(innerWidth<=760){answerText.style.fontSize='clamp(52px,12.5vw,64px)';alignAnswerToQuestion(true)}});
 prep();resetSequence();update();
