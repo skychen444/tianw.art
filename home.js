@@ -18,6 +18,7 @@ const answerText=document.querySelector('.answer-text');
 const commit=document.querySelector('#commit');
 const rewriteGroup=document.querySelector('#rewrites');
 const navMarks=[...document.querySelectorAll('.home-nav path')];
+const navLinks=[...document.querySelectorAll('.home-nav a')];
 
 const variants=[
   {start:.10,cover:.52,cross:5,amp:34,bias:-.02,tail:.08},
@@ -49,9 +50,14 @@ function prep(){[commit,...rewritePaths,...navMarks].forEach(p=>{const len=p.get
 function draw(path,t){if(!prepared)prep();const len=+path.dataset.len;path.style.opacity=t>0?1:0;path.style.strokeDashoffset=len*(1-C(t))}
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 function animateDraw(path,duration=700){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=S((now-start)/duration);draw(path,t);if(t<.999)requestAnimationFrame(frame);else{draw(path,1);resolve()}}requestAnimationFrame(frame)})}
-function fadeIn(el,duration=1200){return new Promise(resolve=>{const start=performance.now();function frame(now){const t=E(C((now-start)/duration));el.style.opacity=t;if(t<1)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)})}
+function fadeTo(el,to,duration=500){return new Promise(resolve=>{const from=parseFloat(getComputedStyle(el).opacity)||0;const start=performance.now();function frame(now){const t=E(C((now-start)/duration));el.style.opacity=M(from,to,t);if(t<1)requestAnimationFrame(frame);else{el.style.opacity=to;resolve()}}requestAnimationFrame(frame)})}
+function fadeIn(el,duration=1200){return fadeTo(el,1,duration)}
 function revealQuestion(duration=2200,stagger=135){return new Promise(resolve=>{const start=performance.now();const letterDuration=1100;function frame(now){let finished=0;letters.forEach((el,i)=>{const local=C((now-start-i*stagger)/letterDuration);const t=E(local);el.style.opacity=t;if(local>=1)finished++});if(finished===letters.length||now-start>=duration){letters.forEach(el=>{el.style.opacity=1});resolve()}else requestAnimationFrame(frame)}requestAnimationFrame(frame)})}
-function resetSequence(){sequencePlayed=false;sequenceRunning=false;letters.forEach(el=>{el.style.opacity=0});answer.style.opacity=0;answer.style.transform=innerWidth<=760?'rotate(90deg)':'translateY(0)';[commit,...rewritePaths,...navMarks].forEach(p=>draw(p,0))}
+function setSecondSceneLinksEnabled(enabled){
+  nameEl.style.pointerEvents=enabled?'auto':'none';
+  navLinks.forEach(a=>a.style.pointerEvents=enabled?'auto':'none');
+}
+function resetSequence(){sequencePlayed=false;sequenceRunning=false;question.style.opacity=1;letters.forEach(el=>{el.style.opacity=0});answer.style.opacity=0;answer.style.transform=innerWidth<=760?'rotate(90deg)':'translateY(0)';[commit,...rewritePaths,...navMarks].forEach(p=>draw(p,0));setSecondSceneLinksEnabled(true)}
 
 function alignAnswerToQuestion(mobile){
   if(mobile){
@@ -66,7 +72,7 @@ function alignAnswerToQuestion(mobile){
       answerText.style.fontSize=fs+'px';
       phraseWidth=answerText.scrollWidth;
     }
-    answer.style.left=(fs+14)+'px';
+    answer.style.left=(fs*.92)+'px';
     answer.style.right='auto';
     answer.style.top=topGap+'px';
     answer.style.transformOrigin='left top';
@@ -110,7 +116,37 @@ addEventListener('keydown',stopKeys,{passive:false});
 
 function snapToSecondScene(duration=520){if(snapAnimating)return Promise.resolve();snapAnimating=true;const max=Math.max(1,sceneWrap.offsetHeight-innerHeight);const target=sceneWrap.offsetTop+max*.56;const startY=scrollY,delta=target-startY,start=performance.now();return new Promise(resolve=>{function frame(now){const t=E(C((now-start)/duration));scrollTo(0,startY+delta*t);if(t<1)requestAnimationFrame(frame);else{snapAnimating=false;resolve()}}requestAnimationFrame(frame)})}
 
-async function playSequence(){if(sequencePlayed||sequenceRunning)return;sequenceRunning=true;interactionLocked=true;await snapToSecondScene(520);const mobile=innerWidth<=760;alignAnswerToQuestion(mobile);await wait(460);await revealQuestion();await wait(760);await fadeIn(answer,1200);await wait(860);await animateDraw(commit,920);await wait(620);for(let i=0;i<rewritePaths.length;i++){await animateDraw(rewritePaths[i],980);await wait(i===rewritePaths.length-1?820:560)}await animateDraw(navMarks[0],520);await wait(300);await animateDraw(navMarks[1],520);sequencePlayed=true;sequenceRunning=false;interactionLocked=false}
+async function playSequence(){
+  if(sequencePlayed||sequenceRunning)return;
+  sequenceRunning=true;
+  interactionLocked=true;
+  setSecondSceneLinksEnabled(false);
+  await snapToSecondScene(520);
+  const mobile=innerWidth<=760;
+  alignAnswerToQuestion(mobile);
+  await wait(460);
+  await revealQuestion();
+  await wait(420);
+  await fadeTo(question,.60,520);
+  await wait(280);
+  await fadeIn(answer,1200);
+  await wait(620);
+  await animateDraw(commit,920);
+  await wait(460);
+  for(let i=0;i<rewritePaths.length;i++){
+    await animateDraw(rewritePaths[i],980);
+    await wait(i===rewritePaths.length-1?560:500);
+  }
+  await Promise.all([fadeTo(question,1,620),fadeTo(answer,.72,620)]);
+  await wait(260);
+  await animateDraw(navMarks[0],520);
+  await wait(300);
+  await animateDraw(navMarks[1],520);
+  sequencePlayed=true;
+  sequenceRunning=false;
+  interactionLocked=false;
+  setSecondSceneLinksEnabled(true);
+}
 
 function update(){
   const max=Math.max(1,sceneWrap.offsetHeight-innerHeight),r=sceneWrap.getBoundingClientRect(),p=C(-r.top/max),mobile=innerWidth<=760;
@@ -145,8 +181,10 @@ function update(){
   document.body.style.backgroundColor=`rgb(${mix(241,16,dark)},${mix(240,16,dark)},${mix(236,16,dark)})`;
   document.body.style.color=`rgb(${mix(10,244,dark)},${mix(10,243,dark)},${mix(10,239,dark)})`;
   const nin=E(C((p-.44)/.10));nav.style.opacity=nin;nav.style.transform=`translateY(${M(-7,0,nin)}px)`;
+  if(p>.40&&!sequencePlayed)setSecondSceneLinksEnabled(false);
   if(p>.52&&!sequencePlayed&&!sequenceRunning)playSequence();
   if(p<.40&&sequencePlayed&&!sequenceRunning)resetSequence();
+  if(p<.40&&!sequenceRunning&&!sequencePlayed)setSecondSceneLinksEnabled(true);
 }
 
 addEventListener('scroll',update,{passive:true});
