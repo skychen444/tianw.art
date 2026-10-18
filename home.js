@@ -81,9 +81,11 @@ function alignAnswerToQuestion(mobile){
   }
   const q=question.getBoundingClientRect();
   const s=scene.getBoundingClientRect();
+  const answerSize=parseFloat(getComputedStyle(answerText).fontSize)||24;
+  const gap=Math.max(10,answerSize*.45);
   answer.style.left=(q.left-s.left)+'px';
   answer.style.right='auto';
-  answer.style.top='74.7vh';
+  answer.style.top=(q.bottom-s.top+gap)+'px';
   answer.style.transform='translateY(0)';
 }
 
@@ -168,7 +170,9 @@ function update(){
     nameEl.style.transformOrigin='left top';
     nameEl.style.transform=`rotate(${M(90,0,tr)}deg)`;
   }else{
-    const sx=innerWidth*.033,sy=innerHeight*.545,ex=Math.max(22,innerWidth*.033),ey=Math.max(22,innerWidth*.033),ss=Math.min(340,Math.max(82,innerWidth*.126)),es=Math.max(12,Math.min(16,innerWidth*.009));
+    const headerInset=Math.min(72,Math.max(48,innerWidth*.033));
+    const headerSize=Math.min(22,Math.max(15,innerWidth*.0105));
+    const sx=innerWidth*.033,sy=innerHeight*.545,ex=headerInset,ey=headerInset,ss=Math.min(340,Math.max(82,innerWidth*.126)),es=headerSize;
     nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
     nameEl.style.lineHeight='';
     nameEl.style.transform='none';
