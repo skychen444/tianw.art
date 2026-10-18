@@ -99,7 +99,7 @@ function alignOpeningMeta(mobile){
   }
   const t=tEl.getBoundingClientRect();
   const s=scene.getBoundingClientRect();
-  const gap=42;
+  const gap=Math.min(74,Math.max(42,innerWidth*.0292));
   const stemInset=t.width*.29;
   const y=t.bottom-s.top+gap;
   role.style.left=(t.left-s.left+stemInset)+'px';
@@ -168,7 +168,7 @@ function update(){
     nameEl.style.transformOrigin='left top';
     nameEl.style.transform=`rotate(${M(90,0,tr)}deg)`;
   }else{
-    const sx=innerWidth*.033,sy=innerHeight*.545,ex=Math.max(22,innerWidth*.033),ey=Math.max(22,innerWidth*.033),ss=Math.min(218,Math.max(82,innerWidth*.126)),es=Math.max(12,Math.min(16,innerWidth*.009));
+    const sx=innerWidth*.033,sy=innerHeight*.545,ex=Math.max(22,innerWidth*.033),ey=Math.max(22,innerWidth*.033),ss=Math.min(340,Math.max(82,innerWidth*.126)),es=Math.max(12,Math.min(16,innerWidth*.009));
     nameEl.style.left=M(sx,ex,tr)+'px';nameEl.style.top=M(sy,ey,tr)+'px';nameEl.style.fontSize=M(ss,es,tr)+'px';nameEl.style.letterSpacing=M(-.055,0,tr)+'em';
     nameEl.style.lineHeight='';
     nameEl.style.transform='none';
