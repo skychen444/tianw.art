@@ -97,18 +97,23 @@
   }
 }
 
-/* Desktop second scene: scale from the approved laptop composition. */
+/* Desktop second scene: laptop composition is the master. */
 @media(min-width:761px){
+  .home .home-nav{
+    right:clamp(48px,3.3vw,72px);
+    top:clamp(48px,3.3vw,72px);
+    gap:clamp(18px,1.25vw,28px);
+  }
   .home .home-nav a{
-    font-size:clamp(15px,1.05vw,21px);
+    font-size:clamp(15px,1.05vw,22px);
   }
   .home .home-nav svg{
-    height:clamp(25px,1.7vw,34px);
+    height:clamp(25px,1.7vw,36px);
   }
   .home .question{
-    font-size:clamp(74px,10vw,220px);
+    font-size:clamp(74px,10vw,260px);
   }
   .home .answer-text{
-    font-size:clamp(20px,1.7vw,40px);
+    font-size:clamp(20px,1.7vw,44px);
   }
 }
