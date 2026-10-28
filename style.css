@@ -478,3 +478,31 @@
     object-fit:contain;
   }
 }
+
+
+/* Power Emerges alignment cleanup */
+@media(min-width:761px){
+  .power-project-page .project-hook{
+    width:88%;
+    max-width:none;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .power-project-page .project-hook p{
+    max-width:980px;
+  }
+
+  .power-project-page .project-behaviour{
+    grid-template-columns:minmax(320px,.82fr) minmax(0,1.18fr);
+    column-gap:clamp(18px,1.6vw,30px);
+  }
+
+  .power-project-page .project-behaviour .project-copy{
+    max-width:500px;
+  }
+
+  .power-project-page .project-media-primary{
+    width:100%;
+  }
+}
