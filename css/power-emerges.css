@@ -171,6 +171,7 @@
     grid-row: 1;
     max-width: 460px;
     align-self: center;
+    margin-left: 40px;
   }
 
   .power-project-page .project-behaviour .project-copy p {
