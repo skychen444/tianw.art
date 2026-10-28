@@ -895,3 +895,25 @@
     justify-self:end;
   }
 }
+
+
+/* Power Emerges behaviour text: vertically centered beside image */
+@media(min-width:761px){
+  .power-project-page .project-behaviour{
+    align-items:stretch;
+  }
+
+  .power-project-page .project-behaviour .project-copy{
+    align-self:center;
+    max-width:460px;
+  }
+
+  .power-project-page .project-behaviour .project-copy p{
+    font-size:clamp(18px,1.12vw,20px);
+    line-height:1.48;
+  }
+
+  .power-project-page .project-media-primary{
+    align-self:start;
+  }
+}
