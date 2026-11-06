@@ -8,8 +8,6 @@
 .power-project-page {
   --content-width: 88%;
   --content-side: calc((100% - var(--content-width)) / 2);
-
-  --interaction-width: 58%;
   --interaction-gap: 20px;
 }
 
@@ -249,13 +247,6 @@
    object-fit: cover;
  }
 
-  .power-project-page .interaction-right {
-    display: flex;
-    flex-direction: column;
-
-    gap: var(--interaction-gap);
-  }
-
 
  /* Video + text */
 
@@ -381,7 +372,6 @@
 
   .power-project-page {
     --content-width: 92%;
-    --interaction-width: 74%;
     --interaction-gap: 36px;
   }
 
@@ -443,17 +433,6 @@
 .power-project-page .project-video-block {
   width: 100%;
 }
-
-
-  /* Why */
-  .power-project-page .project-why .project-copy-wide {
-    max-width: 760px;
-  }
-
-  .power-project-page .project-why .project-copy-wide p {
-    font-size: 24px;
-    line-height: 1.48;
-  }
 
 
   /* Foucault */
