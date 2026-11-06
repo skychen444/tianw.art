@@ -316,51 +316,77 @@
       ...document.querySelectorAll('.project-autoplay-video')
     ];
 
-    projectVideos.forEach(video => {
+    function prepareProjectVideo(video) {
       video.muted = true;
       video.defaultMuted = true;
       video.playsInline = true;
 
-      const tryPlay = () => {
-        video.play().catch(() => {});
-      };
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+    }
 
-      if (video.readyState >= 2) {
-        tryPlay();
-      } else {
-        video.addEventListener('canplay', tryPlay, { once: true });
-      }
+    function playProjectVideos() {
+      projectVideos.forEach(video => {
+        prepareProjectVideo(video);
+
+        if (video.getBoundingClientRect().top < window.innerHeight &&
+            video.getBoundingClientRect().bottom > 0) {
+          video.play().catch(() => {});
+        }
+      });
+    }
+
+    projectVideos.forEach(video => {
+      prepareProjectVideo(video);
+
+      video.addEventListener('loadedmetadata', () => {
+        video.play().catch(() => {});
+      }, { once: true });
+
+      video.addEventListener('canplay', () => {
+        video.play().catch(() => {});
+      }, { once: true });
     });
 
     if ('IntersectionObserver' in window) {
-
       const observer = new IntersectionObserver(entries => {
-
         entries.forEach(entry => {
-
           const video = entry.target;
 
-          if (
-            entry.isIntersecting &&
-            entry.intersectionRatio >= 0.1
-          ) {
+          if (entry.isIntersecting) {
+            prepareProjectVideo(video);
             video.play().catch(() => {});
           } else {
             video.pause();
           }
-
         });
-
       }, {
-        threshold: [0, 0.1, 1]
+        threshold: 0.01
       });
 
       projectVideos.forEach(video => {
         observer.observe(video);
       });
-
     }
 
+    document.addEventListener('touchstart', playProjectVideos, {
+      once: true,
+      passive: true
+    });
+
+    document.addEventListener('pointerdown', playProjectVideos, {
+      once: true,
+      passive: true
+    });
+
+    window.addEventListener('pageshow', playProjectVideos);
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        playProjectVideos();
+      }
+    });
 
     const lightbox =
       document.getElementById('imageLightbox');
