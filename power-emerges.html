@@ -8,7 +8,7 @@
   <title>Power Emerges Through Interpretive Authority — Tian W.</title>
 
   <link rel="stylesheet" href="style.css?v=20261029-core1">
-  <link rel="stylesheet" href="css/power-emerges.css?v=20261029-clean1">
+  <link rel="stylesheet" href="css/power-emerges.css?v=20261107-mobile1">
 </head>
 
 
@@ -49,6 +49,8 @@
       <img
         src="assets/power-emerges-installation.jpg"
         alt="Installation view of Power Emerges Through Interpretive Authority"
+        fetchpriority="high"
+        decoding="async"
       >
 
     </section>
@@ -90,6 +92,8 @@
         <img
           src="assets/interaction-04.jpg"
           alt="Audience member interacting with the installation"
+          loading="lazy"
+          decoding="async"
         >
       </figure>
 
@@ -103,16 +107,22 @@
       <img
         src="assets/interaction-02.jpg"
         alt="Visitors gathered around the installation"
+          loading="lazy"
+          decoding="async"
       >
 
       <img
         src="assets/interaction-03.jpg"
         alt="Visitor photographing the installation"
+          loading="lazy"
+          decoding="async"
       >
 
       <img
         src="assets/interaction-01.jpg"
         alt="Audience viewing the installation"
+          loading="lazy"
+          decoding="async"
       >
 
     </section>
@@ -127,21 +137,29 @@
         <img
           src="assets/interaction-04.jpg"
           alt="Audience member interacting with the installation"
+          loading="lazy"
+          decoding="async"
         >
 
         <img
           src="assets/interaction-02.jpg"
           alt="Visitors gathered around the installation"
+          loading="lazy"
+          decoding="async"
         >
 
         <img
           src="assets/interaction-03.jpg"
           alt="Visitor photographing the installation"
+          loading="lazy"
+          decoding="async"
         >
 
         <img
           src="assets/interaction-01.jpg"
           alt="Audience viewing the installation"
+          loading="lazy"
+          decoding="async"
         >
 
       </section>
@@ -178,7 +196,7 @@
           muted
           playsinline
           loop
-          preload="auto"
+          preload="metadata"
           poster="assets/interaction-01.jpg"
         >
           <source
@@ -221,6 +239,8 @@
         <img
           src="assets/detail-01.jpg"
           alt="AxiDraw drawing white traces onto black paper"
+          loading="lazy"
+          decoding="async"
         >
       </figure>
 
@@ -228,6 +248,8 @@
         <img
           src="assets/detail-02.jpg"
           alt="Finished drawing produced by the installation"
+          loading="lazy"
+          decoding="async"
         >
       </figure>
 
@@ -244,6 +266,8 @@
           <img
             src="assets/detail-01.jpg"
             alt="AxiDraw drawing white traces onto black paper"
+          loading="lazy"
+          decoding="async"
           >
         </figure>
 
@@ -251,6 +275,8 @@
           <img
             src="assets/detail-02.jpg"
             alt="Finished drawing produced by the installation"
+          loading="lazy"
+          decoding="async"
           >
         </figure>
 
@@ -316,37 +342,15 @@
       ...document.querySelectorAll('.project-autoplay-video')
     ];
 
-    function prepareProjectVideo(video) {
-      video.muted = true;
-      video.defaultMuted = true;
+    projectVideos.forEach(video => {
       video.playsInline = true;
 
-      video.setAttribute('muted', '');
-      video.setAttribute('playsinline', '');
-      video.setAttribute('webkit-playsinline', '');
-    }
-
-    function playProjectVideos() {
-      projectVideos.forEach(video => {
-        prepareProjectVideo(video);
-
-        if (video.getBoundingClientRect().top < window.innerHeight &&
-            video.getBoundingClientRect().bottom > 0) {
-          video.play().catch(() => {});
-        }
-      });
-    }
-
-    projectVideos.forEach(video => {
-      prepareProjectVideo(video);
-
-      video.addEventListener('loadedmetadata', () => {
+      const tryPlay = () => {
         video.play().catch(() => {});
-      }, { once: true });
+      };
 
-      video.addEventListener('canplay', () => {
-        video.play().catch(() => {});
-      }, { once: true });
+      video.addEventListener('loadeddata', tryPlay, { once: true });
+      video.addEventListener('canplay', tryPlay, { once: true });
     });
 
     if ('IntersectionObserver' in window) {
@@ -355,7 +359,6 @@
           const video = entry.target;
 
           if (entry.isIntersecting) {
-            prepareProjectVideo(video);
             video.play().catch(() => {});
           } else {
             video.pause();
@@ -370,23 +373,22 @@
       });
     }
 
-    document.addEventListener('touchstart', playProjectVideos, {
+    const resumeVisibleVideo = () => {
+      projectVideos.forEach(video => {
+        const rect = video.getBoundingClientRect();
+
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          video.play().catch(() => {});
+        }
+      });
+    };
+
+    document.addEventListener('touchstart', resumeVisibleVideo, {
       once: true,
       passive: true
     });
 
-    document.addEventListener('pointerdown', playProjectVideos, {
-      once: true,
-      passive: true
-    });
-
-    window.addEventListener('pageshow', playProjectVideos);
-
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) {
-        playProjectVideos();
-      }
-    });
+    window.addEventListener('pageshow', resumeVisibleVideo);
 
     const lightbox =
       document.getElementById('imageLightbox');
