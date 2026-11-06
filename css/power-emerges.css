@@ -517,7 +517,7 @@
 
     white-space: pre;
 
-    font-size: clamp(28px, 7.4vw, 36px);
+    font-size: clamp(24px, 6.2vw, 30px);
     line-height: .98;
     letter-spacing: -.035em;
 
@@ -550,7 +550,7 @@
   .power-project-page .project-hook {
     width: 100%;
 
-    margin: 90px 0;
+    margin: 90px 0 64px;
   }
 
   .power-project-page .project-hook p {
@@ -559,7 +559,7 @@
 
     margin: 0;
 
-    font-size: clamp(28px, 7.4vw, 36px);
+    font-size: clamp(24px, 6.2vw, 30px);
     line-height: .98;
     letter-spacing: -.035em;
 
