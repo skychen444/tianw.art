@@ -316,6 +316,22 @@
       ...document.querySelectorAll('.project-autoplay-video')
     ];
 
+    projectVideos.forEach(video => {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+
+      const tryPlay = () => {
+        video.play().catch(() => {});
+      };
+
+      if (video.readyState >= 2) {
+        tryPlay();
+      } else {
+        video.addEventListener('canplay', tryPlay, { once: true });
+      }
+    });
+
     if ('IntersectionObserver' in window) {
 
       const observer = new IntersectionObserver(entries => {
@@ -326,7 +342,7 @@
 
           if (
             entry.isIntersecting &&
-            entry.intersectionRatio >= 0.45
+            entry.intersectionRatio >= 0.1
           ) {
             video.play().catch(() => {});
           } else {
@@ -336,17 +352,11 @@
         });
 
       }, {
-        threshold: [0, 0.45, 1]
+        threshold: [0, 0.1, 1]
       });
 
       projectVideos.forEach(video => {
         observer.observe(video);
-      });
-
-    } else {
-
-      projectVideos.forEach(video => {
-        video.play().catch(() => {});
       });
 
     }
