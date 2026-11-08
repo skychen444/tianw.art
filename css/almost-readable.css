@@ -20,10 +20,7 @@
 }
 
 .almost-title-block {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 40px;
+  display: block;
 }
 
 .almost-title-block h1 {
@@ -35,24 +32,24 @@
 }
 
 .almost-meta {
-  margin-top: .35em;
+  margin-top: 18px;
   font-size: 13px;
   line-height: 1.5;
-  text-align: right;
+  text-align: left;
 }
 
 .almost-live {
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 58vh;
 }
 
 .desktop-live {
   display: flex;
   align-items: baseline;
-  justify-content: center;
+  justify-content: flex-start;
   white-space: nowrap;
   font-size: clamp(34px, 4.3vw, 82px);
   line-height: 1;
@@ -76,17 +73,17 @@
 }
 
 .almost-statement {
-  margin: 10vh 0 18vh;
+  margin: 8vh 0 18vh;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .almost-statement p {
-  width: min(920px, 72%);
+  width: min(980px, 76%);
   margin: 0;
-  font-size: clamp(34px, 4.2vw, 74px);
-  line-height: 1;
-  letter-spacing: -.045em;
+  font-size: clamp(24px, 2.6vw, 46px);
+  line-height: 1.12;
+  letter-spacing: -.03em;
   font-weight: 400;
 }
 
@@ -218,8 +215,8 @@
   }
 
   .almost-statement p {
-    width: min(1120px, 70%);
-    font-size: 82px;
+    width: min(1180px, 74%);
+    font-size: 52px;
   }
 
   .preset-copy p {
@@ -280,14 +277,15 @@
   }
 
   .almost-statement {
-    margin: 6vh 0 13vh;
+    margin: 5vh 0 13vh;
     justify-content: flex-start;
   }
 
   .almost-statement p {
     width: 100%;
-    font-size: clamp(28px, 8.3vw, 38px);
-    line-height: .98;
+    font-size: 20px;
+    line-height: 1.38;
+    letter-spacing: -.015em;
   }
 
   .almost-video-section {
