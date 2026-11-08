@@ -1,0 +1,368 @@
+.almost-readable-page {
+  --ar-side: 6%;
+  --ar-max: 1800px;
+  background: #101010;
+  color: #f4f3ef;
+}
+
+.almost-readable-page .almost-page {
+  width: 100%;
+  max-width: var(--ar-max);
+  margin: 0 auto;
+  padding: 128px var(--ar-side) 9vh;
+  overflow: hidden;
+}
+
+.almost-intro {
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.almost-title-block {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.almost-title-block h1 {
+  margin: 0;
+  font-size: clamp(52px, 6.4vw, 112px);
+  line-height: .9;
+  letter-spacing: -.055em;
+  font-weight: 400;
+}
+
+.almost-meta {
+  margin-top: .35em;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.almost-live {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 58vh;
+}
+
+.desktop-live {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  white-space: nowrap;
+  font-size: clamp(34px, 4.3vw, 82px);
+  line-height: 1;
+  letter-spacing: .035em;
+  font-weight: 400;
+}
+
+.desktop-live span:not(.word-gap) {
+  display: inline-block;
+  will-change: transform;
+  transition: transform .08s linear;
+}
+
+.desktop-live .word-gap {
+  display: inline-block;
+  width: .62em;
+}
+
+.mobile-live {
+  display: none;
+}
+
+.almost-statement {
+  margin: 10vh 0 18vh;
+  display: flex;
+  justify-content: center;
+}
+
+.almost-statement p {
+  width: min(920px, 72%);
+  margin: 0;
+  font-size: clamp(34px, 4.2vw, 74px);
+  line-height: 1;
+  letter-spacing: -.045em;
+  font-weight: 400;
+}
+
+.almost-video-section {
+  width: 100%;
+  margin: 0 0 18vh;
+}
+
+.almost-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #000;
+}
+
+.preset-section {
+  margin: 0 0 18vh;
+}
+
+.preset-copy {
+  display: grid;
+  grid-template-columns: .45fr 1fr;
+  gap: 8vw;
+  align-items: start;
+  margin-bottom: 7vh;
+}
+
+.section-label {
+  font-size: 12px;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  opacity: .72;
+}
+
+.preset-copy p {
+  max-width: 720px;
+  margin: 0;
+  font-size: clamp(18px, 1.55vw, 27px);
+  line-height: 1.36;
+}
+
+.preset-viewer {
+  width: 100%;
+}
+
+.preset-tabs {
+  display: flex;
+  gap: 18px;
+  margin: 0 0 18px;
+}
+
+.preset-tab {
+  appearance: none;
+  border: 0;
+  padding: 0 0 3px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  opacity: .42;
+  border-bottom: 1px solid transparent;
+}
+
+.preset-tab.is-active {
+  opacity: 1;
+  border-bottom-color: currentColor;
+}
+
+.preset-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+}
+
+.preset-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .24s ease;
+}
+
+.preset-image.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.preset-mobile-hint {
+  display: none;
+}
+
+.almost-system {
+  display: grid;
+  grid-template-columns: .45fr 1fr;
+  gap: 8vw;
+  align-items: start;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,.2);
+}
+
+.almost-system p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.almost-readable-page .back-link {
+  margin-top: 14vh;
+}
+
+@media (min-width: 1800px) {
+  .almost-readable-page {
+    --ar-side: 5.5%;
+  }
+
+  .almost-title-block h1 {
+    font-size: 126px;
+  }
+
+  .desktop-live {
+    font-size: 88px;
+  }
+
+  .almost-statement p {
+    width: min(1120px, 70%);
+    font-size: 82px;
+  }
+
+  .preset-copy p {
+    max-width: 850px;
+    font-size: 29px;
+  }
+}
+
+@media (max-width: 760px) {
+  .almost-readable-page .almost-page {
+    max-width: none;
+    margin: 0;
+    padding: 92px 20px 64px;
+  }
+
+  .almost-intro {
+    min-height: 90svh;
+  }
+
+  .almost-title-block {
+    display: block;
+  }
+
+  .almost-title-block h1 {
+    font-size: clamp(38px, 11.3vw, 52px);
+    line-height: .94;
+  }
+
+  .almost-meta {
+    margin-top: 16px;
+    font-size: 11px;
+    text-align: left;
+  }
+
+  .almost-live {
+    min-height: 58svh;
+    justify-content: flex-start;
+  }
+
+  .desktop-live {
+    display: none;
+  }
+
+  .mobile-live {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: .08em;
+    font-size: clamp(34px, 10.6vw, 48px);
+    line-height: .92;
+    letter-spacing: -.035em;
+  }
+
+  .mobile-line {
+    display: block;
+    width: fit-content;
+    transition: transform .1s linear;
+  }
+
+  .almost-statement {
+    margin: 6vh 0 13vh;
+    justify-content: flex-start;
+  }
+
+  .almost-statement p {
+    width: 100%;
+    font-size: clamp(28px, 8.3vw, 38px);
+    line-height: .98;
+  }
+
+  .almost-video-section {
+    margin-bottom: 13vh;
+  }
+
+  .preset-section {
+    margin-bottom: 13vh;
+  }
+
+  .preset-copy {
+    display: block;
+    margin-bottom: 28px;
+  }
+
+  .preset-copy .section-label {
+    margin-bottom: 18px;
+  }
+
+  .preset-copy p {
+    max-width: none;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .preset-tabs {
+    display: none;
+  }
+
+  .preset-stage {
+    display: flex;
+    position: static;
+    aspect-ratio: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    background: transparent;
+  }
+
+  .preset-stage::-webkit-scrollbar {
+    display: none;
+  }
+
+  .preset-image,
+  .preset-image.is-active {
+    position: static;
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    opacity: 1;
+    pointer-events: auto;
+    scroll-snap-align: start;
+  }
+
+  .preset-mobile-hint {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+    text-align: right;
+  }
+
+  .almost-system {
+    display: block;
+    padding-top: 18px;
+  }
+
+  .almost-system .section-label {
+    margin-bottom: 16px;
+  }
+
+  .almost-readable-page .back-link {
+    margin-top: 12vh;
+  }
+}
