@@ -78,11 +78,19 @@
 .desktop-live span:not(.word-gap) {
   display: inline-block;
   will-change: transform, filter;
-  -webkit-text-stroke: .35px rgba(198, 188, 160, .34);
+  color: #f4f3ef;
+  -webkit-text-stroke:
+    calc(.5px + var(--metal-glow) * .7px)
+    rgba(214, 202, 168, calc(.48 + var(--metal-glow) * .4));
   text-shadow:
-    0 0 calc(1px + var(--metal-glow) * 5px) rgba(232, 224, 198, calc(.16 + var(--metal-glow) * .42)),
-    0 0 calc(3px + var(--metal-glow) * 11px) rgba(171, 162, 138, calc(.05 + var(--metal-glow) * .24));
-  transition: transform .08s linear, text-shadow .08s linear;
+    0 0 calc(2px + var(--metal-glow) * 7px)
+      rgba(244, 230, 188, calc(.26 + var(--metal-glow) * .5)),
+    0 0 calc(6px + var(--metal-glow) * 16px)
+      rgba(185, 169, 128, calc(.10 + var(--metal-glow) * .34));
+  transition:
+    transform .08s linear,
+    text-shadow .08s linear,
+    -webkit-text-stroke .08s linear;
 }
 
 .desktop-live .word-gap {
@@ -305,8 +313,8 @@
     width: 100%;
     flex-direction: column;
     gap: .08em;
-    font-size: clamp(24px, 6.2vw, 30px);
-    line-height: .98;
+    font-size: clamp(30px, 8.2vw, 40px);
+    line-height: .96;
     letter-spacing: -.035em;
     font-weight: 600;
   }
@@ -314,11 +322,19 @@
   .mobile-line {
     display: block;
     width: fit-content;
-    -webkit-text-stroke: .35px rgba(198, 188, 160, .34);
+    color: #f4f3ef;
+    -webkit-text-stroke:
+      calc(.5px + var(--metal-glow) * .7px)
+      rgba(214, 202, 168, calc(.48 + var(--metal-glow) * .4));
     text-shadow:
-      0 0 calc(1px + var(--metal-glow) * 5px) rgba(232, 224, 198, calc(.16 + var(--metal-glow) * .42)),
-      0 0 calc(3px + var(--metal-glow) * 11px) rgba(171, 162, 138, calc(.05 + var(--metal-glow) * .24));
-    transition: transform .1s linear, text-shadow .08s linear;
+      0 0 calc(2px + var(--metal-glow) * 7px)
+        rgba(244, 230, 188, calc(.26 + var(--metal-glow) * .5)),
+      0 0 calc(6px + var(--metal-glow) * 16px)
+        rgba(185, 169, 128, calc(.10 + var(--metal-glow) * .34));
+    transition:
+      transform .1s linear,
+      text-shadow .08s linear,
+      -webkit-text-stroke .08s linear;
   }
 
   .almost-statement {
