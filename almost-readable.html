@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Almost Readable — Tian W.</title>
+  <link rel="stylesheet" href="style.css?v=20261109-core">
+  <link rel="stylesheet" href="css/almost-readable.css?v=20261109-v1">
+</head>
+
+<body class="dark-page almost-readable-page">
+  <header class="site-header">
+    <a class="site-name" href="index.html">Tian W.</a>
+    <nav class="site-nav">
+      <a class="active" href="works.html">Works</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main class="page almost-page">
+
+    <section class="almost-intro">
+      <div class="almost-title-block">
+        <h1>Almost Readable</h1>
+        <div class="almost-meta">2026<br>Generative text-based work</div>
+      </div>
+
+      <div class="almost-live" aria-label="THIS SENTENCE IS EASY TO READ">
+        <div class="live-sentence desktop-live" aria-hidden="true">
+          <span>T</span><span>H</span><span>I</span><span>S</span>
+          <span class="word-gap"></span>
+          <span>S</span><span>E</span><span>N</span><span>T</span><span>E</span><span>N</span><span>C</span><span>E</span>
+          <span class="word-gap"></span>
+          <span>I</span><span>S</span>
+          <span class="word-gap"></span>
+          <span>E</span><span>A</span><span>S</span><span>Y</span>
+          <span class="word-gap"></span>
+          <span>T</span><span>O</span>
+          <span class="word-gap"></span>
+          <span>R</span><span>E</span><span>A</span><span>D</span>
+        </div>
+
+        <div class="mobile-live" aria-hidden="true">
+          <span class="mobile-line">THIS</span>
+          <span class="mobile-line">SENTENCE</span>
+          <span class="mobile-line">IS EASY</span>
+          <span class="mobile-line">TO READ</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="almost-statement">
+      <p>A sentence remains close enough to meaning that you keep trying to read it.</p>
+    </section>
+
+    <section class="almost-video-section">
+      <video class="almost-video" autoplay muted playsinline loop preload="metadata">
+        <source src="assets/almost-readable.mp4" type="video/mp4">
+      </video>
+    </section>
+
+    <section class="preset-section">
+      <div class="preset-copy">
+        <div class="section-label">Three states</div>
+        <p>
+          The same sentence is repeatedly destabilized through changes in position, spacing and rhythm,
+          remaining close to legibility without fully settling.
+        </p>
+      </div>
+
+      <div class="preset-viewer">
+        <div class="preset-tabs" role="tablist" aria-label="Almost Readable presets">
+          <button class="preset-tab is-active" data-preset="0" type="button">01</button>
+          <button class="preset-tab" data-preset="1" type="button">02</button>
+          <button class="preset-tab" data-preset="2" type="button">03</button>
+        </div>
+
+        <div class="preset-stage">
+          <img class="preset-image is-active" src="assets/almost-readable-01.png" alt="Preset 1, largely readable sentence">
+          <img class="preset-image" src="assets/almost-readable-02.png" alt="Preset 2, disrupted spacing rhythm">
+          <img class="preset-image" src="assets/almost-readable-03.png" alt="Preset 3, unstable reading order">
+        </div>
+
+        <div class="preset-mobile-hint" aria-hidden="true">← →</div>
+      </div>
+    </section>
+
+    <section class="almost-system">
+      <div class="section-label">System</div>
+      <p>Python · Py5canvas · 90-second generative loop · three spatial disruption presets</p>
+    </section>
+
+    <a class="back-link" href="works.html">← Works</a>
+  </main>
+
+  <script>
+    const liveChars = [...document.querySelectorAll('.desktop-live span:not(.word-gap)')];
+
+    liveChars.forEach((char, i) => {
+      char.style.setProperty('--i', i);
+    });
+
+    let t = 0;
+    function animateSentence() {
+      t += 0.012;
+      liveChars.forEach((char, i) => {
+        const phase = i * 0.73;
+        const x = Math.sin(t * 1.15 + phase) * (2.2 + (i % 5) * 0.35);
+        const y = Math.sin(t * 0.83 + phase * 1.27) * 2.4;
+        const r = Math.sin(t * 0.61 + phase) * 0.55;
+        const squeeze = 1 + Math.sin(t * 0.47 + phase * .4) * .018;
+        char.style.transform = `translate(${x}px,${y}px) rotate(${r}deg) scaleX(${squeeze})`;
+      });
+      requestAnimationFrame(animateSentence);
+    }
+    requestAnimationFrame(animateSentence);
+
+    const mobileLines = [...document.querySelectorAll('.mobile-line')];
+    addEventListener('scroll', () => {
+      const y = Math.min(scrollY, innerHeight * 1.1);
+      const strength = y / innerHeight;
+      mobileLines.forEach((line, i) => {
+        const dir = i % 2 ? 1 : -1;
+        line.style.transform = `translateX(${dir * strength * (9 + i * 5)}px)`;
+      });
+    }, { passive: true });
+
+    const video = document.querySelector('.almost-video');
+    const tryPlay = () => video.play().catch(() => {});
+    video.addEventListener('canplay', tryPlay, { once: true });
+    window.addEventListener('pageshow', tryPlay);
+
+    const tabs = [...document.querySelectorAll('.preset-tab')];
+    const images = [...document.querySelectorAll('.preset-image')];
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('is-active'));
+        images.forEach(img => img.classList.remove('is-active'));
+        tab.classList.add('is-active');
+        images[index].classList.add('is-active');
+      });
+    });
+
+    const header = document.querySelector('.site-header');
+    addEventListener('scroll', () => {
+      header.classList.toggle('header-hidden', scrollY > 70);
+    }, { passive: true });
+  </script>
+</body>
+</html>
