@@ -129,6 +129,57 @@
       });
     }, { passive: true });
 
+    const liveArea = document.querySelector('.almost-live');
+    let glow = 0;
+    let targetGlow = 0;
+    let lastPointer = null;
+    let lastScrollY = window.scrollY;
+    let lastScrollTime = performance.now();
+
+    const setMotionGlow = speed => {
+      targetGlow = Math.min(1, Math.max(targetGlow, speed));
+    };
+
+    window.addEventListener('pointermove', event => {
+      if (!lastPointer) {
+        lastPointer = { x: event.clientX, y: event.clientY, t: performance.now() };
+        return;
+      }
+
+      const now = performance.now();
+      const dt = Math.max(16, now - lastPointer.t);
+      const dx = event.clientX - lastPointer.x;
+      const dy = event.clientY - lastPointer.y;
+      const velocity = Math.hypot(dx, dy) / dt;
+
+      setMotionGlow(Math.min(1, velocity / 1.35));
+      lastPointer = { x: event.clientX, y: event.clientY, t: now };
+    }, { passive: true });
+
+    window.addEventListener('scroll', () => {
+      const now = performance.now();
+      const dt = Math.max(16, now - lastScrollTime);
+      const velocity = Math.abs(window.scrollY - lastScrollY) / dt;
+
+      const rect = liveArea.getBoundingClientRect();
+      const visible = rect.bottom > 0 && rect.top < window.innerHeight;
+
+      if (visible) {
+        setMotionGlow(Math.min(1, velocity / 1.1));
+      }
+
+      lastScrollY = window.scrollY;
+      lastScrollTime = now;
+    }, { passive: true });
+
+    const animateGlow = () => {
+      glow += (targetGlow - glow) * .16;
+      targetGlow *= .9;
+      liveArea.style.setProperty('--metal-glow', glow.toFixed(3));
+      requestAnimationFrame(animateGlow);
+    };
+    requestAnimationFrame(animateGlow);
+
     const video = document.querySelector('.almost-video');
     const tryPlay = () => video.play().catch(() => {});
     video.addEventListener('canplay', tryPlay, { once: true });
