@@ -143,6 +143,7 @@
     let lastClickTime = 0;
     let interruptionIndex = 0;
     let lockedUntil = 0;
+    let inputLockedUntil = 0;
 
     const randomFrom = list => list[Math.floor(Math.random() * list.length)];
 
@@ -262,13 +263,20 @@
       }
     };
 
-    canvas.addEventListener("click", () => {
-      if (performance.now() < lockedUntil) return;
+    const advanceInteraction = event => {
+      if (event) event.preventDefault();
 
+      const now = performance.now();
+
+      if (now < lockedUntil || now < inputLockedUntil) return;
+
+      inputLockedUntil = now + 180;
       clicks += 1;
       counter.textContent = clicks;
       nextState();
-    });
+    };
+
+    canvas.addEventListener("pointerup", advanceInteraction, { passive: false });
 
     showCommon();
     message.textContent = "click to begin";
