@@ -47,8 +47,8 @@
 }
 
 .almost-meta {
-  margin-top: 18px;
-  font-size: 13px;
+  margin-top: clamp(22px, 1.7vw, 30px);
+  font-size: 22px;
   line-height: 1.5;
   text-align: left;
 }
@@ -336,8 +336,9 @@
   }
 
   .almost-meta {
-    margin-top: 16px;
+    margin: 18px 0 0;
     font-size: 11px;
+    line-height: 1.4;
     text-align: left;
   }
 
