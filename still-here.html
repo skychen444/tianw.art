@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Still Here? — Tian W.</title>
+  <link rel="stylesheet" href="style.css?v=20261110-core">
+  <link rel="stylesheet" href="css/still-here.css?v=20261110-v1">
+</head>
+
+<body class="dark-page still-here-page">
+  <header class="site-header">
+    <a class="site-name" href="index.html">Tian W.</a>
+    <nav class="site-nav">
+      <a class="active" href="works.html">Works</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main class="page still-page">
+    <section class="still-intro">
+      <h1>Still Here?</h1>
+      <div class="still-meta">
+        2026<br>
+        Browser-based interactive work
+      </div>
+    </section>
+
+    <section class="still-experience" aria-label="Interactive version of Still Here?">
+      <div class="still-counter">total click: <span id="stillClickCount">0</span></div>
+
+      <button class="still-canvas" id="stillCanvas" type="button" aria-label="Click to continue">
+        <div class="still-frame" id="stillFrame">
+          <img class="still-image" id="stillImage" src="" alt="">
+        </div>
+        <div class="still-fragment" id="stillFragment" aria-hidden="true"></div>
+        <div class="still-message" id="stillMessage">click to begin</div>
+      </button>
+    </section>
+
+    <section class="still-concept">
+      <div class="section-label">Concept</div>
+      <div class="still-copy">
+        <p>
+          Still Here? began from a personal observation: I was spending 8–10 hours a day on screens, and I started to notice that what kept me scrolling was not always the content itself, but the anticipation of what might appear next.
+        </p>
+        <p>
+          The work turns that habit into a small behavioral loop. Repeated clicking produces fragmented images, empty states, rare rewards and interruptions, gradually shifting the experience from attraction toward awareness of one's own persistence.
+        </p>
+      </div>
+    </section>
+
+    <section class="still-video-section">
+      <video class="still-video" controls playsinline preload="metadata" poster="assets/still-here-common.jpg">
+        <source src="assets/still-here.mp4" type="video/mp4">
+      </video>
+    </section>
+
+    <section class="still-states">
+      <div class="still-states-copy">
+        <div class="section-label">States</div>
+        <p>
+          Reward is deliberately uneven. Most clicks return incomplete images; sometimes the work withholds an image entirely, while rare and ultra-rare states briefly offer a more complete reward.
+        </p>
+      </div>
+
+      <div class="still-state-tabs" role="tablist" aria-label="Still Here states">
+        <button class="still-state-tab is-active" type="button" data-state="0">COMMON</button>
+        <button class="still-state-tab" type="button" data-state="1">EMPTY</button>
+        <button class="still-state-tab" type="button" data-state="2">RARE</button>
+        <button class="still-state-tab" type="button" data-state="3">ULTRA RARE</button>
+      </div>
+
+      <div class="still-state-stage">
+        <figure class="still-state is-active">
+          <img src="assets/still-here-common.jpg" alt="Common fragmented image state">
+        </figure>
+        <figure class="still-state">
+          <img src="assets/still-here-empty.jpg" alt="Empty state showing oops on a black screen">
+        </figure>
+        <figure class="still-state">
+          <img src="assets/still-here-rare.jpg" alt="Rare image state">
+        </figure>
+        <figure class="still-state">
+          <img src="assets/still-here-ultra-rare.jpg" alt="Ultra rare image state">
+        </figure>
+      </div>
+
+      <div class="still-mobile-hint" aria-hidden="true">← →</div>
+    </section>
+
+    <section class="still-system">
+      <div class="section-label">System</div>
+      <p>p5.js · JSON · browser-based interaction · variable reward · interruption · image fragmentation</p>
+    </section>
+
+    <div class="still-links">
+      <a href="https://skychen444.github.io/still_here-/" target="_blank" rel="noopener noreferrer">View original live work ↗</a>
+      <a class="back-link" href="works.html">← Works</a>
+    </div>
+  </main>
+
+  <script>
+    const imagePool = [
+      "img01.JPG","img02.JPG","img03.JPG","img04.JPG","img05.JPG","img06.JPG",
+      "img07.JPG","img08.JPG","img09.JPG","img10.JPG","img11.JPG","img12.JPG",
+      "img13.JPG","img14.JPG","img15.JPG","img16.JPG","img17.JPG","img18.JPG","img19.JPG"
+    ].map(name => `https://raw.githubusercontent.com/skychen444/still_here-/main/${name}`);
+
+    const rarePool = [
+      "https://raw.githubusercontent.com/skychen444/still_here-/main/img20.JPG",
+      "https://raw.githubusercontent.com/skychen444/still_here-/main/img21.JPG"
+    ];
+
+    const ultraRarePool = [
+      "https://raw.githubusercontent.com/skychen444/still_here-/main/img22.JPG"
+    ];
+
+    const labels = [
+      "lonely","quiet","still","waiting","late","through","between","almost",
+      "stop","held","signal","flicker","surface","hidden","barely","further",
+      "inside","left","passing","near","again"
+    ];
+
+    const emptyWords = ["oops","crushed","late","void","missed","nothing"];
+    const interruptions = [
+      "still here?",
+      "for something better?",
+      "even without enough.",
+      "you are still looking.",
+      "what exactly are you looking for?",
+      "was it worth it?"
+    ];
+
+    const canvas = document.getElementById("stillCanvas");
+    const frame = document.getElementById("stillFrame");
+    const image = document.getElementById("stillImage");
+    const message = document.getElementById("stillMessage");
+    const fragment = document.getElementById("stillFragment");
+    const counter = document.getElementById("stillClickCount");
+
+    let clicks = 0;
+    let lastClickTime = 0;
+    let interruptionIndex = 0;
+    let lockedUntil = 0;
+
+    const randomFrom = list => list[Math.floor(Math.random() * list.length)];
+
+    const clearState = () => {
+      canvas.classList.remove("is-empty", "is-interruption", "is-rare", "is-ultra");
+      message.textContent = "";
+      fragment.textContent = "";
+      image.style.opacity = "1";
+      image.style.filter = "";
+    };
+
+    const showCommon = () => {
+      clearState();
+      image.src = randomFrom(imagePool);
+
+      const modes = [
+        "common-near",
+        "common-half-x",
+        "common-half-y",
+        "common-third",
+        "common-quarter",
+        "common-zoom"
+      ];
+
+      frame.className = "still-frame " + randomFrom(modes);
+      frame.style.setProperty("--shift-x", (Math.random() * 36 - 18) + "px");
+      frame.style.setProperty("--shift-y", (Math.random() * 36 - 18) + "px");
+      image.style.filter = `brightness(${0.58 + Math.random() * 0.28})`;
+
+      if (Math.random() < Math.min(.28, .08 + clicks * .008)) {
+        fragment.textContent = randomFrom(labels);
+      }
+    };
+
+    const showEmpty = () => {
+      clearState();
+      canvas.classList.add("is-empty");
+      frame.className = "still-frame";
+      image.removeAttribute("src");
+      message.textContent = Math.random() < .35 ? randomFrom(emptyWords) : "";
+      lockedUntil = performance.now() + 700;
+    };
+
+    const showRare = () => {
+      clearState();
+      canvas.classList.add("is-rare");
+      frame.className = "still-frame reward-full";
+      image.src = randomFrom(rarePool);
+      fragment.textContent = randomFrom(["peek","mirror","back","pink","ash"]);
+      lockedUntil = performance.now() + 1050;
+    };
+
+    const showUltra = () => {
+      clearState();
+      canvas.classList.add("is-ultra");
+      frame.className = "still-frame reward-full";
+      image.src = randomFrom(ultraRarePool);
+      lockedUntil = performance.now() + 1400;
+    };
+
+    const showInterruption = () => {
+      clearState();
+      canvas.classList.add("is-interruption");
+      frame.className = "still-frame";
+      image.removeAttribute("src");
+
+      const text = interruptions[Math.min(interruptionIndex, interruptions.length - 1)];
+      interruptionIndex = Math.min(interruptionIndex + 1, interruptions.length - 1);
+
+      let i = 0;
+      message.textContent = "";
+      lockedUntil = performance.now() + 1900;
+
+      const typer = window.setInterval(() => {
+        message.textContent = text.slice(0, i + 1);
+        i += 1;
+        if (i >= text.length) window.clearInterval(typer);
+      }, 42);
+    };
+
+    const nextState = () => {
+      const now = performance.now();
+      const rapid = now - lastClickTime < 240;
+      lastClickTime = now;
+
+      if (clicks === 0) {
+        showCommon();
+        return;
+      }
+
+      if (clicks >= 18 && clicks % 18 === 0) {
+        showUltra();
+        return;
+      }
+
+      if (clicks >= 7 && clicks % 8 === 0) {
+        showRare();
+        return;
+      }
+
+      if (clicks >= 9 && interruptionIndex < interruptions.length) {
+        const chance = Math.min(.28, .10 + clicks * .006);
+        if (Math.random() < chance) {
+          showInterruption();
+          return;
+        }
+      }
+
+      const r = Math.random();
+
+      if (rapid && r < .42) {
+        showEmpty();
+      } else if (r < .14) {
+        showEmpty();
+      } else {
+        showCommon();
+      }
+    };
+
+    canvas.addEventListener("click", () => {
+      if (performance.now() < lockedUntil) return;
+
+      clicks += 1;
+      counter.textContent = clicks;
+      nextState();
+    });
+
+    showCommon();
+    message.textContent = "click to begin";
+
+    const tabs = [...document.querySelectorAll(".still-state-tab")];
+    const states = [...document.querySelectorAll(".still-state")];
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(item => item.classList.remove("is-active"));
+        states.forEach(item => item.classList.remove("is-active"));
+        tab.classList.add("is-active");
+        states[index].classList.add("is-active");
+      });
+    });
+  </script>
+</body>
+</html>
