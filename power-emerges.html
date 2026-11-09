@@ -180,11 +180,12 @@
           muted
           playsinline
           loop
-          preload="metadata"
+          preload="auto"
+          webkit-playsinline
           poster="assets/interaction-01.jpg"
         >
           <source
-            src="assets/interpretive-authority.mp4"
+            src="assets/interpretive-authority.mp4?v=20261109-mobile2"
             type="video/mp4"
           >
         </video>
@@ -318,53 +319,63 @@
       ...document.querySelectorAll('.project-autoplay-video')
     ];
 
-    projectVideos.forEach(video => {
+    const playVideo = video => {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.autoplay = true;
       video.playsInline = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      video.play().catch(() => {});
+    };
 
-      const tryPlay = () => {
-        video.play().catch(() => {});
-      };
+    const resumeNearbyVideos = () => {
+      projectVideos.forEach(video => {
+        const rect = video.getBoundingClientRect();
+        const nearby =
+          rect.top < window.innerHeight + 220 &&
+          rect.bottom > -220;
 
-      video.addEventListener('loadeddata', tryPlay, { once: true });
-      video.addEventListener('canplay', tryPlay, { once: true });
+        if (nearby) {
+          playVideo(video);
+        }
+      });
+    };
+
+    projectVideos.forEach(video => {
+      video.addEventListener('loadedmetadata', () => playVideo(video));
+      video.addEventListener('loadeddata', () => playVideo(video));
+      video.addEventListener('canplay', () => playVideo(video));
     });
 
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-          const video = entry.target;
-
           if (entry.isIntersecting) {
-            video.play().catch(() => {});
-          } else {
-            video.pause();
+            playVideo(entry.target);
           }
         });
       }, {
-        threshold: 0.01
+        threshold: 0,
+        rootMargin: '220px 0px'
       });
 
-      projectVideos.forEach(video => {
-        observer.observe(video);
-      });
+      projectVideos.forEach(video => observer.observe(video));
     }
 
-    const resumeVisibleVideo = () => {
-      projectVideos.forEach(video => {
-        const rect = video.getBoundingClientRect();
-
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-          video.play().catch(() => {});
-        }
+    ['touchstart', 'touchend', 'pointerdown'].forEach(eventName => {
+      document.addEventListener(eventName, resumeNearbyVideos, {
+        passive: true
       });
-    };
+    });
 
-    document.addEventListener('touchstart', resumeVisibleVideo, {
-      once: true,
+    window.addEventListener('scroll', resumeNearbyVideos, {
       passive: true
     });
 
-    window.addEventListener('pageshow', resumeVisibleVideo);
+    window.addEventListener('pageshow', resumeNearbyVideos);
+    window.addEventListener('load', resumeNearbyVideos);
 
     const lightbox =
       document.getElementById('imageLightbox');
