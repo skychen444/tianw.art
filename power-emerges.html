@@ -334,12 +334,20 @@
       projectVideos.forEach(video => {
         const rect = video.getBoundingClientRect();
         const nearby =
-          rect.top < window.innerHeight + 220 &&
-          rect.bottom > -220;
+          rect.top < window.innerHeight + 300 &&
+          rect.bottom > -300;
 
         if (nearby) {
           playVideo(video);
         }
+      });
+    };
+
+    const startAutoplayAttempts = () => {
+      resumeNearbyVideos();
+
+      [120, 350, 800, 1500].forEach(delay => {
+        window.setTimeout(resumeNearbyVideos, delay);
       });
     };
 
@@ -358,11 +366,13 @@
         });
       }, {
         threshold: 0,
-        rootMargin: '220px 0px'
+        rootMargin: '300px 0px'
       });
 
       projectVideos.forEach(video => observer.observe(video));
     }
+
+    document.addEventListener('DOMContentLoaded', startAutoplayAttempts);
 
     ['touchstart', 'touchend', 'pointerdown'].forEach(eventName => {
       document.addEventListener(eventName, resumeNearbyVideos, {
@@ -374,8 +384,14 @@
       passive: true
     });
 
-    window.addEventListener('pageshow', resumeNearbyVideos);
-    window.addEventListener('load', resumeNearbyVideos);
+    window.addEventListener('pageshow', startAutoplayAttempts);
+    window.addEventListener('load', startAutoplayAttempts);
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        startAutoplayAttempts();
+      }
+    });
 
     const lightbox =
       document.getElementById('imageLightbox');
