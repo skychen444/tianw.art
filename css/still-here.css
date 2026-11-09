@@ -171,6 +171,7 @@
   margin: 0 0 20px;
   font-size: clamp(18px, 1.55vw, 27px);
   line-height: 1.36;
+  letter-spacing: 0;
 }
 
 .still-video-section {
@@ -399,6 +400,7 @@
   .still-states-copy p {
     font-size: 15px;
     line-height: 1.5;
+    letter-spacing: 0;
   }
 
   .still-state-tabs {
