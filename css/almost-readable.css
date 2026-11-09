@@ -126,7 +126,6 @@
   align-items: baseline;
   justify-content: flex-start;
   width: 100%;
-  max-width: 100%;
   white-space: nowrap;
   font-size: clamp(30px, 3.55vw, 68px);
   line-height: 1;
@@ -166,7 +165,6 @@
 }
 
 .almost-video-section {
-  width: 100%;
   margin: 0 0 18vh;
 }
 
@@ -328,10 +326,6 @@
 
   .almost-intro {
     min-height: 90svh;
-  }
-
-  .almost-title-block {
-    display: block;
   }
 
   .almost-title-block h1 {
