@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Still Here? — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261110-core">
-  <link rel="stylesheet" href="css/still-here.css?v=20261110-fix4">
+  <link rel="stylesheet" href="css/still-here.css?v=20261110-clean">
 </head>
 
 <body class="dark-page still-here-page">
@@ -144,24 +144,25 @@
     let interruptionIndex = 0;
     let lockedUntil = 0;
     let inputLockedUntil = 0;
+    const INPUT_LOCK_MS = 260;
 
     const randomFrom = list => list[Math.floor(Math.random() * list.length)];
-
     const allInteractionImages = [...imagePool, ...rarePool, ...ultraRarePool];
     const preloadedImages = new Map();
 
     allInteractionImages.forEach(src => {
-      const img = new Image();
-      img.src = src;
-      const ready = img.decode ? img.decode().catch(() => {}) : Promise.resolve();
-      preloadedImages.set(src, { img, ready });
+      const preload = new Image();
+      preload.src = src;
+
+      const ready = preload.decode
+        ? preload.decode().catch(() => {})
+        : Promise.resolve();
+
+      preloadedImages.set(src, ready);
     });
 
-    const prepareImage = src => {
-      const cached = preloadedImages.get(src);
-      if (!cached) return Promise.resolve(src);
-      return cached.ready.then(() => src);
-    };
+    const prepareImage = src =>
+      preloadedImages.get(src) || Promise.resolve();
 
 
     const clearState = () => {
@@ -189,7 +190,7 @@
         ? randomFrom(labels)
         : "";
 
-      inputLockedUntil = performance.now() + 260;
+      inputLockedUntil = performance.now() + INPUT_LOCK_MS;
       await prepareImage(nextSrc);
 
       clearState();
@@ -212,7 +213,7 @@
 
     const showRare = async () => {
       const nextSrc = randomFrom(rarePool);
-      inputLockedUntil = performance.now() + 260;
+      inputLockedUntil = performance.now() + INPUT_LOCK_MS;
       await prepareImage(nextSrc);
       clearState();
       canvas.classList.add("is-rare");
@@ -224,7 +225,7 @@
 
     const showUltra = async () => {
       const nextSrc = randomFrom(ultraRarePool);
-      inputLockedUntil = performance.now() + 260;
+      inputLockedUntil = performance.now() + INPUT_LOCK_MS;
       await prepareImage(nextSrc);
       clearState();
       canvas.classList.add("is-ultra");
@@ -299,7 +300,7 @@
 
       if (now < lockedUntil || now < inputLockedUntil) return;
 
-      inputLockedUntil = now + 260;
+      inputLockedUntil = now + INPUT_LOCK_MS;
       clicks += 1;
       counter.textContent = clicks;
       nextState();
