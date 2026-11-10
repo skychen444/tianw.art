@@ -268,8 +268,9 @@
 
 .still-system p {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.55;
+  max-width: 760px;
+  font-size: clamp(17px, 1.4vw, 21px);
+  line-height: 1.45;
 }
 
 .still-links {
@@ -289,6 +290,10 @@
 }
 
 @media (min-width: 1800px) {
+  .still-system p {
+    font-size: 22px;
+  }
+
   .still-here-page {
     --content-width: 92%;
   }
@@ -306,13 +311,14 @@
     max-height: 860px;
   }
 
-  .still-copy p,
-  .still-states-copy p {
-    font-size: 29px;
-  }
 }
 
 @media (max-width: 760px) {
+  .still-system p {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
   .still-here-page .still-page {
     width: 100%;
     max-width: none;
