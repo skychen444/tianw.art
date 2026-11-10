@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Still Here? — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261110-core">
-  <link rel="stylesheet" href="css/still-here.css?v=20261110-meta3">
+  <link rel="stylesheet" href="css/still-here.css?v=20261110-fix4">
 </head>
 
 <body class="dark-page still-here-page">
@@ -147,6 +147,23 @@
 
     const randomFrom = list => list[Math.floor(Math.random() * list.length)];
 
+    const allInteractionImages = [...imagePool, ...rarePool, ...ultraRarePool];
+    const preloadedImages = new Map();
+
+    allInteractionImages.forEach(src => {
+      const img = new Image();
+      img.src = src;
+      const ready = img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+      preloadedImages.set(src, { img, ready });
+    });
+
+    const prepareImage = src => {
+      const cached = preloadedImages.get(src);
+      if (!cached) return Promise.resolve(src);
+      return cached.ready.then(() => src);
+    };
+
+
     const clearState = () => {
       canvas.classList.remove("is-empty", "is-interruption", "is-rare", "is-ultra");
       message.textContent = "";
@@ -155,27 +172,33 @@
       image.style.filter = "";
     };
 
-    const showCommon = () => {
-      clearState();
-      image.src = randomFrom(imagePool);
-
-      const modes = [
+    const showCommon = async () => {
+      const nextSrc = randomFrom(imagePool);
+      const nextMode = randomFrom([
         "common-near",
         "common-half-x",
         "common-half-y",
         "common-third",
         "common-quarter",
         "common-zoom"
-      ];
+      ]);
+      const nextShiftX = (Math.random() * 36 - 18) + "px";
+      const nextShiftY = (Math.random() * 36 - 18) + "px";
+      const nextBrightness = 0.58 + Math.random() * 0.28;
+      const nextLabel = Math.random() < Math.min(.28, .08 + clicks * .008)
+        ? randomFrom(labels)
+        : "";
 
-      frame.className = "still-frame " + randomFrom(modes);
-      frame.style.setProperty("--shift-x", (Math.random() * 36 - 18) + "px");
-      frame.style.setProperty("--shift-y", (Math.random() * 36 - 18) + "px");
-      image.style.filter = `brightness(${0.58 + Math.random() * 0.28})`;
+      inputLockedUntil = performance.now() + 260;
+      await prepareImage(nextSrc);
 
-      if (Math.random() < Math.min(.28, .08 + clicks * .008)) {
-        fragment.textContent = randomFrom(labels);
-      }
+      clearState();
+      frame.className = "still-frame " + nextMode;
+      frame.style.setProperty("--shift-x", nextShiftX);
+      frame.style.setProperty("--shift-y", nextShiftY);
+      image.style.filter = `brightness(${nextBrightness})`;
+      fragment.textContent = nextLabel;
+      image.src = nextSrc;
     };
 
     const showEmpty = () => {
@@ -187,20 +210,26 @@
       lockedUntil = performance.now() + 700;
     };
 
-    const showRare = () => {
+    const showRare = async () => {
+      const nextSrc = randomFrom(rarePool);
+      inputLockedUntil = performance.now() + 260;
+      await prepareImage(nextSrc);
       clearState();
       canvas.classList.add("is-rare");
       frame.className = "still-frame reward-full";
-      image.src = randomFrom(rarePool);
       fragment.textContent = randomFrom(["peek","mirror","back","pink","ash"]);
+      image.src = nextSrc;
       lockedUntil = performance.now() + 1050;
     };
 
-    const showUltra = () => {
+    const showUltra = async () => {
+      const nextSrc = randomFrom(ultraRarePool);
+      inputLockedUntil = performance.now() + 260;
+      await prepareImage(nextSrc);
       clearState();
       canvas.classList.add("is-ultra");
       frame.className = "still-frame reward-full";
-      image.src = randomFrom(ultraRarePool);
+      image.src = nextSrc;
       lockedUntil = performance.now() + 1400;
     };
 
@@ -270,7 +299,7 @@
 
       if (now < lockedUntil || now < inputLockedUntil) return;
 
-      inputLockedUntil = now + 180;
+      inputLockedUntil = now + 260;
       clicks += 1;
       counter.textContent = clicks;
       nextState();
