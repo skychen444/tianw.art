@@ -41,9 +41,9 @@
   font-weight: 400;
 }
 
-.still-here-page .still-meta {
+.still-meta {
   margin-top: clamp(22px, 1.7vw, 30px);
-  font-size: 22px !important;
+  font-size: 22px;
   line-height: 1.5;
 }
 
@@ -341,9 +341,9 @@
     font-weight: 600;
   }
 
-  .still-here-page .still-meta {
+  .still-meta {
     margin: 18px 0 0;
-    font-size: 11px !important;
+    font-size: 11px;
     line-height: 1.4;
   }
 
