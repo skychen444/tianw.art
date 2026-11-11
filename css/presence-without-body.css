@@ -73,7 +73,7 @@
     radial-gradient(
       circle at calc(24% + var(--activity) * .35%),
       calc(58% - var(--activity) * .12%),
-      rgba(255,255,255,calc(.025 + var(--activity) * .0014)) 0 1px,
+      rgba(255,255,255,calc(.045 + var(--activity) * .0022)) 0 1.4px,
       transparent 2px
     ),
     #0a0a0a;
@@ -82,7 +82,7 @@
 .signal-field-grid {
   position: absolute;
   inset: 0;
-  opacity: calc(.12 + var(--activity) * .004);
+  opacity: calc(.18 + var(--activity) * .0055);
   background-image:
     linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
@@ -97,10 +97,10 @@
   position: absolute;
   width: calc(90px + var(--activity) * 2.8px);
   height: calc(90px + var(--activity) * 2.8px);
-  border: 1px solid rgba(255,255,255,calc(.12 + var(--activity) * .005));
+  border: 1px solid rgba(255,255,255,calc(.20 + var(--activity) * .0065));
   border-radius: 50%;
   filter: blur(calc(12px - var(--activity) * .07px));
-  opacity: calc(.18 + var(--activity) * .006);
+  opacity: calc(.26 + var(--activity) * .007);
   pointer-events: none;
 }
 
@@ -395,4 +395,19 @@
   .presence-links {
     margin-top: 64px;
   }
+}
+
+
+.signal-field {
+  box-shadow:
+    inset 0 0 calc(18px + var(--activity) * .35px)
+    rgba(255,255,255,calc(.012 + var(--activity) * .0007));
+}
+
+.presence-state-grid-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.presence-state-grid-single figure {
+  width: min(72%, 980px);
 }
