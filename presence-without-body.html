@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Presence without Body — Tian W.</title>
+  <link rel="stylesheet" href="style.css?v=20261111-core">
+  <link rel="stylesheet" href="css/presence-without-body.css?v=20261111-v1">
+</head>
+
+<body class="dark-page presence-page">
+  <header class="site-header">
+    <a class="site-name" href="index.html">Tian W.</a>
+    <nav class="site-nav">
+      <a class="active" href="works.html">Works</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main class="page presence-main">
+
+    <section class="presence-hero">
+      <div class="presence-hero-copy">
+        <h1>Presence<br>without Body</h1>
+        <div class="presence-meta">
+          2026<br>
+          Physical computing installation
+        </div>
+      </div>
+
+      <img
+        class="presence-cover"
+        src="assets/presence-without-body/cover.jpg"
+        alt="Presence without Body prototype showing the PRESENCE state on its OLED display"
+      >
+    </section>
+
+    <section class="signal-field" id="signalField" aria-label="Web interpretation of the work's sensing states">
+      <div class="signal-field-grid" aria-hidden="true"></div>
+
+      <div class="signal-readout">
+        <span class="signal-label">WEB SIGNAL ACTIVITY</span>
+        <strong id="signalState">LOW ACTIVITY</strong>
+        <span id="signalValue">12</span>
+      </div>
+
+      <p class="signal-note">
+        A web interpretation of the work's threshold logic — responding to movement and scrolling, not Bluetooth data.
+      </p>
+    </section>
+
+    <section class="presence-statement">
+      <p>
+        This project explores how a system constructs human presence without ever perceiving the body itself, responding only to the unstable wireless traces that surround it.
+      </p>
+    </section>
+
+    <section class="presence-concept">
+      <div class="section-label">Concept</div>
+      <div class="presence-copy">
+        <p>
+          Presence without Body began with a question: if an artwork is itself a system, how does that system perceive a human?
+        </p>
+        <p>
+          Instead of using cameras or biometric recognition, the work scans nearby Bluetooth Low Energy signals from personal devices. A person is not understood through visual appearance, but through weak and unstable traces emitted by phones, wireless earphones, smartwatches and other devices.
+        </p>
+        <p>
+          The system does not identify a complete person. It constructs presence indirectly, through fragments.
+        </p>
+      </div>
+    </section>
+
+    <section class="presence-video-section">
+      <video
+        class="presence-video"
+        controls
+        playsinline
+        preload="metadata"
+        poster="assets/presence-without-body/cover.jpg"
+      >
+        <source src="assets/presence-without-body/presence-without-body.mp4" type="video/mp4">
+      </video>
+    </section>
+
+    <section class="presence-states">
+      <div class="presence-states-copy">
+        <div class="section-label">States</div>
+        <p>
+          BLE activity is unstable and cannot be read as a precise count of people. The prototype therefore uses simplified threshold-based states, allowing uncertainty to remain visible rather than eliminating it.
+        </p>
+      </div>
+
+      <div class="presence-state-grid">
+        <figure>
+          <img
+            src="assets/presence-without-body/cover.jpg"
+            alt="OLED display showing PRESENCE"
+            loading="lazy"
+          >
+          <figcaption>PRESENCE</figcaption>
+        </figure>
+
+        <figure>
+          <img
+            src="assets/presence-without-body/saturated.jpg"
+            alt="OLED display showing SATURATED"
+            loading="lazy"
+          >
+          <figcaption>SATURATED</figcaption>
+        </figure>
+      </div>
+
+      <figure class="presence-detail">
+        <img
+          src="assets/presence-without-body/presence-detail.jpg"
+          alt="Detail view of the Presence without Body physical computing prototype"
+          loading="lazy"
+        >
+      </figure>
+    </section>
+
+    <section class="presence-system">
+      <div class="section-label">System</div>
+      <p>
+        Raspberry Pi Pico W · Bluetooth Low Energy scanning · OLED display · servo motor · threshold-based logic
+      </p>
+    </section>
+
+    <div class="presence-links">
+      <a class="back-link" href="works.html">← Works</a>
+    </div>
+
+  </main>
+
+  <script>
+    (() => {
+      const field = document.getElementById("signalField");
+      const stateEl = document.getElementById("signalState");
+      const valueEl = document.getElementById("signalValue");
+      if (!field || !stateEl || !valueEl) return;
+
+      let activity = 12;
+      let lastPointer = performance.now();
+      let lastScroll = window.scrollY;
+      let raf = 0;
+
+      const classify = value => {
+        if (value < 25) return "LOW ACTIVITY";
+        if (value < 48) return "UNSTABLE";
+        if (value < 76) return "PRESENCE";
+        return "SATURATED";
+      };
+
+      const render = () => {
+        activity += (12 - activity) * 0.018;
+        activity = Math.max(0, Math.min(100, activity));
+
+        field.style.setProperty("--activity", activity.toFixed(2));
+        stateEl.textContent = classify(activity);
+        valueEl.textContent = Math.round(activity);
+
+        raf = requestAnimationFrame(render);
+      };
+
+      const addActivity = amount => {
+        activity = Math.min(100, activity + amount);
+      };
+
+      field.addEventListener("pointermove", event => {
+        const now = performance.now();
+        const elapsed = Math.max(16, now - lastPointer);
+        lastPointer = now;
+
+        const speed = Math.min(12, Math.hypot(event.movementX || 0, event.movementY || 0) / elapsed * 18);
+        addActivity(1.2 + speed);
+      }, { passive: true });
+
+      field.addEventListener("pointerdown", () => addActivity(16), { passive: true });
+
+      window.addEventListener("scroll", () => {
+        const delta = Math.abs(window.scrollY - lastScroll);
+        lastScroll = window.scrollY;
+
+        const rect = field.getBoundingClientRect();
+        if (rect.bottom > 0 && rect.top < window.innerHeight) {
+          addActivity(Math.min(10, delta * 0.08));
+        }
+      }, { passive: true });
+
+      raf = requestAnimationFrame(render);
+
+      window.addEventListener("pagehide", () => cancelAnimationFrame(raf), { once: true });
+    })();
+  </script>
+</body>
+</html>
