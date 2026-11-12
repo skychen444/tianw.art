@@ -67,9 +67,10 @@
 /* STATEMENT — one sentence, with the second clause drifting below the horizon */
 .approximate-statement {
   position: relative;
-  width: min(90%, 1600px);
+  width: var(--content-width);
+  max-width: none;
   margin-left: auto;
-  margin-right: 0;
+  margin-right: auto;
   margin-bottom: clamp(140px, 16vh, 200px);
 }
 
@@ -87,11 +88,14 @@
 .approximate-statement-line {
   position: relative;
   z-index: 1;
+  width: 100%;
+  max-width: 100%;
   margin: 0;
   font-size: clamp(32px, 3.2vw, 54px);
   line-height: 1.06;
   letter-spacing: -.035em;
   white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .statement-first,
@@ -308,6 +312,7 @@
 
   .approximate-statement {
     width: 100%;
+    max-width: 100%;
     margin-left: 0;
     margin-right: 0;
   }
@@ -402,7 +407,7 @@
 .horizon-guide span {
   position: absolute;
   right: 0;
-  top: -18px;
+  top: 7px;
   font-size: 9px;
   line-height: 1;
   letter-spacing: .08em;
