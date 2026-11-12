@@ -216,7 +216,7 @@
 }
 
 .approximate-geometry figure {
-  width: 82%;
+  width: 74%;
   margin-left: auto;
   margin-right: var(--drift-medium);
 }
@@ -281,7 +281,7 @@
   }
 
   .approximate-geometry figure {
-    width: 84%;
+    width: 76%;
   }
 }
 
