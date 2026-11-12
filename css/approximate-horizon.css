@@ -155,6 +155,7 @@
 .approximate-process-pair figure:first-child {
   width: 100%;
   justify-self: start;
+  margin-top: 8px;
 }
 
 .approximate-process-pair figure:last-child {
@@ -406,7 +407,7 @@
   line-height: 1;
   letter-spacing: .08em;
   text-transform: uppercase;
-  opacity: .34;
+  opacity: .46;
   white-space: nowrap;
 }
 
