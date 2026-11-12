@@ -112,8 +112,8 @@
    Both images approach the same horizon, but do not quite meet it. */
 .approximate-process-pair {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: clamp(18px, 1.8vw, 34px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+  gap: clamp(24px, 2.8vw, 52px);
   align-items: start;
   margin-bottom: clamp(150px, 17vh, 210px);
 }
@@ -123,14 +123,11 @@
 }
 
 .approximate-process-pair figure:first-child {
-  grid-column: 1 / span 4;
-  width: 50%;
-  min-width: 220px;
+  width: 100%;
   justify-self: start;
 }
 
 .approximate-process-pair figure:last-child {
-  grid-column: 5 / -1;
   width: 100%;
   margin-top: var(--drift-medium);
 }
@@ -224,14 +221,8 @@
     gap: 56px;
   }
 
-  .approximate-process-pair figure:first-child {
-    grid-column: 1 / span 5;
-    width: 52%;
-    min-width: 190px;
-  }
-
-  .approximate-process-pair figure:last-child {
-    grid-column: 5 / -1;
+  .approximate-process-pair {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
   }
 
   .approximate-geometry figure {
