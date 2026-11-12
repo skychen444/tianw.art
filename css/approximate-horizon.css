@@ -1,6 +1,5 @@
 .approximate-page {
-  --page-max: 1680px;
-  --content-width: min(88vw, var(--page-max));
+  --content-width: 88%;
   --text-width: 760px;
   --paper: #f4f3ef;
   --drift-small: 10px;
@@ -10,9 +9,13 @@
 }
 
 .approximate-main {
-  width: 100%;
+  width: auto;
+  max-width: none;
   margin: 0;
-  padding: clamp(110px, 8vw, 150px) 0 clamp(80px, 8vh, 120px);
+  padding:
+    clamp(110px, 8vw, 150px)
+    clamp(40px, 4.4vw, 92px)
+    clamp(80px, 8vh, 120px);
   overflow-x: hidden;
 }
 
@@ -192,7 +195,7 @@
 
 @media (min-width: 1800px) {
   .approximate-page {
-    --content-width: min(92vw, var(--page-max));
+    --content-width: 92%;
   }
 
   .approximate-system p {
@@ -232,11 +235,14 @@
 
 @media (max-width: 760px) {
   .approximate-page {
-    --content-width: calc(100vw - 40px);
+    --content-width: 100%;
   }
 
   .approximate-main {
-    padding: 84px 0 64px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 84px 20px 64px;
   }
 
   .approximate-hero {
