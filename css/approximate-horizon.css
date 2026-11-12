@@ -3,6 +3,8 @@
   --content-width: min(88vw, var(--page-max));
   --text-width: 760px;
   --paper: #f4f3ef;
+  --drift-small: 10px;
+  --drift-medium: 16px;
   background: #101010;
   color: var(--paper);
 }
@@ -27,6 +29,7 @@
   margin-right: auto;
 }
 
+/* HERO — the landscape appears first as a complete image */
 .approximate-hero {
   margin-top: clamp(42px, 4vw, 70px);
   margin-bottom: clamp(140px, 16vh, 200px);
@@ -58,18 +61,20 @@
   margin: clamp(64px, 7vh, 96px) 0 0 auto;
 }
 
+/* STATEMENT — nearly shares the hero image axis, but not exactly */
 .approximate-statement {
   margin-bottom: clamp(140px, 16vh, 200px);
 }
 
 .approximate-statement p {
   width: min(66%, 900px);
-  margin: 0 0 0 auto;
+  margin: 0 var(--drift-small) 0 auto;
   font-size: clamp(32px, 3.2vw, 54px);
   line-height: 1.06;
   letter-spacing: -.035em;
 }
 
+/* TEXT SYSTEM */
 .approximate-concept,
 .approximate-geometry-copy,
 .approximate-system {
@@ -103,17 +108,31 @@
   line-height: 1.36;
 }
 
+/* SOURCE → PROCESSING
+   Both images approach the same horizon, but do not quite meet it. */
 .approximate-process-pair {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(24px, 2.6vw, 48px);
-  align-items: end;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(18px, 1.8vw, 34px);
+  align-items: start;
   margin-bottom: clamp(150px, 17vh, 210px);
 }
 
-.approximate-process-pair figure,
-.approximate-geometry figure {
+.approximate-process-pair figure {
   margin: 0;
+}
+
+.approximate-process-pair figure:first-child {
+  grid-column: 1 / span 4;
+  width: 50%;
+  min-width: 220px;
+  justify-self: start;
+}
+
+.approximate-process-pair figure:last-child {
+  grid-column: 5 / -1;
+  width: 100%;
+  margin-top: var(--drift-medium);
 }
 
 .approximate-process-pair img,
@@ -130,6 +149,7 @@
   opacity: .58;
 }
 
+/* MOVING IMAGE */
 .approximate-video-section {
   margin-bottom: clamp(150px, 17vh, 210px);
 }
@@ -141,6 +161,7 @@
   background: #000;
 }
 
+/* RECONSTRUCTION — larger than the source and slightly displaced */
 .approximate-geometry {
   margin-bottom: clamp(150px, 17vh, 210px);
 }
@@ -150,10 +171,12 @@
 }
 
 .approximate-geometry figure {
-  width: 80%;
+  width: 82%;
   margin-left: auto;
+  margin-right: var(--drift-medium);
 }
 
+/* SYSTEM */
 .approximate-system {
   padding-top: 28px;
   border-top: 1px solid rgba(255,255,255,.22);
@@ -180,9 +203,14 @@
   }
 }
 
+/* Laptop: preserve the same composition, reduce the drift */
 @media (max-width: 1100px) and (min-width: 761px) {
-  .approximate-cover,
-  .approximate-geometry figure {
+  .approximate-page {
+    --drift-small: 6px;
+    --drift-medium: 10px;
+  }
+
+  .approximate-cover {
     width: 84%;
   }
 
@@ -194,6 +222,20 @@
   .approximate-geometry-copy,
   .approximate-system {
     gap: 56px;
+  }
+
+  .approximate-process-pair figure:first-child {
+    grid-column: 1 / span 5;
+    width: 52%;
+    min-width: 190px;
+  }
+
+  .approximate-process-pair figure:last-child {
+    grid-column: 5 / -1;
+  }
+
+  .approximate-geometry figure {
+    width: 84%;
   }
 }
 
@@ -263,8 +305,18 @@
   }
 
   .approximate-process-pair {
-    grid-template-columns: 1fr;
-    gap: 34px;
+    display: block;
+  }
+
+  .approximate-process-pair figure:first-child {
+    width: 50%;
+    min-width: 0;
+    margin: 0 0 34px;
+  }
+
+  .approximate-process-pair figure:last-child {
+    width: 100%;
+    margin-top: 0;
   }
 
   .approximate-geometry-copy {
@@ -273,7 +325,7 @@
 
   .approximate-geometry figure {
     width: 100%;
-    margin-left: 0;
+    margin: 0;
   }
 
   .approximate-system {
