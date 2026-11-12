@@ -243,6 +243,12 @@
     --content-width: 92%;
   }
 
+  .approximate-statement {
+    width: min(72%, 1280px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .approximate-system p {
     font-size: 22px;
   }
