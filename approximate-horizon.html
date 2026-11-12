@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Approximate Horizon — Tian W.</title>
+  <link rel="stylesheet" href="style.css?v=20261113-core">
+  <link rel="stylesheet" href="css/approximate-horizon.css?v=20261113-v1">
+</head>
+
+<body class="dark-page approximate-page">
+  <header class="site-header">
+    <a class="site-name" href="index.html">Tian W.</a>
+    <nav class="site-nav">
+      <a class="active" href="works.html">Works</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main class="page approximate-main">
+
+    <section class="approximate-hero">
+      <div class="approximate-title-block">
+        <h1>Approximate<br>Horizon</h1>
+        <div class="approximate-meta">
+          2026<br>
+          Generative moving-image work
+        </div>
+      </div>
+
+      <img
+        class="approximate-cover"
+        src="assets/approximate-horizon/image-01.webp"
+        alt="Original landscape used in Approximate Horizon"
+      >
+    </section>
+
+    <section class="approximate-statement">
+      <p>
+        The system does not see the landscape.<br>
+        It reconstructs one from what it can measure.
+      </p>
+    </section>
+
+    <section class="approximate-concept">
+      <div class="section-label">Concept</div>
+      <div class="approximate-copy">
+        <p>
+          Approximate Horizon explores how a machine reconstructs a landscape through measurement rather than perception.
+        </p>
+        <p>
+          The work begins with a recorded landscape. By removing colour, the image is reduced to variations of light and darkness. What appears to the eye as sky, ground and distance becomes, for the system, a field of measurable brightness.
+        </p>
+        <p>
+          The machine does not recognise objects, depth or a horizon. It processes the landscape through numerical values and rebuilds it according to what can be extracted from the image.
+        </p>
+        <p>
+          The result is not a representation of the original landscape, but an approximation produced through computational logic.
+        </p>
+      </div>
+    </section>
+
+    <section class="approximate-process-pair" aria-label="Original and processed landscape">
+      <figure>
+        <img
+          src="assets/approximate-horizon/image-01.webp"
+          alt="Original landscape"
+          loading="lazy"
+        >
+        <figcaption>ORIGINAL</figcaption>
+      </figure>
+
+      <figure>
+        <img
+          src="assets/approximate-horizon/image-02.webp"
+          alt="Processed monochrome landscape"
+          loading="lazy"
+        >
+        <figcaption>PROCESSED</figcaption>
+      </figure>
+    </section>
+
+    <section class="approximate-video-section">
+      <video
+        class="approximate-video"
+        controls
+        playsinline
+        preload="metadata"
+        poster="assets/approximate-horizon/image-01.webp"
+      >
+        <source src="assets/approximate-horizon/approximate-horizon.mp4" type="video/mp4">
+      </video>
+    </section>
+
+    <section class="approximate-geometry">
+      <div class="approximate-geometry-copy">
+        <div class="section-label">Reconstruction</div>
+        <p>
+          Luminance values are translated into spatial variation, turning brightness into a reconstructed surface.
+        </p>
+      </div>
+
+      <figure>
+        <img
+          src="assets/approximate-horizon/image-03.webp"
+          alt="Geometry reconstruction generated from luminance values"
+          loading="lazy"
+        >
+      </figure>
+    </section>
+
+    <section class="approximate-system">
+      <div class="section-label">System</div>
+      <p>TouchDesigner · filming · luminance analysis · geometry reconstruction</p>
+    </section>
+
+    <div class="approximate-links">
+      <a class="back-link" href="works.html">← Works</a>
+    </div>
+
+  </main>
+
+  <script>
+    const header = document.querySelector('.site-header');
+    addEventListener('scroll', () => {
+      header.classList.toggle('header-hidden', scrollY > 70);
+    }, { passive: true });
+  </script>
+</body>
+</html>
