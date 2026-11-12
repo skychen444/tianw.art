@@ -57,7 +57,8 @@
 
 .approximate-cover {
   display: block;
-  width: 88%;
+  width: 72%;
+  max-width: 760px;
   height: auto;
   justify-self: end;
 }
