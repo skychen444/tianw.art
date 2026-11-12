@@ -64,32 +64,46 @@
   margin: clamp(64px, 7vh, 96px) 0 0 auto;
 }
 
-/* STATEMENT — nearly shares the hero image axis, but not exactly */
+/* STATEMENT — one sentence, with the second clause drifting below the horizon */
 .approximate-statement {
+  position: relative;
+  width: min(90%, 1600px);
+  margin-left: auto;
+  margin-right: 0;
   margin-bottom: clamp(140px, 16vh, 200px);
 }
 
-.approximate-statement {
-  width: min(78%, 1180px);
-  margin-left: auto;
-  margin-right: 0;
+.approximate-statement::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1px solid rgba(255,255,255,.10);
+  transform: translateY(8px);
+  pointer-events: none;
 }
 
-.statement-line {
+.approximate-statement-line {
+  position: relative;
+  z-index: 1;
+  margin: 0;
   font-size: clamp(32px, 3.2vw, 54px);
   line-height: 1.06;
   letter-spacing: -.035em;
   white-space: nowrap;
 }
 
-.statement-horizon {
-  width: 100%;
-  margin: 8px 0 0;
-  border-top: 1px solid rgba(255,255,255,.10);
+.statement-first,
+.statement-second {
+  position: relative;
+  z-index: 1;
 }
 
-.statement-line-second {
-  margin-top: 10px;
+.statement-second {
+  display: inline-block;
+  margin-left: .24em;
+  transform: translateY(10px);
 }
 
 /* TEXT SYSTEM */
@@ -299,18 +313,19 @@
     margin-right: 0;
   }
 
-  .statement-line {
+  .approximate-statement::after {
+    display: none;
+  }
+
+  .approximate-statement-line {
     font-size: clamp(28px, 8.5vw, 38px);
     line-height: 1.04;
     white-space: normal;
   }
 
-  .statement-horizon {
-    margin-top: 7px;
-  }
-
-  .statement-line-second {
-    margin-top: 9px;
+  .statement-second {
+    margin-left: 0;
+    transform: none;
   }
 
   .approximate-concept,
