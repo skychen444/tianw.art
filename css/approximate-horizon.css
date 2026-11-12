@@ -341,3 +341,72 @@
     margin-top: 64px;
   }
 }
+
+
+/* ESTIMATED HORIZON
+   A faint reference line makes the controlled misalignment legible. */
+.horizon-section {
+  position: relative;
+}
+
+.horizon-guide {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 0;
+  border-top: 1px solid rgba(255,255,255,.11);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.horizon-guide span {
+  position: absolute;
+  right: 0;
+  top: -18px;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  opacity: .34;
+  white-space: nowrap;
+}
+
+.approximate-statement .horizon-guide {
+  top: 52%;
+}
+
+.horizon-guide-process {
+  top: 42%;
+}
+
+.horizon-guide-geometry {
+  top: 58%;
+}
+
+.approximate-statement p,
+.approximate-process-pair figure,
+.approximate-geometry-copy,
+.approximate-geometry figure {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 760px) {
+  .horizon-guide {
+    border-top-color: rgba(255,255,255,.08);
+  }
+
+  .horizon-guide span {
+    font-size: 8px;
+    opacity: .28;
+  }
+
+  .horizon-guide-process {
+    top: 36%;
+  }
+
+  .horizon-guide-geometry {
+    top: 62%;
+  }
+}
