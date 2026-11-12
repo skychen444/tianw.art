@@ -84,12 +84,12 @@
 
 .statement-horizon {
   width: 100%;
-  margin: clamp(18px, 1.7vw, 28px) 0 0;
-  border-top: 1px solid rgba(255,255,255,.11);
+  margin: 8px 0 0;
+  border-top: 1px solid rgba(255,255,255,.10);
 }
 
 .statement-line-second {
-  margin-top: calc(clamp(18px, 1.7vw, 28px) + 12px);
+  margin-top: 10px;
 }
 
 /* TEXT SYSTEM */
@@ -306,11 +306,11 @@
   }
 
   .statement-horizon {
-    margin-top: 16px;
+    margin-top: 7px;
   }
 
   .statement-line-second {
-    margin-top: 26px;
+    margin-top: 9px;
   }
 
   .approximate-concept,
