@@ -91,7 +91,7 @@
   font-size: clamp(32px, 3.2vw, 54px);
   line-height: 1.06;
   letter-spacing: -.035em;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .statement-first,
@@ -101,9 +101,7 @@
 }
 
 .statement-second {
-  display: inline-block;
-  margin-left: .24em;
-  transform: translateY(10px);
+  top: 10px;
 }
 
 /* TEXT SYSTEM */
@@ -324,8 +322,7 @@
   }
 
   .statement-second {
-    margin-left: 0;
-    transform: none;
+    top: 0;
   }
 
   .approximate-concept,
