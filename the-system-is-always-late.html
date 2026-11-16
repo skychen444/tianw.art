@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>The System Is Always Late — Tian W.</title>
+  <link rel="stylesheet" href="style.css?v=20261116-core">
+  <link rel="stylesheet" href="css/the-system-is-always-late.css?v=20261116-v1">
+</head>
+
+<body class="dark-page late-page">
+  <header class="site-header">
+    <a class="site-name" href="index.html">Tian W.</a>
+    <nav class="site-nav">
+      <a class="active" href="works.html">Works</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main class="page late-main">
+
+    <section class="late-hero">
+      <h1>The System<br>Is Always Late</h1>
+      <div class="late-meta">
+        2026<br>
+        Browser-based interactive work
+      </div>
+    </section>
+
+    <section class="late-live" aria-label="Web interpretation of the work's timing gap">
+      <div class="late-live-top">
+        <div class="late-system-copy">
+          <span>The System Is Always Late</span>
+          <span>Records: <b id="recordCount">500</b></span>
+          <span>OK records: <b id="okCount">468</b></span>
+          <span>Polling / reload interval: 2000 ms</span>
+          <span>Round-trip (latest): <b id="rttValue">45 ms</b></span>
+        </div>
+
+        <div class="late-age">
+          This “now” is already <strong id="ageTop">2122 ms</strong> old.
+        </div>
+      </div>
+
+      <div class="late-gap-panel">
+        <div class="late-gap-label">already <span id="ageSeconds">2.12 s</span> old</div>
+
+        <div class="late-gap-track" aria-hidden="true">
+          <span class="late-endpoint late-endpoint-api"></span>
+          <span class="late-gap-line"></span>
+          <span class="late-endpoint late-endpoint-local"></span>
+        </div>
+
+        <div class="late-now-labels">
+          <div>
+            <strong id="apiNow">--:--:--.---</strong>
+            <span>API NOW (ARRIVED)</span>
+          </div>
+          <div>
+            <strong id="localNow">--:--:--.---</strong>
+            <span>LOCAL NOW</span>
+          </div>
+        </div>
+
+        <p>Left is the received “now”. Right is your current “now”. The gap is unavoidable.</p>
+      </div>
+
+      <div class="late-rtt-panel">
+        <div class="late-rtt-copy">
+          <span>RTT (last 40 ok samples)</span>
+          <span>latest: <b id="rttLatest">45 ms</b></span>
+        </div>
+        <div class="late-bars" id="lateBars" aria-hidden="true"></div>
+      </div>
+
+      <span class="late-live-note">web interpretation of the original timing logic</span>
+    </section>
+
+    <section class="late-statement">
+      <p>This “now” is already <span id="statementAge">2122 ms</span> old.</p>
+    </section>
+
+    <section class="late-concept">
+      <div class="section-label">Concept</div>
+      <div class="late-copy">
+        <p>
+          The System Is Always Late compares an API-delivered “now” with the computer's current local time.
+        </p>
+        <p>
+          By the time the requested time arrives, it has already become old. The interface makes that delay visible as a measurable gap rather than treating it as a technical error to be hidden.
+        </p>
+        <p>
+          Round-trip time is recorded alongside the two timestamps, turning latency into evidence of an impossible present: the system can report “now”, but it can never deliver it without delay.
+        </p>
+      </div>
+    </section>
+
+    <section class="late-video-section">
+      <video class="late-video" controls playsinline preload="metadata">
+        <source src="assets/the-system-is-always-late/the-system-is-always-late.mp4" type="video/mp4">
+      </video>
+    </section>
+
+    <section class="late-documentation">
+      <div class="late-documentation-copy">
+        <div class="section-label">Original Interface</div>
+        <p>
+          The original interface records API responses, local time and round-trip measurements while keeping the temporal gap visible.
+        </p>
+      </div>
+
+      <img
+        src="assets/the-system-is-always-late/interface.png"
+        alt="Original interface of The System Is Always Late"
+        loading="lazy"
+      >
+    </section>
+
+    <section class="late-system">
+      <div class="section-label">System</div>
+      <p>Browser · time API · local system time · polling · round-trip time measurement</p>
+    </section>
+
+    <div class="late-links">
+      <a class="back-link" href="works.html">← Works</a>
+    </div>
+
+  </main>
+
+  <script>
+    (() => {
+      const header = document.querySelector('.site-header');
+      const apiNow = document.getElementById('apiNow');
+      const localNow = document.getElementById('localNow');
+      const ageTop = document.getElementById('ageTop');
+      const ageSeconds = document.getElementById('ageSeconds');
+      const statementAge = document.getElementById('statementAge');
+      const rttValue = document.getElementById('rttValue');
+      const rttLatest = document.getElementById('rttLatest');
+      const bars = document.getElementById('lateBars');
+      const recordCount = document.getElementById('recordCount');
+      const okCount = document.getElementById('okCount');
+
+      addEventListener('scroll', () => {
+        header.classList.toggle('header-hidden', scrollY > 70);
+      }, { passive: true });
+
+      let age = 2122;
+      let records = 500;
+      let ok = 468;
+      let rtt = 45;
+      let lastPoll = performance.now();
+
+      const formatTime = date => {
+        const pad = (v, n = 2) => String(v).padStart(n, '0');
+        return [
+          pad(date.getHours()),
+          pad(date.getMinutes()),
+          pad(date.getSeconds())
+        ].join(':') + '.' + pad(date.getMilliseconds(), 3);
+      };
+
+      const sampleBars = Array.from({ length: 40 }, (_, i) => {
+        const el = document.createElement('i');
+        const base = 28 + ((i * 17) % 24);
+        el.style.setProperty('--h', base + '%');
+        bars.appendChild(el);
+        return el;
+      });
+
+      const poll = () => {
+        const jitter = Math.round((Math.random() - .5) * 260);
+        age = Math.max(1250, 2122 + jitter);
+        rtt = Math.max(20, Math.round(45 + (Math.random() - .5) * 24));
+        records += 1;
+        if (Math.random() > .07) ok += 1;
+
+        recordCount.textContent = records;
+        okCount.textContent = ok;
+        rttValue.textContent = rtt + ' ms';
+        rttLatest.textContent = rtt + ' ms';
+
+        sampleBars.shift();
+        const el = document.createElement('i');
+        const outlier = Math.random() > .94;
+        const height = outlier ? 92 : Math.max(24, Math.min(58, 31 + (rtt - 35) * .9));
+        el.style.setProperty('--h', height + '%');
+        bars.appendChild(el);
+        sampleBars.push(el);
+      };
+
+      const render = now => {
+        if (now - lastPoll >= 2000) {
+          lastPoll = now;
+          poll();
+        }
+
+        const local = new Date();
+        const api = new Date(local.getTime() - age);
+
+        apiNow.textContent = formatTime(api);
+        localNow.textContent = formatTime(local);
+        ageTop.textContent = age + ' ms';
+        ageSeconds.textContent = (age / 1000).toFixed(2) + ' s';
+        statementAge.textContent = age + ' ms';
+
+        requestAnimationFrame(render);
+      };
+
+      requestAnimationFrame(render);
+    })();
+  </script>
+</body>
+</html>
