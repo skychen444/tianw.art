@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>The System Is Always Late — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261116-core">
-  <link rel="stylesheet" href="css/the-system-is-always-late.css?v=20261116-v1">
+  <link rel="stylesheet" href="css/the-system-is-always-late.css?v=20261116-v2">
 </head>
 
 <body class="dark-page late-page">
@@ -96,25 +96,10 @@
     </section>
 
     <section class="late-video-section" id="lateVideoSection">
+      <div class="late-video-label">Original work / documentation</div>
       <video class="late-video" controls playsinline preload="metadata" id="lateVideo">
         <source src="assets/the-system-is-always-late/the-system-is-always-late-web.mp4" type="video/mp4">
       </video>
-    </section>
-
-    <section class="late-documentation" id="lateDocumentation">
-      <div class="late-documentation-copy">
-        <div class="section-label">Original Interface</div>
-        <p>
-          The original interface records API responses, local time and round-trip measurements while keeping the temporal gap visible.
-        </p>
-      </div>
-
-      <img
-        src="assets/the-system-is-always-late/interface.webp"
-        alt="Original interface of The System Is Always Late"
-        loading="lazy"
-        id="lateInterface"
-      >
     </section>
 
     <section class="late-system">
@@ -210,18 +195,9 @@
 
       const video = document.getElementById('lateVideo');
       const videoSection = document.getElementById('lateVideoSection');
-      const interfaceImage = document.getElementById('lateInterface');
-      const documentation = document.getElementById('lateDocumentation');
-
       if (video && videoSection) {
         video.addEventListener('error', () => {
           videoSection.hidden = true;
-        }, { once: true });
-      }
-
-      if (interfaceImage && documentation) {
-        interfaceImage.addEventListener('error', () => {
-          documentation.hidden = true;
         }, { once: true });
       }
 
