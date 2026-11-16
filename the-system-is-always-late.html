@@ -95,13 +95,13 @@
       </div>
     </section>
 
-    <section class="late-video-section">
-      <video class="late-video" controls playsinline preload="metadata">
+    <section class="late-video-section" id="lateVideoSection">
+      <video class="late-video" controls playsinline preload="metadata" id="lateVideo">
         <source src="assets/the-system-is-always-late/the-system-is-always-late.mp4" type="video/mp4">
       </video>
     </section>
 
-    <section class="late-documentation">
+    <section class="late-documentation" id="lateDocumentation">
       <div class="late-documentation-copy">
         <div class="section-label">Original Interface</div>
         <p>
@@ -113,6 +113,7 @@
         src="assets/the-system-is-always-late/interface.png"
         alt="Original interface of The System Is Always Late"
         loading="lazy"
+        id="lateInterface"
       >
     </section>
 
@@ -206,6 +207,23 @@
 
         requestAnimationFrame(render);
       };
+
+      const video = document.getElementById('lateVideo');
+      const videoSection = document.getElementById('lateVideoSection');
+      const interfaceImage = document.getElementById('lateInterface');
+      const documentation = document.getElementById('lateDocumentation');
+
+      if (video && videoSection) {
+        video.addEventListener('error', () => {
+          videoSection.hidden = true;
+        }, { once: true });
+      }
+
+      if (interfaceImage && documentation) {
+        interfaceImage.addEventListener('error', () => {
+          documentation.hidden = true;
+        }, { once: true });
+      }
 
       requestAnimationFrame(render);
     })();
