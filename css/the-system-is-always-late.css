@@ -25,7 +25,6 @@
 .late-statement,
 .late-concept,
 .late-video-section,
-.late-documentation,
 .late-system,
 .late-links {
   width: var(--content-width);
@@ -239,7 +238,6 @@
 }
 
 .late-concept,
-.late-documentation-copy,
 .late-system {
   display: grid;
   grid-template-columns: minmax(140px,.42fr) minmax(0,1fr);
@@ -263,15 +261,26 @@
   max-width: var(--text-width);
 }
 
-.late-copy p,
-.late-documentation-copy p {
+.late-copy p {
   margin: 0 0 20px;
   font-size: clamp(18px,1.55vw,27px);
   line-height: 1.36;
 }
 
 .late-video-section {
+  width: min(78%, 1180px);
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: clamp(150px,17vh,210px);
+}
+
+.late-video-label {
+  margin-bottom: 12px;
+  font-size: 10px;
+  line-height: 1.3;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  opacity: .48;
 }
 
 .late-video {
@@ -279,24 +288,6 @@
   width: 100%;
   height: auto;
   background: #000;
-}
-
-.late-documentation {
-  margin-bottom: clamp(150px,17vh,210px);
-}
-
-.late-documentation-copy {
-  margin-bottom: clamp(46px,6vh,72px);
-}
-
-.late-documentation-copy p {
-  max-width: var(--text-width);
-}
-
-.late-documentation img {
-  display: block;
-  width: 100%;
-  height: auto;
 }
 
 .late-system {
@@ -397,7 +388,6 @@
   }
 
   .late-concept,
-  .late-documentation-copy,
   .late-system {
     display: block;
   }
@@ -407,14 +397,18 @@
     font-size: 10px;
   }
 
-  .late-copy p,
-  .late-documentation-copy p {
+  .late-copy p {
     font-size: 15px;
     line-height: 1.5;
   }
 
-  .late-documentation-copy {
-    margin-bottom: 34px;
+  .late-video-section {
+    width: 100%;
+  }
+
+  .late-video-label {
+    margin-bottom: 10px;
+    font-size: 9px;
   }
 
   .late-system {
