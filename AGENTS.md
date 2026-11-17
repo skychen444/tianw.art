@@ -10,7 +10,7 @@ This repository is the official artist portfolio of Tian W. Treat it as an autho
 - Confirm actual repository structure before editing; do not assume a page, asset, or build command exists.
 
 ## Visual direction
-- Maintain the minimal, predominantly black-and-white aesthetic and generous negative space.
+- Keep the site-wide navigation and editorial layout restrained and coherent, but do not mandate a black-and-white palette. Color, backgrounds, media, and visual treatments may vary by artwork and should follow each work's artistic concept. Preserve intentional negative space where appropriate; do not recolor or desaturate artwork assets without explicit approval.
 - Preserve the established typography, hierarchy, margins, alignment, and page-specific composition. The artist's desired font is Neue Haas Grotesk Display Pro; do not silently substitute fonts or change licensing/hosting arrangements. Check what the current code actually loads before making typography claims.
 - Desktop and mobile layouts are both intentional; do not treat mobile as a scaled-down desktop.
 - Preserve the homepage's two-scene progression, “What for?” and “Just to make things worse.” composition, rewriting marks, and Works/About navigation behavior.
