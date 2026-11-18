@@ -85,8 +85,8 @@
 }
 
 .threshold-copy {
-  width: min(1180px,88%);
-  margin: 0 auto;
+  width: min(1040px,72%);
+  margin: 0 6% 0 auto;
   text-align: left;
   font-size: clamp(28px,3vw,50px);
   line-height: .98;
@@ -381,6 +381,7 @@
 
   .threshold-copy {
     width: 100%;
+    margin: 0;
     font-size: clamp(25px,7.4vw,34px);
     line-height: 1.05;
   }
