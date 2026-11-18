@@ -120,7 +120,11 @@
   transform: translateY(-50%);
 }
 
-.threshold-row-two,
+.threshold-row-two {
+  grid-template-columns: minmax(90px,1fr) max-content clamp(120px,18vw,320px);
+  gap: clamp(18px,1.6vw,28px);
+}
+
 .threshold-row-three {
   grid-template-columns: minmax(90px,1fr) max-content;
   gap: clamp(18px,1.6vw,28px);
@@ -408,7 +412,13 @@
     width: 44px;
   }
 
-  .threshold-row-two,
+  .threshold-row-two {
+    grid-template-columns: minmax(42px,1fr) max-content 44px;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+  }
+
   .threshold-row-three {
     grid-template-columns: minmax(42px,1fr) max-content;
     gap: 12px;
