@@ -85,8 +85,10 @@
 }
 
 .threshold-copy {
-  width: min(1040px,72%);
-  margin: 0 6% 0 auto;
+  position: relative;
+  width: fit-content;
+  max-width: 72%;
+  margin: 0 42% 0 auto;
   text-align: left;
   font-size: clamp(28px,3vw,50px);
   line-height: .98;
@@ -96,6 +98,7 @@
 .threshold-row {
   display: grid;
   align-items: center;
+  width: 100%;
 }
 
 .threshold-row i {
@@ -105,17 +108,22 @@
 }
 
 .threshold-row-one {
-  grid-template-columns: max-content clamp(180px,28vw,520px);
-  gap: clamp(18px,1.6vw,28px);
+  position: relative;
+  display: block;
+}
+
+.threshold-row-one i {
+  position: absolute;
+  left: calc(100% + clamp(18px,1.6vw,28px));
+  top: 50%;
+  width: clamp(180px,28vw,520px);
+  transform: translateY(-50%);
 }
 
 .threshold-row-two,
 .threshold-row-three {
   grid-template-columns: minmax(90px,1fr) max-content;
   gap: clamp(18px,1.6vw,28px);
-  width: max-content;
-  min-width: 100%;
-  justify-content: end;
 }
 
 .threshold-row-two span,
@@ -388,15 +396,16 @@
   }
 
   .threshold-copy {
-    width: 100%;
-    margin: 0;
+    width: fit-content;
+    max-width: calc(100% - 56px);
+    margin: 0 56px 0 auto;
     font-size: clamp(25px,7.4vw,34px);
     line-height: 1.05;
   }
 
-  .threshold-row-one {
-    grid-template-columns: auto minmax(42px,1fr);
-    gap: 12px;
+  .threshold-row-one i {
+    left: calc(100% + 12px);
+    width: 44px;
   }
 
   .threshold-row-two,
