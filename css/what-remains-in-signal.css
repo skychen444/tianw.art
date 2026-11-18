@@ -79,39 +79,42 @@
   transform: scale(1.06);
 }
 
-/* THRESHOLD — statement behaves as a detection boundary rather than a quote block. */
+/* THRESHOLD — the sentence itself carries the detection boundary. */
 .signal-threshold {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(120px,.38fr) minmax(0,1fr);
-  gap: clamp(40px,6vw,96px);
-  align-items: center;
   margin-bottom: clamp(150px,18vh,220px);
 }
 
-.threshold-line {
-  height: 1px;
-  background: rgba(255,255,255,.28);
-}
-
-.signal-threshold p {
-  margin: 0;
-  max-width: 900px;
+.threshold-copy {
+  width: min(1080px,88%);
+  margin: 0 auto;
   font-size: clamp(28px,3vw,50px);
   line-height: 1.04;
   letter-spacing: -.035em;
 }
 
-.signal-threshold p span {
+.threshold-row {
   display: block;
 }
 
-.signal-threshold p span:nth-child(2) {
-  margin-left: 10%;
+.threshold-row-one {
+  display: grid;
+  grid-template-columns: max-content minmax(80px,1fr);
+  gap: clamp(18px,2vw,34px);
+  align-items: center;
 }
 
-.signal-threshold p span:nth-child(3) {
-  margin-left: 24%;
+.threshold-row-one i {
+  display: block;
+  height: 1px;
+  background: rgba(255,255,255,.30);
+}
+
+.threshold-row-two {
+  margin-left: 29%;
+}
+
+.threshold-row-three {
+  margin-top: 2px;
 }
 
 /* CONCEPT — body → trace → field is the page's transformation rule. */
@@ -374,23 +377,23 @@
     margin-bottom: 90px;
   }
 
-  .signal-threshold {
-    display: block;
-  }
-
-  .threshold-line {
-    width: 38%;
-    margin-bottom: 24px;
-  }
-
-  .signal-threshold p {
+  .threshold-copy {
+    width: 100%;
     font-size: clamp(25px,7.4vw,34px);
     line-height: 1.05;
   }
 
-  .signal-threshold p span:nth-child(2),
-  .signal-threshold p span:nth-child(3) {
-    margin-left: 0;
+  .threshold-row-one {
+    grid-template-columns: auto minmax(42px,1fr);
+    gap: 12px;
+  }
+
+  .threshold-row-two {
+    margin-left: 18%;
+  }
+
+  .threshold-row-three {
+    margin-top: 4px;
   }
 
   .signal-concept > .section-label {
