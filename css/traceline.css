@@ -24,7 +24,7 @@
   align-items: start;
   min-height: clamp(560px,70vh,780px);
   margin-top: clamp(42px,4vw,70px);
-  margin-bottom: clamp(40px,5vh,64px);
+  margin-bottom: 0;
 }
 
 .trace-intro {
@@ -64,8 +64,11 @@
 
 .trace-flow {
   position: relative;
-  height: 150svh;
-  margin: 0 calc(clamp(40px, 4.4vw, 92px) * -1);
+  height: 175svh;
+  margin:
+    clamp(-150px,-12vh,-96px)
+    calc(clamp(40px, 4.4vw, 92px) * -1)
+    0;
 }
 
 .trace-flow-inner {
@@ -88,7 +91,7 @@
   position: absolute;
   z-index: 2;
   right: max(6%, calc((100vw - 1680px) / 2));
-  top: 10vh;
+  top: 12vh;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -103,10 +106,10 @@
   position: absolute;
   z-index: 2;
   left: max(6%, calc((100vw - 1680px) / 2));
-  bottom: 10vh;
+  bottom: 18vh;
   width: min(66%, 1120px);
-  opacity: clamp(0, calc((var(--trace-progress) - .72) * 5), 1);
-  transform: translateY(calc((1 - var(--trace-progress)) * 16px));
+  opacity: clamp(0, calc((var(--trace-progress) - .56) * 6), 1);
+  transform: translateY(calc((1 - var(--trace-progress)) * 10px));
 }
 
 .trace-statement {
@@ -284,7 +287,7 @@
     display: block;
     min-height: 0;
     margin-top: 36px;
-    margin-bottom: 42px;
+    margin-bottom: 0;
   }
 
   .trace-intro {
@@ -311,7 +314,8 @@
   }
 
   .trace-flow {
-    height: 135svh;
+    height: 155svh;
+    margin-top: -52px;
     margin-left: -20px;
     margin-right: -20px;
   }
@@ -325,7 +329,7 @@
   .trace-statement-block {
     left: 20px;
     right: 20px;
-    bottom: 10vh;
+    bottom: 16vh;
     width: auto;
   }
 
@@ -352,7 +356,7 @@
   }
 
   .trace-concept {
-    margin-top: 48px;
+    margin-top: 20px;
     margin-bottom: 90px;
   }
 
