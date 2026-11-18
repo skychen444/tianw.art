@@ -5,7 +5,7 @@
   --trace-progress: 0;
   --trace-gap: clamp(190px, 21vh, 260px);
   --trace-overlap: clamp(480px, 52vh, 560px);
-  --trace-statement-space: 190px;
+  --trace-statement-space: 300px;
   background: #101010;
   color: var(--paper);
 }
@@ -289,7 +289,7 @@
     --content-width: 100%;
     --trace-gap: 110px;
     --trace-overlap: 46vw;
-    --trace-statement-space: 150px;
+    --trace-statement-space: 220px;
   }
 
   .traceline-main {
