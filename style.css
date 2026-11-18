@@ -82,6 +82,7 @@
 
   .works-page .page-title{
     margin-top:0;
+    margin-left:clamp(120px,13.5vw,250px);
   }
 }
 
