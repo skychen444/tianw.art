@@ -67,7 +67,7 @@
 
 .trace-flow {
   position: relative;
-  height: calc(var(--trace-overlap) + var(--trace-gap) + var(--trace-statement-space) + var(--trace-gap));
+  height: calc(200svh + var(--trace-overlap));
   margin:
     calc(var(--trace-overlap) * -1)
     calc(clamp(40px, 4.4vw, 92px) * -1)
@@ -75,9 +75,10 @@
 }
 
 .trace-flow-inner {
-  position: relative;
-  height: 100%;
-  overflow: visible;
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
 }
 
 .trace-static-canvas,
@@ -102,7 +103,7 @@
   position: absolute;
   z-index: 3;
   right: max(6%, calc((100vw - 1680px) / 2));
-  top: calc(var(--trace-overlap) + 42px);
+  top: 14%;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -117,7 +118,7 @@
   position: absolute;
   z-index: 3;
   left: max(6%, calc((100vw - 1680px) / 2));
-  top: calc(var(--trace-overlap) + var(--trace-gap));
+  top: 58%;
   width: min(66%, 1120px);
   opacity: 1;
   transform: none;
@@ -154,7 +155,7 @@
 }
 
 .trace-concept {
-  margin-top: 0;
+  margin-top: var(--trace-gap);
   margin-bottom: clamp(150px, 18vh, 220px);
 }
 
@@ -328,7 +329,7 @@
   }
 
   .trace-flow {
-    height: calc(var(--trace-overlap) + var(--trace-gap) + var(--trace-statement-space) + var(--trace-gap));
+    height: calc(180svh + var(--trace-overlap));
     margin-top: calc(var(--trace-overlap) * -1);
     margin-left: -20px;
     margin-right: -20px;
@@ -336,14 +337,14 @@
 
   .trace-flow-readout {
     right: 20px;
-    top: calc(var(--trace-overlap) + 24px);
+    top: 12%;
     font-size: 8px;
   }
 
   .trace-statement-block {
     left: 20px;
     right: 20px;
-    top: calc(var(--trace-overlap) + var(--trace-gap));
+    top: 56%;
     width: auto;
   }
 
@@ -370,7 +371,7 @@
   }
 
   .trace-concept {
-    margin-top: 0;
+    margin-top: var(--trace-gap);
     margin-bottom: 90px;
   }
 
