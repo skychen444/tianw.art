@@ -86,7 +86,7 @@
 
 .threshold-copy {
   position: relative;
-  width: fit-content;
+  width: max-content;
   max-width: 72%;
   margin: 0 42% 0 auto;
   text-align: left;
@@ -96,52 +96,39 @@
 }
 
 .threshold-row {
-  display: grid;
-  align-items: center;
+  position: relative;
+  display: block;
   width: 100%;
 }
 
 .threshold-row i {
+  position: absolute;
   display: block;
   height: 1px;
   background: rgba(255,255,255,.30);
-}
-
-.threshold-row-one {
-  position: relative;
-  display: block;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .threshold-row-one i {
-  position: absolute;
   left: calc(100% + clamp(18px,1.6vw,28px));
-  top: 50%;
   width: clamp(180px,28vw,520px);
-  transform: translateY(-50%);
 }
 
-.threshold-row-two {
-  position: relative;
-  grid-template-columns: minmax(90px,1fr) max-content;
-  gap: clamp(18px,1.6vw,28px);
+.threshold-row-two,
+.threshold-row-three {
+  text-align: right;
+}
+
+.threshold-row-two .threshold-line-before,
+.threshold-row-three i {
+  right: calc(100% + clamp(18px,1.6vw,28px));
+  width: clamp(110px,16vw,280px);
 }
 
 .threshold-row-two .threshold-line-after {
-  position: absolute;
   left: calc(100% + clamp(18px,1.6vw,28px));
-  top: 50%;
   width: clamp(120px,18vw,320px);
-  transform: translateY(-50%);
-}
-
-.threshold-row-three {
-  grid-template-columns: minmax(90px,1fr) max-content;
-  gap: clamp(18px,1.6vw,28px);
-}
-
-.threshold-row-two span,
-.threshold-row-three span {
-  justify-self: end;
 }
 
 .threshold-row-three {
@@ -409,7 +396,7 @@
   }
 
   .threshold-copy {
-    width: fit-content;
+    width: max-content;
     max-width: calc(100% - 56px);
     margin: 0 56px 0 auto;
     font-size: clamp(29px,8.4vw,40px);
@@ -421,23 +408,15 @@
     width: 44px;
   }
 
-  .threshold-row-two {
-    grid-template-columns: minmax(42px,1fr) max-content;
-    gap: 12px;
-    width: 100%;
-    min-width: 0;
+  .threshold-row-two .threshold-line-before,
+  .threshold-row-three i {
+    right: calc(100% + 12px);
+    width: 44px;
   }
 
   .threshold-row-two .threshold-line-after {
     left: calc(100% + 12px);
     width: 44px;
-  }
-
-  .threshold-row-three {
-    grid-template-columns: minmax(42px,1fr) max-content;
-    gap: 12px;
-    width: 100%;
-    min-width: 0;
   }
 
   .threshold-row-three {
