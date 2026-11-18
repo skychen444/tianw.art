@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v3">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v4">
 </head>
 
 <body class="dark-page traceline-page">
@@ -37,16 +37,12 @@
             <span class="trace-arrow">↓</span>
           </div>
 
+          <p class="trace-statement">
+            Every trace reduces<br>
+            what can happen next.
+          </p>
         </div>
       </div>
-    </section>
-
-    <section class="trace-statement-section trace-section" aria-label="Core statement">
-      <p class="trace-statement">
-        Every trace reduces<br>
-        what can happen next.
-      </p>
-      <span class="trace-statement-readout" aria-hidden="true">deviation ↓</span>
     </section>
 
     <section class="trace-concept trace-section">
@@ -147,8 +143,8 @@
         ctx.clearRect(0, 0, width, height);
 
         const narrowing = 1 - progress;
-        const amplitude = 4 + 42 * narrowing;
-        const lineCount = 17;
+        const amplitude = 6 + 62 * narrowing;
+        const lineCount = 19;
         const step = height / (lineCount + 1);
 
         ctx.lineWidth = 1;
@@ -161,7 +157,7 @@
           const phase = line * 0.91;
           const local = 0.72 + ((line * 37) % 11) / 28;
 
-          for (let pass = 0; pass < 3; pass += 1) {
+          for (let pass = 0; pass < 4; pass += 1) {
             ctx.beginPath();
 
             for (let x = -12; x <= width + 12; x += 8) {
@@ -179,7 +175,7 @@
               else ctx.lineTo(x, y);
             }
 
-            ctx.globalAlpha = pass === 1 ? .72 : .18;
+            ctx.globalAlpha = pass === 1 ? .82 : .18;
             ctx.stroke();
           }
         }
