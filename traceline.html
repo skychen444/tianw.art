@@ -116,7 +116,7 @@
     (() => {
       const section = document.getElementById('traceScroll');
       const canvas = document.getElementById('traceCanvas');
-      const root = document.documentElement;
+      const page = document.querySelector('.traceline-page');
       const header = document.querySelector('.site-header');
       const ctx = canvas ? canvas.getContext('2d') : null;
       let raf = 0;
@@ -192,7 +192,9 @@
           const rect = section.getBoundingClientRect();
           const scrollable = Math.max(1, section.offsetHeight - innerHeight);
           progress = clamp(-rect.top / scrollable);
-          root.style.setProperty('--trace-progress', progress.toFixed(4));
+          if (page) {
+            page.style.setProperty('--trace-progress', progress.toFixed(4));
+          }
           drawTrace();
         }
 
