@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v6">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v8">
 </head>
 
 <body class="dark-page traceline-page">
@@ -122,6 +122,7 @@
     (() => {
       const flow = document.getElementById('traceFlow');
       const canvas = document.getElementById('traceCanvas');
+      const heroImage = document.querySelector('.trace-hero-image img');
       const page = document.querySelector('.traceline-page');
       const header = document.querySelector('.site-header');
       const ctx = canvas ? canvas.getContext('2d') : null;
@@ -141,51 +142,124 @@
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       };
 
+      const traceSeeds = [
+        { x: 1723 / 2048, y: 646 / 1079, dx: .330, dy: .944 },
+        { x: 1316 / 2048, y: 647 / 1079, dx: .447, dy: .894 },
+        { x: 1194 / 2048, y: 708 / 1079, dx: .919, dy: .394 },
+        { x: 1408 / 2048, y: 719 / 1079, dx: .351, dy: .936 },
+        { x: 569 / 2048, y: 720 / 1079, dx: -.330, dy: .944 },
+        { x: 815 / 2048, y: 721 / 1079, dx: .685, dy: .729 },
+        { x: 1383 / 2048, y: 742 / 1079, dx: .466, dy: .885 },
+        { x: 615 / 2048, y: 886 / 1079, dx: -.447, dy: .894 }
+      ];
+
+      const smoothstep = (t) => {
+        const v = clamp(t);
+        return v * v * (3 - 2 * v);
+      };
+
       const drawTrace = () => {
-        if (!canvas || !ctx) return;
+        if (!canvas || !ctx || !heroImage) return;
 
         const width = canvas.clientWidth;
         const height = canvas.clientHeight;
-        if (!width || !height) return;
+        if (!width || !height || !heroImage.naturalWidth || !heroImage.naturalHeight) return;
 
         ctx.clearRect(0, 0, width, height);
 
-        const narrowing = 1 - progress;
-        const amplitude = 3 + 74 * narrowing;
-        const lineCount = 18;
-        const step = height / (lineCount + 1);
+        const canvasRect = canvas.getBoundingClientRect();
+        const imageRect = heroImage.getBoundingClientRect();
+
+        const scale = Math.max(
+          imageRect.width / heroImage.naturalWidth,
+          imageRect.height / heroImage.naturalHeight
+        );
+
+        const renderedWidth = heroImage.naturalWidth * scale;
+        const renderedHeight = heroImage.naturalHeight * scale;
+        const cropX = (renderedWidth - imageRect.width) / 2;
+        const cropY = (renderedHeight - imageRect.height) / 2;
+
+        const imageX = imageRect.left - canvasRect.left;
+        const imageY = imageRect.top - canvasRect.top;
+
+        const effect = smoothstep((progress - .10) / .82);
+        const waveAmplitude = 28 - effect * 24;
 
         ctx.lineWidth = 1;
-        ctx.strokeStyle = 'rgba(244,243,239,.46)';
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
-        for (let line = 0; line < lineCount; line += 1) {
-          const baseY = step * (line + 1);
-          const phase = line * 0.87;
-          const local = 0.72 + ((line * 29) % 9) / 22;
+        const drawPath = (path) => {
+          ctx.strokeStyle = 'rgba(244,243,239,.42)';
+          ctx.globalAlpha = .72;
+          ctx.stroke(path);
 
-          for (let pass = 0; pass < 3; pass += 1) {
-            ctx.beginPath();
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(imageX, imageY, imageRect.width, imageRect.height);
+          ctx.clip();
+          ctx.strokeStyle = 'rgba(18,18,18,.72)';
+          ctx.globalAlpha = .72;
+          ctx.stroke(path);
+          ctx.restore();
+        };
 
-            for (let x = -16; x <= width + 16; x += 10) {
-              const nx = x / Math.max(1, width);
-              const broad =
-                Math.sin(nx * Math.PI * (2.05 + line * .018) + phase) * .60 +
-                Math.sin(nx * Math.PI * 5.5 + phase * 1.5) * .25 +
-                Math.sin(nx * Math.PI * 10.8 + line * .34) * .15;
+        traceSeeds.forEach((seed, index) => {
+          const sourceX = seed.x * heroImage.naturalWidth;
+          const sourceY = seed.y * heroImage.naturalHeight;
 
-              const passOffset = (pass - 1) * (1.4 + narrowing * 1.6);
-              const y = baseY + broad * amplitude * local + passOffset;
+          const startX =
+            imageRect.left - canvasRect.left - cropX + sourceX * scale;
+          const startY =
+            imageRect.top - canvasRect.top - cropY + sourceY * scale;
 
-              if (x === -16) ctx.moveTo(x, y);
-              else ctx.lineTo(x, y);
-            }
+          if (startY < -40 || startY > height + 40) return;
 
-            ctx.globalAlpha = pass === 1 ? .74 : .18;
-            ctx.stroke();
+          const startAngle = Math.atan2(seed.dy, seed.dx);
+          const horizontalSign =
+            Math.abs(seed.dx) > .18
+              ? Math.sign(seed.dx)
+              : (seed.x < .5 ? -1 : 1);
+          const targetAngle = horizontalSign > 0 ? 0 : Math.PI;
+
+          let angleDelta = targetAngle - startAngle;
+          while (angleDelta > Math.PI) angleDelta -= Math.PI * 2;
+          while (angleDelta < -Math.PI) angleDelta += Math.PI * 2;
+
+          const path = new Path2D();
+          let x = startX;
+          let y = startY;
+
+          path.moveTo(
+            x - Math.cos(startAngle) * 10,
+            y - Math.sin(startAngle) * 10
+          );
+
+          const maxDistance = width * 1.15;
+          const step = 8;
+
+          for (let distance = 0; distance <= maxDistance; distance += step) {
+            const settle = smoothstep(distance / 210);
+            const angle = startAngle + angleDelta * settle;
+            const normalX = -Math.sin(angle);
+            const normalY = Math.cos(angle);
+            const wave =
+              Math.sin(distance * .018 + index * .83) * waveAmplitude * (1 - settle * .48);
+
+            x += Math.cos(angle) * step;
+            y += Math.sin(angle) * step;
+
+            path.lineTo(
+              x + normalX * wave,
+              y + normalY * wave
+            );
+
+            if (x < -80 || x > width + 80 || y > height + 80) break;
           }
-        }
+
+          drawPath(path);
+        });
 
         ctx.globalAlpha = 1;
       };
@@ -195,8 +269,8 @@
 
         if (flow) {
           const rect = flow.getBoundingClientRect();
-          const scrollable = Math.max(1, flow.offsetHeight - innerHeight);
-          progress = clamp(-rect.top / scrollable);
+          const travel = Math.max(1, innerHeight + rect.height);
+          progress = clamp((innerHeight - rect.top) / travel);
 
           if (page) {
             page.style.setProperty('--trace-progress', progress.toFixed(4));
