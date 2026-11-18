@@ -3,22 +3,27 @@
   --text-width: 760px;
   --paper: #f4f3ef;
   --trace-progress: 0;
-  --trace-o1: 1;
-  --trace-o2: 0;
-  --trace-o3: 0;
-  --trace-o4: 0;
   background: #101010;
   color: var(--paper);
 }
 
 .traceline-main {
-  width: 100%;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding:
+    clamp(110px, 8vw, 150px)
+    clamp(40px, 4.4vw, 92px)
+    clamp(80px, 8vh, 120px);
   overflow-x: hidden;
 }
 
 .trace-scroll {
   position: relative;
+  width: var(--content-width);
   height: 220svh;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .trace-sticky {
@@ -28,12 +33,18 @@
   overflow: hidden;
 }
 
+.trace-opening-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .trace-intro {
   position: absolute;
   z-index: 4;
-  left: max(6%, calc((100vw - 1680px) / 2));
-  top: clamp(132px, 14vh, 180px);
-  width: 30%;
+  left: 0;
+  top: clamp(42px, 4vw, 70px);
+  width: 31%;
 }
 
 .trace-intro h1 {
@@ -53,47 +64,41 @@
 .trace-field {
   position: absolute;
   z-index: 1;
-  top: clamp(118px, 12vh, 160px);
+  top: clamp(42px, 4vw, 70px);
   right: 0;
-  width: 68%;
+  width: 66%;
   height: min(70vh, 760px);
   min-height: 500px;
   overflow: hidden;
   background: #f4f3ef;
 }
 
-.trace-frame {
+.trace-source,
+.trace-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+}
+
+.trace-source {
+  display: block;
   object-fit: cover;
   object-position: center;
-  will-change: opacity, transform;
+  opacity: calc(1 - var(--trace-progress) * .72);
 }
 
-.trace-frame-1 {
-  opacity: var(--trace-o1);
-  transform: scale(calc(1.01 - var(--trace-progress) * .01));
-}
-
-.trace-frame-2 {
-  opacity: var(--trace-o2);
-}
-
-.trace-frame-3 {
-  opacity: var(--trace-o3);
-}
-
-.trace-frame-4 {
-  opacity: var(--trace-o4);
+.trace-canvas {
+  z-index: 2;
+  display: block;
+  pointer-events: none;
 }
 
 .trace-readout {
   position: absolute;
   z-index: 5;
-  right: 7%;
-  bottom: 11vh;
+  right: 0;
+  bottom: 8vh;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -111,8 +116,8 @@
 .trace-statement {
   position: absolute;
   z-index: 4;
-  left: max(6%, calc((100vw - 1680px) / 2));
-  bottom: 10vh;
+  left: 0;
+  bottom: 9vh;
   width: min(66%, 1120px);
   margin: 0;
   font-size: clamp(38px, 4.6vw, 76px);
@@ -272,7 +277,7 @@
   }
 
   .trace-field {
-    width: 64%;
+    width: 63%;
   }
 
   .trace-statement {
@@ -295,8 +300,19 @@
     height: 190svh;
   }
 
+  .traceline-main {
+    width: 100%;
+    padding: 84px 20px 64px;
+  }
+
+  .trace-scroll {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
   .trace-sticky {
-    padding: 84px 20px 0;
+    padding: 0;
   }
 
   .trace-intro {
@@ -321,31 +337,29 @@
   }
 
   .trace-field {
-    top: 190px;
+    top: 106px;
     right: 0;
-    width: calc(100% - 20px);
+    width: 100%;
     height: 48svh;
     min-height: 300px;
   }
 
   .trace-statement {
-    left: 20px;
+    left: 0;
     bottom: 12vh;
-    width: calc(100% - 40px);
+    width: 100%;
     font-size: clamp(29px, 8.4vw, 40px);
     line-height: 1.04;
   }
 
   .trace-readout {
-    right: 20px;
+    right: 0;
     bottom: 7vh;
     font-size: 8px;
   }
 
   .trace-section {
     width: 100%;
-    padding-left: 20px;
-    padding-right: 20px;
   }
 
   .trace-concept,
@@ -425,19 +439,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .trace-frame {
-    transition: none;
-  }
-
-  .trace-frame-1 {
+  .trace-source {
     opacity: 1;
-    transform: none;
   }
 
-  .trace-frame-2,
-  .trace-frame-3,
-  .trace-frame-4 {
-    opacity: 0;
+  .trace-canvas {
+    display: none;
   }
 
   .trace-statement {
