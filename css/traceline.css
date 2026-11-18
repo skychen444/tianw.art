@@ -21,7 +21,7 @@
 .trace-scroll {
   position: relative;
   width: var(--content-width);
-  height: 165svh;
+  height: 140svh;
   margin-left: auto;
   margin-right: auto;
 }
@@ -67,8 +67,9 @@
   top: clamp(42px, 4vw, 70px);
   right: 0;
   width: 66%;
-  height: min(70vh, 760px);
-  min-height: 500px;
+  bottom: 7vh;
+  height: auto;
+  min-height: 0;
   overflow: hidden;
   background: #f4f3ef;
 }
@@ -85,7 +86,7 @@
   display: block;
   object-fit: cover;
   object-position: center;
-  opacity: calc(1 - var(--trace-progress) * .72);
+  opacity: calc(1 - var(--trace-progress) * .82);
 }
 
 .trace-canvas {
@@ -113,29 +114,18 @@
   transform: translateY(calc(var(--trace-progress) * 6px));
 }
 
-.trace-statement-section {
-  position: relative;
-  margin-top: clamp(48px, 6vh, 78px);
-  margin-bottom: clamp(110px, 13vh, 160px);
-}
-
 .trace-statement {
-  width: min(70%, 1120px);
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  bottom: 7vh;
+  width: min(62%, 1020px);
   margin: 0;
   font-size: clamp(38px, 4.6vw, 76px);
   line-height: 1.01;
   letter-spacing: -.04em;
-}
-
-.trace-statement-readout {
-  position: absolute;
-  right: 0;
-  bottom: 4px;
-  font-size: 10px;
-  line-height: 1;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  opacity: .48;
+  opacity: clamp(0, calc((var(--trace-progress) - .40) * 3.5), 1);
+  transform: translateY(calc((1 - var(--trace-progress)) * 14px));
 }
 
 .trace-section {
@@ -290,7 +280,7 @@
   }
 
   .trace-scroll {
-    height: 150svh;
+    height: 135svh;
   }
 
   .traceline-main {
@@ -332,28 +322,18 @@
   .trace-field {
     top: 106px;
     right: 0;
+    bottom: 20vh;
     width: 100%;
-    height: 48svh;
-    min-height: 300px;
-  }
-
-  .trace-statement-section {
-    margin-top: 38px;
-    margin-bottom: 90px;
+    height: auto;
+    min-height: 0;
   }
 
   .trace-statement {
+    left: 0;
+    bottom: 7vh;
     width: 100%;
     font-size: clamp(29px, 8.4vw, 40px);
     line-height: 1.04;
-  }
-
-  .trace-statement-readout {
-    position: static;
-    display: block;
-    margin-top: 16px;
-    text-align: right;
-    font-size: 8px;
   }
 
   .trace-readout {
@@ -373,7 +353,7 @@
   }
 
   .trace-concept {
-    margin-top: 90px;
+    margin-top: 48px;
     margin-bottom: 90px;
   }
 
