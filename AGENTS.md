@@ -19,6 +19,9 @@ This repository is the official artist portfolio of Tian W. Treat it as an autho
 ## Artwork pages and content
 - Maintain consistent outer boundaries, metadata sizes, headings, and section hierarchy across works unless an artwork intentionally differs.
 - Works desktop composition: laptop is the master layout. From 761px upward, preserve the same composition on laptop and large displays such as the ProArt monitor; do not introduce a separate large-desktop width or spacing override that changes alignment. Use a capped centered content width rather than viewport-dependent expansion. Mobile remains a separate layout.
+- Current Works desktop layout rule: use a centered main content width of `min(88%, 1680px)`; do not restore a separate ProArt-only `92%` width rule.
+- Current Works title placement: the large “Works” heading should sit in the negative-space zone between the fixed top-left “Tian W.” site name and the first large artwork image. It should not share the same left visual column as “Tian W.” and should not be pushed so far right that it aligns with or crowds the artwork image. Preserve the current desktop title inset behavior unless the artist explicitly requests a new composition.
+- Current Works mobile rule: keep the separate mobile layout at 760px and below, including its existing 20px side padding; do not inherit the desktop percentage-width or title-inset rules.
 - Preserve artwork-specific concepts, captions, images, video, and interactions.
 - For a new work, inspect an existing work page and its asset conventions first. Use appropriately sized web media and meaningful alt text; do not overwrite source assets.
 - The bilingual English/Traditional Chinese interface is a planned direction. Do not introduce partial translation or change the current language experience without a scoped plan and approval.
