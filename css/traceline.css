@@ -360,8 +360,6 @@
 
   .trace-section {
     width: 100%;
-    padding-left: 20px;
-    padding-right: 20px;
   }
 
   .trace-concept,
@@ -441,19 +439,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .trace-frame {
-    transition: none;
-  }
-
-  .trace-frame-1 {
+  .trace-source {
     opacity: 1;
-    transform: none;
   }
 
-  .trace-frame-2,
-  .trace-frame-3,
-  .trace-frame-4 {
-    opacity: 0;
+  .trace-canvas {
+    display: none;
   }
 
   .trace-statement {
