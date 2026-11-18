@@ -85,8 +85,9 @@
 }
 
 .threshold-copy {
-  width: min(1080px,88%);
+  width: min(1180px,88%);
   margin: 0 auto;
+  text-align: left;
   font-size: clamp(28px,3vw,50px);
   line-height: 1.04;
   letter-spacing: -.035em;
@@ -98,8 +99,8 @@
 
 .threshold-row-one {
   display: grid;
-  grid-template-columns: max-content minmax(80px,1fr);
-  gap: clamp(18px,2vw,34px);
+  grid-template-columns: max-content minmax(180px,1fr);
+  gap: clamp(22px,2.2vw,40px);
   align-items: center;
 }
 
@@ -110,11 +111,12 @@
 }
 
 .threshold-row-two {
-  margin-left: 29%;
+  margin-left: 22%;
 }
 
 .threshold-row-three {
-  margin-top: 2px;
+  margin-top: 6px;
+  margin-left: 0;
 }
 
 /* CONCEPT — body → trace → field is the page's transformation rule. */
@@ -389,11 +391,12 @@
   }
 
   .threshold-row-two {
-    margin-left: 18%;
+    margin-left: 16%;
   }
 
   .threshold-row-three {
     margin-top: 4px;
+    margin-left: 0;
   }
 
   .signal-concept > .section-label {
