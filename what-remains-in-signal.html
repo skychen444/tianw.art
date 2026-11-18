@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>What Remains in Signal? — Tian W.</title>
+  <link rel="stylesheet" href="style.css?v=20261118-core">
+  <link rel="stylesheet" href="css/what-remains-in-signal.css?v=20261118-v1">
+</head>
+
+<body class="dark-page signal-page">
+  <header class="site-header">
+    <a class="site-name" href="index.html">Tian W.</a>
+    <nav class="site-nav">
+      <a class="active" href="works.html">Works</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main class="page signal-main">
+
+    <section class="signal-hero">
+      <div class="signal-title-block">
+        <h1>What Remains<br>in Signal?</h1>
+        <div class="signal-meta">
+          2026<br>
+          Data-driven generative moving-image work
+        </div>
+      </div>
+
+      <img
+        class="signal-cover"
+        src="assets/what-remains-in-signal/final-composite.webp"
+        alt="Final composite signal field generated from Bluetooth Low Energy data"
+      >
+    </section>
+
+    <section class="signal-statement">
+      <p>
+        What becomes visible to a machine is not necessarily what appears most visible to human perception.
+      </p>
+    </section>
+
+    <section class="signal-concept">
+      <div class="section-label">Concept</div>
+      <div class="signal-copy">
+        <p>
+          What Remains in Signal? develops from an earlier interest in CCTV and machine vision, but deliberately moves away from the camera as a direct image source.
+        </p>
+        <p>
+          Using Bluetooth Low Energy data collected from everyday environments, the work asks how human presence can still be registered when the body is no longer visually available. Presence is constructed through digital traces rather than direct visual recognition.
+        </p>
+        <p>
+          The work does not attempt to represent people. Instead, it visualizes conditions of detectability: the machine-defined field through which presence becomes readable as signal density, strength, proximity and instability.
+        </p>
+      </div>
+    </section>
+
+    <section class="signal-conditions">
+      <div class="signal-conditions-head">
+        <div class="section-label">Signal Conditions</div>
+        <p>
+          The same idea of human presence produces different machine-readable fields across different environments.
+        </p>
+      </div>
+
+      <div class="signal-grid">
+        <figure>
+          <img src="assets/what-remains-in-signal/scene-cafe.webp" alt="Café signal condition" loading="lazy">
+          <figcaption>
+            <strong>Café</strong>
+            <span>ambient saturation</span>
+            <span>social density</span>
+            <span>overlapping traces</span>
+          </figcaption>
+        </figure>
+
+        <figure>
+          <img src="assets/what-remains-in-signal/scene-park.webp" alt="Park signal condition" loading="lazy">
+          <figcaption>
+            <strong>Park</strong>
+            <span>diffuse residue</span>
+            <span>open dispersion</span>
+            <span>partial visibility</span>
+          </figcaption>
+        </figure>
+
+        <figure>
+          <img src="assets/what-remains-in-signal/scene-dlr.webp" alt="DLR carriage signal condition" loading="lazy">
+          <figcaption>
+            <strong>DLR carriage</strong>
+            <span>compressed saturation</span>
+            <span>proximate density</span>
+            <span>fragmented movement</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="signal-video-section">
+      <div class="signal-video-label">Moving image / documentation</div>
+      <video
+        class="signal-video"
+        controls
+        playsinline
+        preload="metadata"
+        poster="assets/what-remains-in-signal/final-composite.webp"
+      >
+        <source src="assets/what-remains-in-signal/what-remains-in-signal-web.mp4" type="video/mp4">
+      </video>
+    </section>
+
+    <section class="signal-system">
+      <div class="section-label">System</div>
+      <p>Raspberry Pi Pico W · Bluetooth Low Energy field recording · CSV data · TouchDesigner · signal density / RSSI mapping · generative image processing</p>
+    </section>
+
+    <div class="signal-links">
+      <a class="back-link" href="works.html">← Works</a>
+    </div>
+
+  </main>
+
+  <script>
+    const header = document.querySelector('.site-header');
+    addEventListener('scroll', () => {
+      header.classList.toggle('header-hidden', scrollY > 70);
+    }, { passive: true });
+  </script>
+</body>
+</html>
