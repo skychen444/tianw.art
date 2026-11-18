@@ -3,9 +3,6 @@
   --text-width: 760px;
   --paper: #f4f3ef;
   --trace-progress: 0;
-  --trace-gap: clamp(190px, 21vh, 260px);
-  --trace-overlap: clamp(480px, 52vh, 560px);
-  --trace-statement-space: 300px;
   background: #101010;
   color: var(--paper);
 }
@@ -27,12 +24,12 @@
   align-items: start;
   min-height: clamp(560px,70vh,780px);
   margin-top: clamp(42px,4vw,70px);
-  margin-bottom: 0;
+  margin-bottom: clamp(40px,5vh,64px);
 }
 
 .trace-intro {
   grid-column: 1;
-  padding-top: 0;
+  padding-top: clamp(20px,3vh,44px);
 }
 
 .trace-intro h1 {
@@ -67,11 +64,8 @@
 
 .trace-flow {
   position: relative;
-  height: calc(200svh + var(--trace-overlap));
-  margin:
-    calc(var(--trace-overlap) * -1)
-    calc(clamp(40px, 4.4vw, 92px) * -1)
-    0;
+  height: 150svh;
+  margin: 0 calc(clamp(40px, 4.4vw, 92px) * -1);
 }
 
 .trace-flow-inner {
@@ -81,8 +75,7 @@
   overflow: hidden;
 }
 
-.trace-static-canvas,
-.trace-interactive-canvas {
+.trace-ambient-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -91,19 +84,11 @@
   pointer-events: none;
 }
 
-.trace-static-canvas {
-  z-index: 1;
-}
-
-.trace-interactive-canvas {
-  z-index: 2;
-}
-
 .trace-flow-readout {
   position: absolute;
-  z-index: 3;
+  z-index: 2;
   right: max(6%, calc((100vw - 1680px) / 2));
-  top: 14%;
+  top: 10vh;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -116,12 +101,12 @@
 
 .trace-statement-block {
   position: absolute;
-  z-index: 3;
+  z-index: 2;
   left: max(6%, calc((100vw - 1680px) / 2));
-  top: 58%;
+  bottom: 10vh;
   width: min(66%, 1120px);
-  opacity: 1;
-  transform: none;
+  opacity: clamp(0, calc((var(--trace-progress) - .72) * 5), 1);
+  transform: translateY(calc((1 - var(--trace-progress)) * 16px));
 }
 
 .trace-statement {
@@ -155,7 +140,7 @@
 }
 
 .trace-concept {
-  margin-top: var(--trace-gap);
+  margin-top: 0;
   margin-bottom: clamp(150px, 18vh, 220px);
 }
 
@@ -288,9 +273,6 @@
 @media (max-width: 760px) {
   .traceline-page {
     --content-width: 100%;
-    --trace-gap: 110px;
-    --trace-overlap: 46vw;
-    --trace-statement-space: 220px;
   }
 
   .traceline-main {
@@ -302,7 +284,7 @@
     display: block;
     min-height: 0;
     margin-top: 36px;
-    margin-bottom: 0;
+    margin-bottom: 42px;
   }
 
   .trace-intro {
@@ -329,22 +311,21 @@
   }
 
   .trace-flow {
-    height: calc(180svh + var(--trace-overlap));
-    margin-top: calc(var(--trace-overlap) * -1);
+    height: 135svh;
     margin-left: -20px;
     margin-right: -20px;
   }
 
   .trace-flow-readout {
     right: 20px;
-    top: 12%;
+    top: 9vh;
     font-size: 8px;
   }
 
   .trace-statement-block {
     left: 20px;
     right: 20px;
-    top: 56%;
+    bottom: 10vh;
     width: auto;
   }
 
@@ -371,7 +352,7 @@
   }
 
   .trace-concept {
-    margin-top: var(--trace-gap);
+    margin-top: 48px;
     margin-bottom: 90px;
   }
 
@@ -425,8 +406,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .trace-static-canvas,
-  .trace-interactive-canvas {
+  .trace-ambient-canvas {
     display: none;
   }
 

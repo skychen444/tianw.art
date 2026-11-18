@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v17">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v6">
 </head>
 
 <body class="dark-page traceline-page">
@@ -32,8 +32,7 @@
 
     <section class="trace-flow" id="traceFlow" aria-label="traceLine narrowing sequence">
       <div class="trace-flow-inner">
-        <canvas class="trace-static-canvas" id="traceStaticCanvas" aria-hidden="true"></canvas>
-        <canvas class="trace-interactive-canvas" id="traceInteractiveCanvas" aria-hidden="true"></canvas>
+        <canvas class="trace-ambient-canvas" id="traceCanvas" aria-hidden="true"></canvas>
 
         <div class="trace-flow-readout" aria-hidden="true">
           <span>deviation</span>
@@ -122,294 +121,106 @@
   <script>
     (() => {
       const flow = document.getElementById('traceFlow');
-      const staticCanvas = document.getElementById('traceStaticCanvas');
-      const interactiveCanvas = document.getElementById('traceInteractiveCanvas');
-      const heroImage = document.querySelector('.trace-hero-image img');
-      const statement = document.querySelector('.trace-statement-block');
+      const canvas = document.getElementById('traceCanvas');
+      const page = document.querySelector('.traceline-page');
       const header = document.querySelector('.site-header');
+      const ctx = canvas ? canvas.getContext('2d') : null;
 
-      const staticCtx = staticCanvas ? staticCanvas.getContext('2d') : null;
-      const interactiveCtx = interactiveCanvas ? interactiveCanvas.getContext('2d') : null;
-
-      let scrollProgress = 0;
       let raf = 0;
+      let progress = 0;
 
       const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
-      const smoothstep = (t) => {
-        const v = clamp(t);
-        return v * v * (3 - 2 * v);
-      };
-      const fract = (value) => value - Math.floor(value);
-      const hash = (a, b) =>
-        fract(Math.sin(a * 127.1 + b * 311.7) * 43758.5453123);
 
-      const traceSeeds = [
-        // Left-edge exits.
-        { side:'left', x:0, y:.15, dx:.99, dy:.08 },
-        { side:'left', x:0, y:.21, dx:.97, dy:.18 },
-        { side:'left', x:0, y:.30, dx:.96, dy:.26 },
-        { side:'left', x:0, y:.39, dx:.92, dy:.38 },
-        { side:'left', x:0, y:.52, dx:.96, dy:.23 },
-        { side:'left', x:0, y:.70, dx:.93, dy:.36 },
-
-        // Right-edge exits.
-        { side:'right', x:1, y:.18, dx:.98, dy:.10 },
-        { side:'right', x:1, y:.33, dx:.99, dy:-.04 },
-        { side:'right', x:1, y:.46, dx:.99, dy:-.07 },
-        { side:'right', x:1, y:.58, dx:.97, dy:.20 },
-
-      ];
-
-      const resizeCanvas = (canvas, ctx) => {
+      const resizeCanvas = () => {
         if (!canvas || !ctx) return;
         const rect = canvas.getBoundingClientRect();
         const dpr = Math.min(devicePixelRatio || 1, 2);
+
         canvas.width = Math.max(1, Math.round(rect.width * dpr));
         canvas.height = Math.max(1, Math.round(rect.height * dpr));
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       };
 
-      const outsideImageClip = (ctx, canvasRect, imageRect, width, height) => {
-        const imageX = imageRect.left - canvasRect.left;
-        const imageY = imageRect.top - canvasRect.top;
-        const clip = new Path2D();
-        clip.rect(0, 0, width, height);
-        clip.rect(imageX, imageY, imageRect.width, imageRect.height);
-        ctx.clip(clip, 'evenodd');
-      };
+      const drawTrace = () => {
+        if (!canvas || !ctx) return;
 
-      const mapSeed = (seed, canvasRect, imageRect) => ({
-        x: imageRect.left - canvasRect.left + imageRect.width * seed.x,
-        y: imageRect.top - canvasRect.top + imageRect.height * seed.y
-      });
-
-      const jaggedPolyline = ({
-        ctx,
-        fromX,
-        fromY,
-        toX,
-        toY,
-        key,
-        amplitude,
-        preserveStart = true
-      }) => {
-        const path = new Path2D();
-        const dx = toX - fromX;
-        const dy = toY - fromY;
-        const length = Math.max(1, Math.hypot(dx, dy));
-        const nx = -dy / length;
-        const ny = dx / length;
-        const step = 11;
-
-        path.moveTo(fromX, fromY);
-
-        for (let d = step; d <= length; d += step) {
-          const t = d / length;
-          const coarse = hash(key * 17 + Math.floor(d / 33), 1) - .5;
-          const fine = hash(key * 43 + Math.floor(d / 11), 2) - .5;
-          const kink = hash(key * 61 + Math.floor(d / 55), 3) > .74
-            ? (hash(key * 79 + Math.floor(d / 55), 4) - .5) * 2.0
-            : 0;
-
-          const ramp = preserveStart ? smoothstep((t - .08) / .18) : 1;
-          const jitter = (coarse * 1.15 + fine * .58 + kink) * amplitude * ramp;
-
-          path.lineTo(
-            fromX + dx * t + nx * jitter,
-            fromY + dy * t + ny * jitter
-          );
-        }
-
-        return path;
-      };
-
-      const buildContinuation = ({
-        ctx,
-        startX,
-        startY,
-        angle,
-        key,
-        distance,
-        amplitude,
-        turnStrength
-      }) => {
-        const path = new Path2D();
-        const step = 12;
-        let x = startX;
-        let y = startY;
-        let heading = angle;
-        let drift = 0;
-
-        path.moveTo(x, y);
-
-        for (let d = 0; d <= distance; d += step) {
-          const coarse = hash(key * 17 + Math.floor(d / 42), 1) - .5;
-          const fine = hash(key * 31 + Math.floor(d / 14), 2) - .5;
-          const kink = hash(key * 53 + Math.floor(d / 70), 3) > .79
-            ? (hash(key * 71 + Math.floor(d / 70), 4) - .5) * 1.15
-            : 0;
-
-          drift = drift * .72 + (coarse * .46 + fine * .20 + kink) * turnStrength;
-          heading += drift * .015;
-
-          const normalX = -Math.sin(heading);
-          const normalY = Math.cos(heading);
-          const localAmplitude =
-            (hash(key * 97 + Math.floor(d / 18), 5) - .5) * amplitude;
-
-          x += Math.cos(heading) * step;
-          y += Math.sin(heading) * step;
-
-          path.lineTo(
-            x + normalX * localAmplitude,
-            y + normalY * localAmplitude
-          );
-        }
-
-        return path;
-      };
-
-      const drawStatic = () => {
-        if (!staticCanvas || !staticCtx || !heroImage) return;
-
-        const width = staticCanvas.clientWidth;
-        const height = staticCanvas.clientHeight;
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
         if (!width || !height) return;
 
-        staticCtx.clearRect(0, 0, width, height);
+        ctx.clearRect(0, 0, width, height);
 
-        const canvasRect = staticCanvas.getBoundingClientRect();
-        const imageRect = heroImage.getBoundingClientRect();
+        const narrowing = 1 - progress;
+        const amplitude = 3 + 74 * narrowing;
+        const lineCount = 18;
+        const step = height / (lineCount + 1);
 
-        staticCtx.lineWidth = 1;
-        staticCtx.lineCap = 'round';
-        staticCtx.lineJoin = 'round';
-        staticCtx.strokeStyle = 'rgba(244,243,239,.46)';
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(244,243,239,.46)';
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
 
-        traceSeeds.forEach((seed, index) => {
-          const start = mapSeed(seed, canvasRect, imageRect);
-          const sourceAngle = Math.atan2(seed.dy, seed.dx);
-          const outwardAngle =
-            seed.side === 'left'
-              ? sourceAngle + Math.PI
-              : sourceAngle;
+        for (let line = 0; line < lineCount; line += 1) {
+          const baseY = step * (line + 1);
+          const phase = line * 0.87;
+          const local = 0.72 + ((line * 29) % 9) / 22;
 
-          const retraces = 3;
+          for (let pass = 0; pass < 3; pass += 1) {
+            ctx.beginPath();
 
-          for (let r = 0; r < retraces; r += 1) {
-            const distance =
-              width * (seed.side === 'left' ? .64 + r * .045 : .40 + r * .045);
+            for (let x = -16; x <= width + 16; x += 10) {
+              const nx = x / Math.max(1, width);
+              const broad =
+                Math.sin(nx * Math.PI * (2.05 + line * .018) + phase) * .60 +
+                Math.sin(nx * Math.PI * 5.5 + phase * 1.5) * .25 +
+                Math.sin(nx * Math.PI * 10.8 + line * .34) * .15;
 
-            // Each line continues in the source tangent direction.
-            // It can kink and wander, but never aims at an arbitrary target point.
-            const path = buildContinuation({
-              ctx: staticCtx,
-              startX: start.x,
-              startY: start.y,
-              angle: outwardAngle + (r - 1) * .018,
-              key: 100 + index * 10 + r,
-              distance,
-              amplitude: 8 + r * 2.5,
-              turnStrength: .82
-            });
+              const passOffset = (pass - 1) * (1.4 + narrowing * 1.6);
+              const y = baseY + broad * amplitude * local + passOffset;
 
-            staticCtx.save();
-            outsideImageClip(staticCtx, canvasRect, imageRect, width, height);
-            staticCtx.globalAlpha = r === 0 ? .76 : .32;
-            staticCtx.stroke(path);
-            staticCtx.restore();
+              if (x === -16) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+
+            ctx.globalAlpha = pass === 1 ? .74 : .18;
+            ctx.stroke();
           }
-        });
-
-        staticCtx.globalAlpha = 1;
-      };
-
-      const drawInteractive = () => {
-        if (!interactiveCanvas || !interactiveCtx || !statement) return;
-
-        const width = interactiveCanvas.clientWidth;
-        const height = interactiveCanvas.clientHeight;
-        if (!width || !height) return;
-
-        interactiveCtx.clearRect(0, 0, width, height);
-
-        const canvasRect = interactiveCanvas.getBoundingClientRect();
-        const statementRect = statement.getBoundingClientRect();
-        const statementY = statementRect.top - canvasRect.top;
-        const statementH = statementRect.height;
-
-        // The pinned statement section doubles the scroll distance.
-        // Use the full 0→1 progress here so the visual change is strong and legible.
-        const flatten = smoothstep(scrollProgress);
-        const amplitude = 58 - flatten * 43; // 58 → 15, never completely flat
-
-        interactiveCtx.lineWidth = 1;
-        interactiveCtx.lineCap = 'round';
-        interactiveCtx.lineJoin = 'round';
-        interactiveCtx.strokeStyle = 'rgba(244,243,239,.42)';
-
-        const lineCount = 11;
-
-        for (let i = 0; i < lineCount; i += 1) {
-          const path = new Path2D();
-          const baseY =
-            statementY -
-            60 +
-            i * Math.max(36, (statementH + 210) / (lineCount - 1));
-
-          path.moveTo(24, baseY);
-
-          const step = 13;
-          for (let x = 24; x <= width - 24; x += step) {
-            const coarse = hash(i * 31 + Math.floor(x / 39), 5) - .5;
-            const fine = hash(i * 53 + Math.floor(x / 13), 6) - .5;
-            const kink = hash(i * 71 + Math.floor(x / 65), 7) > .76
-              ? (hash(i * 89 + Math.floor(x / 65), 8) - .5) * 1.8
-              : 0;
-
-            const jitter = (coarse * 1.18 + fine * .62 + kink) * amplitude;
-            path.lineTo(x, baseY + jitter);
-          }
-
-          interactiveCtx.globalAlpha = i % 3 === 0 ? .58 : .34;
-          interactiveCtx.stroke(path);
         }
 
-        interactiveCtx.globalAlpha = 1;
+        ctx.globalAlpha = 1;
       };
 
-      const requestUpdate = () => {
-        if (!raf) {
-          raf = requestAnimationFrame(() => {
-            raf = 0;
-            drawStatic();
-            drawInteractive();
-          });
+      const update = () => {
+        raf = 0;
+
+        if (flow) {
+          const rect = flow.getBoundingClientRect();
+          const scrollable = Math.max(1, flow.offsetHeight - innerHeight);
+          progress = clamp(-rect.top / scrollable);
+
+          if (page) {
+            page.style.setProperty('--trace-progress', progress.toFixed(4));
+          }
+
+          drawTrace();
         }
-      };
-
-      addEventListener('scroll', () => {
-        if (!flow) return;
-
-        const rect = flow.getBoundingClientRect();
-        const scrollable = Math.max(1, flow.offsetHeight - innerHeight);
-        scrollProgress = clamp(-rect.top / scrollable);
-
-        drawInteractive();
 
         if (header) {
           header.classList.toggle('header-hidden', scrollY > 70);
         }
-      }, { passive: true });
+      };
 
+      const requestUpdate = () => {
+        if (!raf) raf = requestAnimationFrame(update);
+      };
+
+      addEventListener('scroll', requestUpdate, { passive: true });
       addEventListener('resize', () => {
-        resizeCanvas(staticCanvas, staticCtx);
-        resizeCanvas(interactiveCanvas, interactiveCtx);
+        resizeCanvas();
         requestUpdate();
       }, { passive: true });
 
-      resizeCanvas(staticCanvas, staticCtx);
-      resizeCanvas(interactiveCanvas, interactiveCtx);
+      resizeCanvas();
       requestUpdate();
     })();
   </script>
