@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v10">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v11">
 </head>
 
 <body class="dark-page traceline-page">
@@ -158,6 +158,11 @@
         return v * v * (3 - 2 * v);
       };
 
+      const fract = (value) => value - Math.floor(value);
+
+      const hash = (a, b) =>
+        fract(Math.sin(a * 127.1 + b * 311.7) * 43758.5453123);
+
       const drawTrace = () => {
         if (!canvas || !ctx || !heroImage) return;
 
@@ -184,25 +189,85 @@
         const imageY = imageRect.top - canvasRect.top;
 
         const effect = smoothstep((progress - .10) / .82);
-        const waveAmplitude = 28 - effect * 24;
+        const deviation = 1 - effect;
 
         ctx.lineWidth = 1;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
-        const drawPath = (path) => {
-          ctx.strokeStyle = 'rgba(244,243,239,.42)';
-          ctx.globalAlpha = .72;
-          ctx.stroke(path);
+        const clipOutsideImage = () => {
+          const clip = new Path2D();
+          clip.rect(0, 0, width, height);
+          clip.rect(imageX, imageY, imageRect.width, imageRect.height);
+          ctx.clip(clip, 'evenodd');
+        };
 
+        const strokeOutside = (path, alpha = .68) => {
           ctx.save();
-          ctx.beginPath();
-          ctx.rect(imageX, imageY, imageRect.width, imageRect.height);
-          ctx.clip();
-          ctx.strokeStyle = 'rgba(18,18,18,.72)';
-          ctx.globalAlpha = .72;
+          clipOutsideImage();
+          ctx.strokeStyle = 'rgba(244,243,239,.46)';
+          ctx.globalAlpha = alpha;
           ctx.stroke(path);
           ctx.restore();
+        };
+
+        const buildJaggedPath = ({
+          startX,
+          startY,
+          angle,
+          targetAngle,
+          index,
+          maxDistance,
+          amplitudeScale = 1,
+          settleDistance = 360
+        }) => {
+          const path = new Path2D();
+          const step = 13;
+          let x = startX;
+          let y = startY;
+          let currentAngle = angle;
+          let localOffset = 0;
+
+          path.moveTo(x, y);
+
+          for (let distance = 0; distance <= maxDistance; distance += step) {
+            const settle = smoothstep(distance / settleDistance);
+
+            let delta = targetAngle - currentAngle;
+            while (delta > Math.PI) delta -= Math.PI * 2;
+            while (delta < -Math.PI) delta += Math.PI * 2;
+
+            currentAngle += delta * (.035 + settle * .07);
+
+            const coarse = hash(index * 13 + Math.floor(distance / 26), 1) - .5;
+            const fine = hash(index * 31 + Math.floor(distance / 13), 2) - .5;
+            const kink = hash(index * 47 + Math.floor(distance / 52), 3) > .72
+              ? (hash(index * 59 + Math.floor(distance / 52), 4) - .5) * 1.9
+              : 0;
+
+            const jagged =
+              (coarse * 1.15 + fine * .55 + kink) *
+              (10 + 42 * deviation) *
+              amplitudeScale *
+              (1 - settle * .76);
+
+            localOffset = localOffset * .34 + jagged * .66;
+
+            const normalX = -Math.sin(currentAngle);
+            const normalY = Math.cos(currentAngle);
+
+            x += Math.cos(currentAngle) * step;
+            y += Math.sin(currentAngle) * step;
+
+            path.lineTo(
+              x + normalX * localOffset,
+              y + normalY * localOffset
+            );
+
+            if (x < -100 || x > width + 100 || y < -100 || y > height + 100) break;
+          }
+
+          return path;
         };
 
         traceSeeds.forEach((seed, index) => {
@@ -214,91 +279,38 @@
           const startY =
             imageRect.top - canvasRect.top - cropY + sourceY * scale;
 
-          if (startY < -40 || startY > height + 40) return;
-
           const startAngle = Math.atan2(seed.dy, seed.dx);
-          const horizontalSign =
-            Math.abs(seed.dx) > .18
-              ? Math.sign(seed.dx)
-              : (seed.x < .5 ? -1 : 1);
-          const targetAngle = horizontalSign > 0 ? 0 : Math.PI;
+          const forwardTarget = Math.abs(seed.dx) > .18
+            ? (seed.dx > 0 ? 0 : Math.PI)
+            : (seed.x < .5 ? Math.PI : 0);
 
-          let angleDelta = targetAngle - startAngle;
-          while (angleDelta > Math.PI) angleDelta -= Math.PI * 2;
-          while (angleDelta < -Math.PI) angleDelta += Math.PI * 2;
+          const forward = buildJaggedPath({
+            startX,
+            startY,
+            angle: startAngle,
+            targetAngle: forwardTarget,
+            index,
+            maxDistance: width * 1.2,
+            amplitudeScale: 1,
+            settleDistance: 430
+          });
 
-          const path = new Path2D();
-          let x = startX;
-          let y = startY;
+          strokeOutside(forward, .72);
 
-          path.moveTo(
-            x - Math.cos(startAngle) * 10,
-            y - Math.sin(startAngle) * 10
-          );
-
-          const maxDistance = width * 1.15;
-          const step = 8;
-
-          for (let distance = 0; distance <= maxDistance; distance += step) {
-            const settle = smoothstep(distance / 210);
-            const angle = startAngle + angleDelta * settle;
-            const normalX = -Math.sin(angle);
-            const normalY = Math.cos(angle);
-            const wave =
-              Math.sin(distance * .018 + index * .83) * waveAmplitude * (1 - settle * .48);
-
-            x += Math.cos(angle) * step;
-            y += Math.sin(angle) * step;
-
-            path.lineTo(
-              x + normalX * wave,
-              y + normalY * wave
-            );
-
-            if (x < -80 || x > width + 80 || y > height + 80) break;
-          }
-
-          drawPath(path);
-
-          // A restrained backward continuation keeps the line visually connected
-          // to the same source trace while allowing selected traces to reach the title area.
+          // Selected traces continue toward the title with stronger, slower-changing deviation.
           if (index === 0 || index === 4 || index === 5 || index === 7) {
-            const backPath = new Path2D();
-            let bx = startX;
-            let by = startY;
-            const backAngle = startAngle + Math.PI;
+            const backward = buildJaggedPath({
+              startX,
+              startY,
+              angle: startAngle + Math.PI,
+              targetAngle: Math.PI,
+              index: index + 100,
+              maxDistance: width * .78,
+              amplitudeScale: 1.28,
+              settleDistance: 560
+            });
 
-            backPath.moveTo(bx, by);
-
-            for (let distance = 0; distance <= width * .72; distance += step) {
-              const settle = smoothstep(distance / 380);
-              const leftTarget = Math.PI;
-              let delta = leftTarget - backAngle;
-
-              while (delta > Math.PI) delta -= Math.PI * 2;
-              while (delta < -Math.PI) delta += Math.PI * 2;
-
-              const angle = backAngle + delta * settle;
-              const normalX = -Math.sin(angle);
-              const normalY = Math.cos(angle);
-              const titleWaveAmplitude = waveAmplitude * 1.65;
-              const wave =
-                Math.sin(distance * .015 + index * .71 + 1.4) *
-                titleWaveAmplitude *
-                (1 - settle * .38);
-
-              bx += Math.cos(angle) * step;
-              by += Math.sin(angle) * step;
-
-              backPath.lineTo(
-                bx + normalX * wave,
-                by + normalY * wave
-              );
-
-              if (bx < -80 || by < -80 || by > height + 80) break;
-            }
-
-            drawPath(backPath);
+            strokeOutside(backward, .66);
           }
         });
 
