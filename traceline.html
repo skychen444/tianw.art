@@ -139,7 +139,18 @@
           const rect = section.getBoundingClientRect();
           const scrollable = Math.max(1, section.offsetHeight - innerHeight);
           const progress = clamp(-rect.top / scrollable);
+          const peak = (center, width) => clamp(1 - Math.abs(progress - center) / width);
+
+          const o1 = clamp(1 - progress / .24);
+          const o2 = peak(.30, .22);
+          const o3 = peak(.58, .22);
+          const o4 = clamp((progress - .56) / .28);
+
           root.style.setProperty('--trace-progress', progress.toFixed(4));
+          root.style.setProperty('--trace-o1', o1.toFixed(4));
+          root.style.setProperty('--trace-o2', o2.toFixed(4));
+          root.style.setProperty('--trace-o3', o3.toFixed(4));
+          root.style.setProperty('--trace-o4', o4.toFixed(4));
         }
 
         if (header) {
