@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v9">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v10">
 </head>
 
 <body class="dark-page traceline-page">
@@ -271,7 +271,7 @@
             backPath.moveTo(bx, by);
 
             for (let distance = 0; distance <= width * .72; distance += step) {
-              const settle = smoothstep(distance / 260);
+              const settle = smoothstep(distance / 380);
               const leftTarget = Math.PI;
               let delta = leftTarget - backAngle;
 
@@ -281,11 +281,11 @@
               const angle = backAngle + delta * settle;
               const normalX = -Math.sin(angle);
               const normalY = Math.cos(angle);
+              const titleWaveAmplitude = waveAmplitude * 1.65;
               const wave =
-                Math.sin(distance * .017 + index * .71 + 1.4) *
-                waveAmplitude *
-                .72 *
-                (1 - settle * .55);
+                Math.sin(distance * .015 + index * .71 + 1.4) *
+                titleWaveAmplitude *
+                (1 - settle * .38);
 
               bx += Math.cos(angle) * step;
               by += Math.sin(angle) * step;
