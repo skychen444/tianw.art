@@ -80,7 +80,8 @@
   overflow: visible;
 }
 
-.trace-ambient-canvas {
+.trace-static-canvas,
+.trace-interactive-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -89,9 +90,17 @@
   pointer-events: none;
 }
 
+.trace-static-canvas {
+  z-index: 1;
+}
+
+.trace-interactive-canvas {
+  z-index: 2;
+}
+
 .trace-flow-readout {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   right: max(6%, calc((100vw - 1680px) / 2));
   top: calc(var(--trace-overlap) + 42px);
   display: flex;
@@ -106,7 +115,7 @@
 
 .trace-statement-block {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   left: max(6%, calc((100vw - 1680px) / 2));
   top: calc(var(--trace-overlap) + var(--trace-gap));
   width: min(66%, 1120px);
@@ -415,7 +424,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .trace-ambient-canvas {
+  .trace-static-canvas,
+  .trace-interactive-canvas {
     display: none;
   }
 
