@@ -69,3 +69,19 @@
     font-size:clamp(20px,1.7vw,44px);
   }
 }
+
+@media(min-width:761px){
+  .works-page .page{
+    width:88%;
+    margin-left:auto;
+    margin-right:auto;
+    padding-left:0;
+    padding-right:0;
+  }
+}
+
+@media(min-width:1800px){
+  .works-page .page{
+    width:92%;
+  }
+}
