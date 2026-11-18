@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v11">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v12">
 </head>
 
 <body class="dark-page traceline-page">
@@ -123,6 +123,8 @@
       const flow = document.getElementById('traceFlow');
       const canvas = document.getElementById('traceCanvas');
       const heroImage = document.querySelector('.trace-hero-image img');
+      const title = document.querySelector('.trace-intro h1');
+      const statement = document.querySelector('.trace-statement-block');
       const page = document.querySelector('.traceline-page');
       const header = document.querySelector('.site-header');
       const ctx = canvas ? canvas.getContext('2d') : null;
@@ -143,14 +145,14 @@
       };
 
       const traceSeeds = [
-        { x: 1723 / 2048, y: 646 / 1079, dx: .330, dy: .944 },
-        { x: 1316 / 2048, y: 647 / 1079, dx: .447, dy: .894 },
-        { x: 1194 / 2048, y: 708 / 1079, dx: .919, dy: .394 },
-        { x: 1408 / 2048, y: 719 / 1079, dx: .351, dy: .936 },
-        { x: 569 / 2048, y: 720 / 1079, dx: -.330, dy: .944 },
-        { x: 815 / 2048, y: 721 / 1079, dx: .685, dy: .729 },
-        { x: 1383 / 2048, y: 742 / 1079, dx: .466, dy: .885 },
-        { x: 615 / 2048, y: 886 / 1079, dx: -.447, dy: .894 }
+        // Actual left-edge crossings measured from the source image.
+        { side: 'left',  x: 0 / 2048,    y: 161 / 1079,  dx: .897, dy: .442 },
+        { side: 'left',  x: 0 / 2048,    y: 448 / 1079,  dx: .148, dy: -.989 },
+        { side: 'left',  x: 0 / 2048,    y: 730 / 1079,  dx: .911, dy: .412 },
+
+        // Two real traces approaching the right edge, before the source-image border artifact.
+        { side: 'right', x: 2000 / 2048, y: 465 / 1079,  dx: .999, dy: -.027 },
+        { side: 'right', x: 2000 / 2048, y: 520 / 1079,  dx: .994, dy: -.107 }
       ];
 
       const smoothstep = (t) => {
@@ -163,8 +165,13 @@
       const hash = (a, b) =>
         fract(Math.sin(a * 127.1 + b * 311.7) * 43758.5453123);
 
+      const fract = (value) => value - Math.floor(value);
+
+      const hash = (a, b) =>
+        fract(Math.sin(a * 127.1 + b * 311.7) * 43758.5453123);
+
       const drawTrace = () => {
-        if (!canvas || !ctx || !heroImage) return;
+        if (!canvas || !ctx || !heroImage || !statement) return;
 
         const width = canvas.clientWidth;
         const height = canvas.clientHeight;
@@ -174,6 +181,8 @@
 
         const canvasRect = canvas.getBoundingClientRect();
         const imageRect = heroImage.getBoundingClientRect();
+        const titleRect = title ? title.getBoundingClientRect() : null;
+        const statementRect = statement.getBoundingClientRect();
 
         const scale = Math.max(
           imageRect.width / heroImage.naturalWidth,
@@ -187,15 +196,21 @@
 
         const imageX = imageRect.left - canvasRect.left;
         const imageY = imageRect.top - canvasRect.top;
+        const statementY = statementRect.top - canvasRect.top;
+        const statementH = statementRect.height;
+        const titleCenterY = titleRect
+          ? titleRect.top - canvasRect.top + titleRect.height * .55
+          : imageY + imageRect.height * .20;
 
-        const effect = smoothstep((progress - .10) / .82);
+        // Keep strong deviation through the statement area, then flatten later.
+        const effect = smoothstep((progress - .28) / .62);
         const deviation = 1 - effect;
 
         ctx.lineWidth = 1;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
-        const clipOutsideImage = () => {
+        const outsideClip = () => {
           const clip = new Path2D();
           clip.rect(0, 0, width, height);
           clip.rect(imageX, imageY, imageRect.width, imageRect.height);
@@ -204,113 +219,150 @@
 
         const strokeOutside = (path, alpha = .68) => {
           ctx.save();
-          clipOutsideImage();
-          ctx.strokeStyle = 'rgba(244,243,239,.46)';
+          outsideClip();
+          ctx.strokeStyle = 'rgba(244,243,239,.48)';
           ctx.globalAlpha = alpha;
           ctx.stroke(path);
           ctx.restore();
         };
 
-        const buildJaggedPath = ({
-          startX,
-          startY,
-          angle,
-          targetAngle,
+        const appendJaggedSegment = ({
+          path,
+          fromX,
+          fromY,
+          toX,
+          toY,
           index,
-          maxDistance,
-          amplitudeScale = 1,
-          settleDistance = 360
+          amplitude,
+          startDistance = 0
         }) => {
-          const path = new Path2D();
-          const step = 13;
-          let x = startX;
-          let y = startY;
-          let currentAngle = angle;
-          let localOffset = 0;
+          const dx = toX - fromX;
+          const dy = toY - fromY;
+          const length = Math.max(1, Math.hypot(dx, dy));
+          const ux = dx / length;
+          const uy = dy / length;
+          const nx = -uy;
+          const ny = ux;
+          const step = 12;
 
-          path.moveTo(x, y);
+          let lastX = fromX;
+          let lastY = fromY;
 
-          for (let distance = 0; distance <= maxDistance; distance += step) {
-            const settle = smoothstep(distance / settleDistance);
-
-            let delta = targetAngle - currentAngle;
-            while (delta > Math.PI) delta -= Math.PI * 2;
-            while (delta < -Math.PI) delta += Math.PI * 2;
-
-            currentAngle += delta * (.035 + settle * .07);
-
-            const coarse = hash(index * 13 + Math.floor(distance / 26), 1) - .5;
-            const fine = hash(index * 31 + Math.floor(distance / 13), 2) - .5;
-            const kink = hash(index * 47 + Math.floor(distance / 52), 3) > .72
-              ? (hash(index * 59 + Math.floor(distance / 52), 4) - .5) * 1.9
+          for (let d = step; d <= length; d += step) {
+            const t = d / length;
+            const coarse = hash(index * 19 + Math.floor((d + startDistance) / 36), 1) - .5;
+            const fine = hash(index * 41 + Math.floor((d + startDistance) / 12), 2) - .5;
+            const kink = hash(index * 67 + Math.floor((d + startDistance) / 60), 3) > .76
+              ? (hash(index * 83 + Math.floor((d + startDistance) / 60), 4) - .5) * 2.1
               : 0;
 
-            const jagged =
-              (coarse * 1.15 + fine * .55 + kink) *
-              (10 + 42 * deviation) *
-              amplitudeScale *
-              (1 - settle * .76);
+            const preserve = t < .18 ? t / .18 : 1;
+            const jitter =
+              (coarse * 1.18 + fine * .62 + kink) *
+              amplitude *
+              preserve;
 
-            localOffset = localOffset * .34 + jagged * .66;
-
-            const normalX = -Math.sin(currentAngle);
-            const normalY = Math.cos(currentAngle);
-
-            x += Math.cos(currentAngle) * step;
-            y += Math.sin(currentAngle) * step;
-
-            path.lineTo(
-              x + normalX * localOffset,
-              y + normalY * localOffset
-            );
-
-            if (x < -100 || x > width + 100 || y < -100 || y > height + 100) break;
+            lastX = fromX + dx * t + nx * jitter;
+            lastY = fromY + dy * t + ny * jitter;
+            path.lineTo(lastX, lastY);
           }
 
-          return path;
+          return { x: lastX, y: lastY, distance: startDistance + length };
         };
 
-        traceSeeds.forEach((seed, index) => {
+        const mapSeed = (seed) => {
           const sourceX = seed.x * heroImage.naturalWidth;
           const sourceY = seed.y * heroImage.naturalHeight;
 
-          const startX =
-            imageRect.left - canvasRect.left - cropX + sourceX * scale;
-          const startY =
-            imageRect.top - canvasRect.top - cropY + sourceY * scale;
+          return {
+            x: imageRect.left - canvasRect.left - cropX + sourceX * scale,
+            y: imageRect.top - canvasRect.top - cropY + sourceY * scale
+          };
+        };
 
-          const startAngle = Math.atan2(seed.dy, seed.dx);
-          const forwardTarget = Math.abs(seed.dx) > .18
-            ? (seed.dx > 0 ? 0 : Math.PI)
-            : (seed.x < .5 ? Math.PI : 0);
+        traceSeeds.forEach((seed, index) => {
+          const start = mapSeed(seed);
+          const inwardAngle = Math.atan2(seed.dy, seed.dx);
+          const outwardAngle = seed.side === 'left'
+            ? inwardAngle + Math.PI
+            : inwardAngle;
 
-          const forward = buildJaggedPath({
-            startX,
-            startY,
-            angle: startAngle,
-            targetAngle: forwardTarget,
-            index,
-            maxDistance: width * 1.2,
-            amplitudeScale: 1,
-            settleDistance: 430
-          });
+          // 2–3 retraces share the exact image contact point, then separate only outside.
+          const retraceCount = index < 3 ? 3 : 2;
 
-          strokeOutside(forward, .72);
+          for (let r = 0; r < retraceCount; r += 1) {
+            const path = new Path2D();
+            path.moveTo(start.x, start.y);
 
-          // Selected traces continue toward the title with stronger, slower-changing deviation.
-          if (index === 0 || index === 4 || index === 5 || index === 7) {
-            const backward = buildJaggedPath({
-              startX,
-              startY,
-              angle: startAngle + Math.PI,
-              targetAngle: Math.PI,
-              index: index + 100,
-              maxDistance: width * .78,
-              amplitudeScale: 1.28,
-              settleDistance: 560
+            const outwardDistance = 72 + r * 12;
+            const exitX = start.x + Math.cos(outwardAngle) * outwardDistance;
+            const exitY = start.y + Math.sin(outwardAngle) * outwardDistance;
+
+            // First segment preserves the source tangent with very little variation.
+            appendJaggedSegment({
+              path,
+              fromX: start.x,
+              fromY: start.y,
+              toX: exitX,
+              toY: exitY,
+              index: index * 10 + r,
+              amplitude: 2.5 + deviation * 2.5
             });
 
-            strokeOutside(backward, .66);
+            // Upper lines are directed into the title field with strong, irregular movement.
+            if (seed.side === 'left' && index <= 1) {
+              const titleTargetX = Math.max(30, imageX * .10);
+              const titleTargetY =
+                titleCenterY +
+                (index === 0 ? -34 : 64) +
+                (r - 1) * 24;
+
+              appendJaggedSegment({
+                path,
+                fromX: exitX,
+                fromY: exitY,
+                toX: titleTargetX,
+                toY: titleTargetY,
+                index: 200 + index * 10 + r,
+                amplitude: 14 + deviation * 40,
+                startDistance: outwardDistance
+              });
+            } else {
+              // Other traces descend into the statement field, then continue across it.
+              const sideX = seed.side === 'left'
+                ? Math.max(24, imageX * .08)
+                : Math.min(width - 24, imageX + imageRect.width + (width - imageX - imageRect.width) * .92);
+
+              const laneY =
+                statementY +
+                statementH * .20 +
+                ((index + r) % 5) * Math.max(28, statementH * .14);
+
+              const mid = appendJaggedSegment({
+                path,
+                fromX: exitX,
+                fromY: exitY,
+                toX: sideX,
+                toY: laneY,
+                index: 300 + index * 10 + r,
+                amplitude: 12 + deviation * 34,
+                startDistance: outwardDistance
+              });
+
+              const endX = seed.side === 'left' ? width - 36 : 36;
+              appendJaggedSegment({
+                path,
+                fromX: mid.x,
+                fromY: mid.y,
+                toX: endX,
+                toY: laneY + (r - .5) * 24,
+                index: 500 + index * 10 + r,
+                amplitude: 8 + deviation * 30,
+                startDistance: mid.distance
+              });
+            }
+
+            strokeOutside(path, r === 0 ? .74 : .34);
           }
         });
 
