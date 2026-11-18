@@ -3,6 +3,8 @@
   --text-width: 760px;
   --paper: #f4f3ef;
   --trace-progress: 0;
+  --trace-gap: clamp(130px, 15vh, 190px);
+  --trace-overlap: clamp(480px, 52vh, 560px);
   background: #101010;
   color: var(--paper);
 }
@@ -64,9 +66,9 @@
 
 .trace-flow {
   position: relative;
-  height: 102svh;
+  height: calc(var(--trace-overlap) + (var(--trace-gap) * 2) + 240px);
   margin:
-    clamp(-560px,-56vh,-410px)
+    calc(var(--trace-overlap) * -1)
     calc(clamp(40px, 4.4vw, 92px) * -1)
     0;
 }
@@ -90,7 +92,7 @@
   position: absolute;
   z-index: 2;
   right: max(6%, calc((100vw - 1680px) / 2));
-  top: 46%;
+  top: calc(var(--trace-overlap) + 42px);
   display: flex;
   gap: 8px;
   align-items: center;
@@ -105,7 +107,7 @@
   position: absolute;
   z-index: 2;
   left: max(6%, calc((100vw - 1680px) / 2));
-  top: 63%;
+  top: calc(var(--trace-overlap) + var(--trace-gap));
   width: min(66%, 1120px);
   opacity: 1;
   transform: none;
@@ -142,7 +144,7 @@
 }
 
 .trace-concept {
-  margin-top: clamp(90px, 11vh, 150px);
+  margin-top: var(--trace-gap);
   margin-bottom: clamp(150px, 18vh, 220px);
 }
 
@@ -275,6 +277,8 @@
 @media (max-width: 760px) {
   .traceline-page {
     --content-width: 100%;
+    --trace-gap: 76px;
+    --trace-overlap: 46vw;
   }
 
   .traceline-main {
@@ -313,22 +317,22 @@
   }
 
   .trace-flow {
-    height: 92svh;
-    margin-top: -48vw;
+    height: calc(var(--trace-overlap) + (var(--trace-gap) * 2) + 210px);
+    margin-top: calc(var(--trace-overlap) * -1);
     margin-left: -20px;
     margin-right: -20px;
   }
 
   .trace-flow-readout {
     right: 20px;
-    top: 42%;
+    top: calc(var(--trace-overlap) + 24px);
     font-size: 8px;
   }
 
   .trace-statement-block {
     left: 20px;
     right: 20px;
-    top: 61%;
+    top: calc(var(--trace-overlap) + var(--trace-gap));
     width: auto;
   }
 
@@ -355,7 +359,7 @@
   }
 
   .trace-concept {
-    margin-top: 72px;
+    margin-top: var(--trace-gap);
     margin-bottom: 90px;
   }
 
