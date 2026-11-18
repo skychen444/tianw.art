@@ -3,6 +3,10 @@
   --text-width: 760px;
   --paper: #f4f3ef;
   --trace-progress: 0;
+  --trace-o1: 1;
+  --trace-o2: 0;
+  --trace-o3: 0;
+  --trace-o4: 0;
   background: #101010;
   color: var(--paper);
 }
@@ -69,20 +73,20 @@
 }
 
 .trace-frame-1 {
-  opacity: clamp(0, calc(1 - var(--trace-progress) * 4), 1);
+  opacity: var(--trace-o1);
   transform: scale(calc(1.01 - var(--trace-progress) * .01));
 }
 
 .trace-frame-2 {
-  opacity: clamp(0, calc(1 - abs(var(--trace-progress) - .30) * 5), 1);
+  opacity: var(--trace-o2);
 }
 
 .trace-frame-3 {
-  opacity: clamp(0, calc(1 - abs(var(--trace-progress) - .58) * 5), 1);
+  opacity: var(--trace-o3);
 }
 
 .trace-frame-4 {
-  opacity: clamp(0, calc((var(--trace-progress) - .58) * 2.8), 1);
+  opacity: var(--trace-o4);
 }
 
 .trace-readout {
