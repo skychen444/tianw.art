@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v15">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v16">
 </head>
 
 <body class="dark-page traceline-page">
@@ -131,7 +131,7 @@
       const staticCtx = staticCanvas ? staticCanvas.getContext('2d') : null;
       const interactiveCtx = interactiveCanvas ? interactiveCanvas.getContext('2d') : null;
 
-      let pointerProgress = .10;
+      let scrollProgress = 0;
       let raf = 0;
 
       const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
@@ -228,6 +228,52 @@
         return path;
       };
 
+      const buildContinuation = ({
+        ctx,
+        startX,
+        startY,
+        angle,
+        key,
+        distance,
+        amplitude,
+        turnStrength
+      }) => {
+        const path = new Path2D();
+        const step = 12;
+        let x = startX;
+        let y = startY;
+        let heading = angle;
+        let drift = 0;
+
+        path.moveTo(x, y);
+
+        for (let d = 0; d <= distance; d += step) {
+          const coarse = hash(key * 17 + Math.floor(d / 42), 1) - .5;
+          const fine = hash(key * 31 + Math.floor(d / 14), 2) - .5;
+          const kink = hash(key * 53 + Math.floor(d / 70), 3) > .79
+            ? (hash(key * 71 + Math.floor(d / 70), 4) - .5) * 1.15
+            : 0;
+
+          drift = drift * .72 + (coarse * .46 + fine * .20 + kink) * turnStrength;
+          heading += drift * .015;
+
+          const normalX = -Math.sin(heading);
+          const normalY = Math.cos(heading);
+          const localAmplitude =
+            (hash(key * 97 + Math.floor(d / 18), 5) - .5) * amplitude;
+
+          x += Math.cos(heading) * step;
+          y += Math.sin(heading) * step;
+
+          path.lineTo(
+            x + normalX * localAmplitude,
+            y + normalY * localAmplitude
+          );
+        }
+
+        return path;
+      };
+
       const drawStatic = () => {
         if (!staticCanvas || !staticCtx || !heroImage) return;
 
@@ -247,45 +293,38 @@
 
         traceSeeds.forEach((seed, index) => {
           const start = mapSeed(seed, canvasRect, imageRect);
+          const sourceAngle = Math.atan2(seed.dy, seed.dx);
           const outwardAngle =
             seed.side === 'left'
-              ? Math.atan2(seed.dy, seed.dx) + Math.PI
+              ? sourceAngle + Math.PI
               : seed.side === 'right'
-                ? Math.atan2(seed.dy, seed.dx)
-                : Math.atan2(Math.abs(seed.dy), seed.dx);
+                ? sourceAngle
+                : sourceAngle;
 
           const retraces = seed.side === 'bottom' ? 2 : 3;
 
           for (let r = 0; r < retraces; r += 1) {
-            let distance;
-            if (seed.side === 'left') distance = width * (.58 + r * .05);
-            else if (seed.side === 'right') distance = width * (.34 + r * .04);
-            else distance = height * (.44 + r * .06);
-
-            const targetX =
+            const distance =
               seed.side === 'bottom'
-                ? start.x + Math.cos(outwardAngle) * distance
-                : start.x + Math.cos(outwardAngle) * distance;
+                ? height * (.42 + r * .05)
+                : width * (seed.side === 'left' ? .62 + r * .04 : .38 + r * .04);
 
-            const targetY =
-              seed.side === 'bottom'
-                ? start.y + Math.sin(outwardAngle) * distance
-                : start.y + Math.sin(outwardAngle) * distance;
-
-            const path = jaggedPolyline({
+            // Each line continues in the source tangent direction.
+            // It can kink and wander, but never aims at an arbitrary target point.
+            const path = buildContinuation({
               ctx: staticCtx,
-              fromX: start.x,
-              fromY: start.y,
-              toX: targetX,
-              toY: targetY,
+              startX: start.x,
+              startY: start.y,
+              angle: outwardAngle + (r - 1) * .018,
               key: 100 + index * 10 + r,
-              amplitude: 18 + r * 3,
-              preserveStart: true
+              distance,
+              amplitude: 8 + r * 2.5,
+              turnStrength: .82
             });
 
             staticCtx.save();
             outsideImageClip(staticCtx, canvasRect, imageRect, width, height);
-            staticCtx.globalAlpha = r === 0 ? .76 : .34;
+            staticCtx.globalAlpha = r === 0 ? .76 : .32;
             staticCtx.stroke(path);
             staticCtx.restore();
           }
@@ -308,9 +347,10 @@
         const statementY = statementRect.top - canvasRect.top;
         const statementH = statementRect.height;
 
-        // Mouse movement flattens the trace, but never to zero deviation.
-        const flatten = smoothstep(pointerProgress);
-        const amplitude = 42 - flatten * 30; // ends at 12, never completely flat
+        // Scroll through the statement zone gradually reduces tension.
+        // The mapping is intentionally compressed by 50%, so the change takes longer.
+        const flatten = smoothstep(scrollProgress * .50);
+        const amplitude = 46 - flatten * 32; // ends above zero: never completely flat
 
         interactiveCtx.lineWidth = 1;
         interactiveCtx.lineCap = 'round';
@@ -336,7 +376,7 @@
               ? (hash(i * 89 + Math.floor(x / 65), 8) - .5) * 1.8
               : 0;
 
-            const jitter = (coarse * 1.1 + fine * .56 + kink) * amplitude;
+            const jitter = (coarse * 1.18 + fine * .62 + kink) * amplitude;
             path.lineTo(x, baseY + jitter);
           }
 
@@ -345,15 +385,6 @@
         }
 
         interactiveCtx.globalAlpha = 1;
-      };
-
-      const updatePointerProgress = (event) => {
-        const rect = flow.getBoundingClientRect();
-        if (!rect.width) return;
-
-        // Horizontal mouse movement controls the flattening.
-        pointerProgress = clamp((event.clientX - rect.left) / rect.width);
-        drawInteractive();
       };
 
       const requestUpdate = () => {
@@ -366,14 +397,19 @@
         }
       };
 
-      flow?.addEventListener('pointermove', updatePointerProgress, { passive: true });
-
-      // Touch/trackpad fallback: scrolling also produces gradual narrowing.
       addEventListener('scroll', () => {
-        if (!flow) return;
-        const rect = flow.getBoundingClientRect();
-        const visible = clamp((innerHeight - rect.top) / Math.max(1, innerHeight + rect.height));
-        pointerProgress = Math.max(pointerProgress, visible * .82);
+        if (!flow || !statement) return;
+
+        const statementRect = statement.getBoundingClientRect();
+        const statementCenter = statementRect.top + statementRect.height * .5;
+
+        // Starts before the statement reaches center and finishes after it passes.
+        // Because drawInteractive uses only 50% of this progress, the visual change
+        // feels roughly half-speed through the statement section.
+        const start = innerHeight * .92;
+        const end = innerHeight * .10;
+        scrollProgress = clamp((start - statementCenter) / Math.max(1, start - end));
+
         drawInteractive();
 
         if (header) {
