@@ -18,6 +18,7 @@ This repository is the official artist portfolio of Tian W. Treat it as an autho
 
 ## Artwork pages and content
 - Maintain consistent outer boundaries, metadata sizes, headings, and section hierarchy across works unless an artwork intentionally differs.
+- Works desktop composition: laptop is the master layout. From 761px upward, preserve the same composition on laptop and large displays such as the ProArt monitor; do not introduce a separate large-desktop width or spacing override that changes alignment. Use a capped centered content width rather than viewport-dependent expansion. Mobile remains a separate layout.
 - Preserve artwork-specific concepts, captions, images, video, and interactions.
 - For a new work, inspect an existing work page and its asset conventions first. Use appropriately sized web media and meaningful alt text; do not overwrite source assets.
 - The bilingual English/Traditional Chinese interface is a planned direction. Do not introduce partial translation or change the current language experience without a scoped plan and approval.
