@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v1">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v2">
 </head>
 
 <body class="dark-page traceline-page">
@@ -21,27 +21,27 @@
 
     <section class="trace-scroll" id="traceScroll" aria-label="traceLine opening sequence">
       <div class="trace-sticky">
-        <div class="trace-intro">
-          <h1>traceLine</h1>
-          <p class="trace-meta">2026<br>Interactive computational work</p>
-        </div>
+        <div class="trace-opening-frame">
+          <div class="trace-intro">
+            <h1>traceLine</h1>
+            <p class="trace-meta">2026<br>Interactive computational work</p>
+          </div>
 
-        <div class="trace-field" aria-hidden="true">
-          <img class="trace-frame trace-frame-1" src="assets/traceline/traceLine-thumb.webp" alt="">
-          <img class="trace-frame trace-frame-2" src="assets/traceline/traceline-2.webp" alt="">
-          <img class="trace-frame trace-frame-3" src="assets/traceline/traceline-3.webp" alt="">
-          <img class="trace-frame trace-frame-4" src="assets/traceline/traceline-4.webp" alt="">
-        </div>
+          <div class="trace-field" aria-hidden="true">
+            <img class="trace-source" src="assets/traceline/traceLine-thumb.webp" alt="">
+            <canvas class="trace-canvas" id="traceCanvas"></canvas>
+          </div>
 
-        <div class="trace-readout" aria-hidden="true">
-          <span>deviation</span>
-          <span class="trace-arrow">↓</span>
-        </div>
+          <div class="trace-readout" aria-hidden="true">
+            <span>deviation</span>
+            <span class="trace-arrow">↓</span>
+          </div>
 
-        <p class="trace-statement">
-          Every trace reduces<br>
-          what can happen next.
-        </p>
+          <p class="trace-statement">
+            Every trace reduces<br>
+            what can happen next.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -126,11 +126,73 @@
   <script>
     (() => {
       const section = document.getElementById('traceScroll');
+      const canvas = document.getElementById('traceCanvas');
       const root = document.documentElement;
       const header = document.querySelector('.site-header');
+      const ctx = canvas ? canvas.getContext('2d') : null;
       let raf = 0;
+      let progress = 0;
 
       const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+
+      const resizeCanvas = () => {
+        if (!canvas || !ctx) return;
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        canvas.width = Math.max(1, Math.round(rect.width * dpr));
+        canvas.height = Math.max(1, Math.round(rect.height * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      };
+
+      const drawTrace = () => {
+        if (!canvas || !ctx) return;
+
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
+        if (!width || !height) return;
+
+        ctx.clearRect(0, 0, width, height);
+
+        const narrowing = 1 - progress;
+        const amplitude = 4 + 42 * narrowing;
+        const lineCount = 17;
+        const step = height / (lineCount + 1);
+
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(10,10,10,.78)';
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        for (let line = 0; line < lineCount; line += 1) {
+          const baseY = step * (line + 1);
+          const phase = line * 0.91;
+          const local = 0.72 + ((line * 37) % 11) / 28;
+
+          for (let pass = 0; pass < 3; pass += 1) {
+            ctx.beginPath();
+
+            for (let x = -12; x <= width + 12; x += 8) {
+              const nx = x / Math.max(1, width);
+              const broad =
+                Math.sin(nx * Math.PI * (2.15 + line * .025) + phase) * .62 +
+                Math.sin(nx * Math.PI * 6.4 + phase * 1.7) * .23 +
+                Math.sin(nx * Math.PI * 13.2 + line * .41) * .15;
+
+              const wearBias = Math.sin(nx * Math.PI * 1.4 + line * .18) * 2.4;
+              const passOffset = (pass - 1) * (1.8 + narrowing * 1.3);
+              const y = baseY + broad * amplitude * local + wearBias * narrowing + passOffset;
+
+              if (x === -12) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+
+            ctx.globalAlpha = pass === 1 ? .72 : .18;
+            ctx.stroke();
+          }
+        }
+
+        ctx.globalAlpha = 1;
+      };
 
       const update = () => {
         raf = 0;
@@ -138,19 +200,9 @@
         if (section) {
           const rect = section.getBoundingClientRect();
           const scrollable = Math.max(1, section.offsetHeight - innerHeight);
-          const progress = clamp(-rect.top / scrollable);
-          const peak = (center, width) => clamp(1 - Math.abs(progress - center) / width);
-
-          const o1 = clamp(1 - progress / .24);
-          const o2 = peak(.30, .22);
-          const o3 = peak(.58, .22);
-          const o4 = clamp((progress - .56) / .28);
-
+          progress = clamp(-rect.top / scrollable);
           root.style.setProperty('--trace-progress', progress.toFixed(4));
-          root.style.setProperty('--trace-o1', o1.toFixed(4));
-          root.style.setProperty('--trace-o2', o2.toFixed(4));
-          root.style.setProperty('--trace-o3', o3.toFixed(4));
-          root.style.setProperty('--trace-o4', o4.toFixed(4));
+          drawTrace();
         }
 
         if (header) {
@@ -163,7 +215,12 @@
       };
 
       addEventListener('scroll', requestUpdate, { passive: true });
-      addEventListener('resize', requestUpdate, { passive: true });
+      addEventListener('resize', () => {
+        resizeCanvas();
+        requestUpdate();
+      }, { passive: true });
+
+      resizeCanvas();
       requestUpdate();
     })();
   </script>
