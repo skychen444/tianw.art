@@ -72,22 +72,16 @@
 
 @media(min-width:761px){
   .works-page .page{
-    width:88%;
+    width:min(88%,1680px);
     margin-left:auto;
     margin-right:auto;
-    padding-top:clamp(180px,13vh,240px);
+    padding-top:clamp(180px,13vh,220px);
     padding-left:0;
     padding-right:0;
   }
 
   .works-page .page-title{
     margin-top:0;
-    margin-left:clamp(120px,13.5vw,250px);
-  }
-}
-
-@media(min-width:1800px){
-  .works-page .page{
-    width:92%;
+    margin-left:clamp(120px,10%,168px);
   }
 }
