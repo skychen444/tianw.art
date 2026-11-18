@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v16">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v17">
 </head>
 
 <body class="dark-page traceline-page">
@@ -158,11 +158,6 @@
         { side:'right', x:1, y:.46, dx:.99, dy:-.07 },
         { side:'right', x:1, y:.58, dx:.97, dy:.20 },
 
-        // Bottom-edge exits keep the image visually connected into the transition.
-        { side:'bottom', x:.18, y:1, dx:-.48, dy:.87 },
-        { side:'bottom', x:.35, y:1, dx:-.18, dy:.98 },
-        { side:'bottom', x:.58, y:1, dx:.20, dy:.98 },
-        { side:'bottom', x:.78, y:1, dx:.50, dy:.86 }
       ];
 
       const resizeCanvas = (canvas, ctx) => {
@@ -297,17 +292,13 @@
           const outwardAngle =
             seed.side === 'left'
               ? sourceAngle + Math.PI
-              : seed.side === 'right'
-                ? sourceAngle
-                : sourceAngle;
+              : sourceAngle;
 
-          const retraces = seed.side === 'bottom' ? 2 : 3;
+          const retraces = 3;
 
           for (let r = 0; r < retraces; r += 1) {
             const distance =
-              seed.side === 'bottom'
-                ? height * (.42 + r * .05)
-                : width * (seed.side === 'left' ? .62 + r * .04 : .38 + r * .04);
+              width * (seed.side === 'left' ? .64 + r * .045 : .40 + r * .045);
 
             // Each line continues in the source tangent direction.
             // It can kink and wander, but never aims at an arbitrary target point.
@@ -347,10 +338,10 @@
         const statementY = statementRect.top - canvasRect.top;
         const statementH = statementRect.height;
 
-        // Scroll through the statement zone gradually reduces tension.
-        // The mapping is intentionally compressed by 50%, so the change takes longer.
-        const flatten = smoothstep(scrollProgress * .50);
-        const amplitude = 46 - flatten * 32; // ends above zero: never completely flat
+        // The pinned statement section doubles the scroll distance.
+        // Use the full 0→1 progress here so the visual change is strong and legible.
+        const flatten = smoothstep(scrollProgress);
+        const amplitude = 58 - flatten * 43; // 58 → 15, never completely flat
 
         interactiveCtx.lineWidth = 1;
         interactiveCtx.lineCap = 'round';
@@ -398,17 +389,11 @@
       };
 
       addEventListener('scroll', () => {
-        if (!flow || !statement) return;
+        if (!flow) return;
 
-        const statementRect = statement.getBoundingClientRect();
-        const statementCenter = statementRect.top + statementRect.height * .5;
-
-        // Starts before the statement reaches center and finishes after it passes.
-        // Because drawInteractive uses only 50% of this progress, the visual change
-        // feels roughly half-speed through the statement section.
-        const start = innerHeight * .92;
-        const end = innerHeight * .10;
-        scrollProgress = clamp((start - statementCenter) / Math.max(1, start - end));
+        const rect = flow.getBoundingClientRect();
+        const scrollable = Math.max(1, flow.offsetHeight - innerHeight);
+        scrollProgress = clamp(-rect.top / scrollable);
 
         drawInteractive();
 
