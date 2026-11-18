@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>traceLine — Tian W.</title>
+  <link rel="stylesheet" href="style.css?v=20261118-core">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v1">
+</head>
+
+<body class="dark-page traceline-page">
+  <header class="site-header">
+    <a class="site-name" href="index.html">Tian W.</a>
+    <nav class="site-nav">
+      <a class="active" href="works.html">Works</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main class="traceline-main">
+
+    <section class="trace-scroll" id="traceScroll" aria-label="traceLine opening sequence">
+      <div class="trace-sticky">
+        <div class="trace-intro">
+          <h1>traceLine</h1>
+          <p class="trace-meta">2026<br>Interactive computational work</p>
+        </div>
+
+        <div class="trace-field" aria-hidden="true">
+          <img class="trace-frame trace-frame-1" src="assets/traceline/traceLine-thumb.webp" alt="">
+          <img class="trace-frame trace-frame-2" src="assets/traceline/traceline-2.webp" alt="">
+          <img class="trace-frame trace-frame-3" src="assets/traceline/traceline-3.webp" alt="">
+          <img class="trace-frame trace-frame-4" src="assets/traceline/traceline-4.webp" alt="">
+        </div>
+
+        <div class="trace-readout" aria-hidden="true">
+          <span>deviation</span>
+          <span class="trace-arrow">↓</span>
+        </div>
+
+        <p class="trace-statement">
+          Every trace reduces<br>
+          what can happen next.
+        </p>
+      </div>
+    </section>
+
+    <section class="trace-concept trace-section">
+      <div class="section-label">Concept</div>
+      <div class="trace-copy">
+        <p>
+          traceLine approaches time as an irreversible process of accumulated wear rather than a neutral measurement.
+        </p>
+        <p>
+          As interaction continues, the system gradually loses its ability to deviate. Existing paths are retraced and reinforced, narrowing the range of what can happen next.
+        </p>
+      </div>
+    </section>
+
+    <section class="trace-progression trace-section" aria-label="Progression of accumulated wear">
+      <figure>
+        <img src="assets/traceline/traceline-2.webp" alt="Early traceLine state with greater deviation" loading="lazy">
+        <figcaption>EARLY</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/traceline/traceline-3.webp" alt="Intermediate traceLine state with accumulated paths" loading="lazy">
+        <figcaption>ACCUMULATION</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/traceline/traceline-4.webp" alt="Later traceLine state with reduced deviation" loading="lazy">
+        <figcaption>WEAR</figcaption>
+      </figure>
+    </section>
+
+    <section class="trace-video-section trace-section">
+      <div class="trace-video-label">Moving image / documentation</div>
+      <video
+        class="trace-video"
+        controls
+        playsinline
+        preload="metadata"
+        poster="assets/traceline/traceLine-thumb.webp"
+      >
+        <source src="assets/traceline/traceline-web.mp4" type="video/mp4">
+      </video>
+    </section>
+
+    <section class="trace-installation trace-section">
+      <div class="trace-installation-copy">
+        <div class="section-label">Installation</div>
+        <p>
+          The projected work unfolds through sustained interaction, allowing accumulated traces to remain visible as the system becomes increasingly constrained by its own past.
+        </p>
+      </div>
+      <figure>
+        <img
+          src="assets/traceline/IMG_3576.webp"
+          alt="traceLine projected installation with a viewer standing in front of the work"
+          loading="lazy"
+        >
+      </figure>
+    </section>
+
+    <section class="trace-system trace-section">
+      <div class="section-label">System</div>
+      <div class="trace-system-body">
+        <div class="trace-system-rule" aria-label="System relationship">
+          <span>wear ↑</span>
+          <i aria-hidden="true"></i>
+          <span>curvature ↓</span>
+          <i aria-hidden="true"></i>
+          <span>deviation ↓</span>
+        </div>
+        <p>
+          Time accumulates irreversibly as wear. Increasing wear reduces curvature, while repeated redraws reinforce existing tracelines rather than generating new possibilities.
+        </p>
+      </div>
+    </section>
+
+    <div class="trace-links trace-section">
+      <a class="back-link" href="works.html">← Works</a>
+    </div>
+
+  </main>
+
+  <script>
+    (() => {
+      const section = document.getElementById('traceScroll');
+      const root = document.documentElement;
+      const header = document.querySelector('.site-header');
+      let raf = 0;
+
+      const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+
+      const update = () => {
+        raf = 0;
+
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          const scrollable = Math.max(1, section.offsetHeight - innerHeight);
+          const progress = clamp(-rect.top / scrollable);
+          const peak = (center, width) => clamp(1 - Math.abs(progress - center) / width);
+
+          const o1 = clamp(1 - progress / .24);
+          const o2 = peak(.30, .22);
+          const o3 = peak(.58, .22);
+          const o4 = clamp((progress - .56) / .28);
+
+          root.style.setProperty('--trace-progress', progress.toFixed(4));
+          root.style.setProperty('--trace-o1', o1.toFixed(4));
+          root.style.setProperty('--trace-o2', o2.toFixed(4));
+          root.style.setProperty('--trace-o3', o3.toFixed(4));
+          root.style.setProperty('--trace-o4', o4.toFixed(4));
+        }
+
+        if (header) {
+          header.classList.toggle('header-hidden', scrollY > 70);
+        }
+      };
+
+      const requestUpdate = () => {
+        if (!raf) raf = requestAnimationFrame(update);
+      };
+
+      addEventListener('scroll', requestUpdate, { passive: true });
+      addEventListener('resize', requestUpdate, { passive: true });
+      requestUpdate();
+    })();
+  </script>
+</body>
+</html>
