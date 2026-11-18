@@ -3,8 +3,9 @@
   --text-width: 760px;
   --paper: #f4f3ef;
   --trace-progress: 0;
-  --trace-gap: clamp(175px, 19vh, 245px);
+  --trace-gap: clamp(190px, 21vh, 260px);
   --trace-overlap: clamp(480px, 52vh, 560px);
+  --trace-statement-space: 190px;
   background: #101010;
   color: var(--paper);
 }
@@ -66,7 +67,7 @@
 
 .trace-flow {
   position: relative;
-  height: calc(var(--trace-overlap) + (var(--trace-gap) * 2) + 320px);
+  height: calc(var(--trace-overlap) + var(--trace-gap) + var(--trace-statement-space) + var(--trace-gap));
   margin:
     calc(var(--trace-overlap) * -1)
     calc(clamp(40px, 4.4vw, 92px) * -1)
@@ -144,7 +145,7 @@
 }
 
 .trace-concept {
-  margin-top: var(--trace-gap);
+  margin-top: 0;
   margin-bottom: clamp(150px, 18vh, 220px);
 }
 
@@ -277,8 +278,9 @@
 @media (max-width: 760px) {
   .traceline-page {
     --content-width: 100%;
-    --trace-gap: 96px;
+    --trace-gap: 110px;
     --trace-overlap: 46vw;
+    --trace-statement-space: 150px;
   }
 
   .traceline-main {
@@ -317,7 +319,7 @@
   }
 
   .trace-flow {
-    height: calc(var(--trace-overlap) + (var(--trace-gap) * 2) + 250px);
+    height: calc(var(--trace-overlap) + var(--trace-gap) + var(--trace-statement-space) + var(--trace-gap));
     margin-top: calc(var(--trace-overlap) * -1);
     margin-left: -20px;
     margin-right: -20px;
@@ -359,7 +361,7 @@
   }
 
   .trace-concept {
-    margin-top: var(--trace-gap);
+    margin-top: 0;
     margin-bottom: 90px;
   }
 
