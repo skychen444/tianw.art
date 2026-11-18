@@ -64,9 +64,9 @@
 
 .trace-flow {
   position: relative;
-  height: 58svh;
+  height: 80svh;
   margin:
-    clamp(-340px,-34vh,-250px)
+    clamp(-560px,-56vh,-410px)
     calc(clamp(40px, 4.4vw, 92px) * -1)
     0;
 }
@@ -90,7 +90,7 @@
   position: absolute;
   z-index: 2;
   right: max(6%, calc((100vw - 1680px) / 2));
-  top: 54%;
+  top: 49%;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -105,7 +105,7 @@
   position: absolute;
   z-index: 2;
   left: max(6%, calc((100vw - 1680px) / 2));
-  top: 60%;
+  top: 57%;
   width: min(66%, 1120px);
   opacity: 1;
   transform: none;
@@ -313,22 +313,22 @@
   }
 
   .trace-flow {
-    height: 52svh;
-    margin-top: -24vw;
+    height: 72svh;
+    margin-top: -48vw;
     margin-left: -20px;
     margin-right: -20px;
   }
 
   .trace-flow-readout {
     right: 20px;
-    top: 48%;
+    top: 45%;
     font-size: 8px;
   }
 
   .trace-statement-block {
     left: 20px;
     right: 20px;
-    top: 58%;
+    top: 55%;
     width: auto;
   }
 
@@ -355,7 +355,7 @@
   }
 
   .trace-concept {
-    margin-top: 8px;
+    margin-top: 34px;
     margin-bottom: 90px;
   }
 
