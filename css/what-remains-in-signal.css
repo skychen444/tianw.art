@@ -94,29 +94,37 @@
 }
 
 .threshold-row {
-  display: block;
-}
-
-.threshold-row-one {
   display: grid;
-  grid-template-columns: max-content clamp(180px,28vw,520px);
-  gap: clamp(18px,1.6vw,28px);
   align-items: center;
 }
 
-.threshold-row-one i {
+.threshold-row i {
   display: block;
   height: 1px;
   background: rgba(255,255,255,.30);
 }
 
-.threshold-row-two {
-  margin-left: 0;
+.threshold-row-one {
+  grid-template-columns: max-content clamp(180px,28vw,520px);
+  gap: clamp(18px,1.6vw,28px);
+}
+
+.threshold-row-two,
+.threshold-row-three {
+  grid-template-columns: minmax(90px,1fr) max-content;
+  gap: clamp(18px,1.6vw,28px);
+  width: max-content;
+  min-width: 100%;
+  justify-content: end;
+}
+
+.threshold-row-two span,
+.threshold-row-three span {
+  justify-self: end;
 }
 
 .threshold-row-three {
   margin-top: 2px;
-  margin-left: 0;
 }
 
 /* CONCEPT — body → trace → field is the page's transformation rule. */
@@ -391,13 +399,16 @@
     gap: 12px;
   }
 
-  .threshold-row-two {
-    margin-left: 0;
+  .threshold-row-two,
+  .threshold-row-three {
+    grid-template-columns: minmax(42px,1fr) max-content;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
   }
 
   .threshold-row-three {
     margin-top: 4px;
-    margin-left: 0;
   }
 
   .signal-concept > .section-label {
