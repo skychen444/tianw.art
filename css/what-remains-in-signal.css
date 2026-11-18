@@ -18,9 +18,10 @@
 }
 
 .signal-hero,
-.signal-statement,
+.signal-threshold,
 .signal-concept,
 .signal-conditions,
+.signal-composite,
 .signal-video-section,
 .signal-system,
 .signal-links {
@@ -29,56 +30,93 @@
   margin-right: auto;
 }
 
+/* HERO — title and field are deliberately separated by an absent zone. */
 .signal-hero {
+  display: grid;
+  grid-template-columns: minmax(250px,.72fr) minmax(90px,.24fr) minmax(0,1.34fr);
+  align-items: end;
+  min-height: clamp(560px,70vh,780px);
   margin-top: clamp(42px,4vw,70px);
-  margin-bottom: clamp(140px,16vh,200px);
+  margin-bottom: clamp(120px,15vh,180px);
+}
+
+.signal-hero-copy {
+  align-self: start;
+  padding-top: clamp(20px,3vh,44px);
 }
 
 .signal-hero h1 {
   margin: 0;
-  font-size: clamp(72px,6.2vw,124px);
+  font-size: clamp(64px,5.7vw,112px);
   line-height: .9;
   letter-spacing: -.052em;
   font-weight: 400;
 }
 
 .signal-meta {
-  margin-top: 24px;
-  font-size: 22px;
+  margin-top: 26px;
+  font-size: 20px;
   line-height: 1.5;
 }
 
-.signal-cover {
-  display: block;
-  width: 80%;
-  max-width: 1280px;
-  height: auto;
-  margin: clamp(64px,7vh,96px) 0 0 auto;
+.signal-hero-gap {
+  min-height: 1px;
 }
 
-.signal-statement {
+.signal-hero-field {
+  align-self: stretch;
+  margin: 0;
+  overflow: hidden;
+  min-height: clamp(520px,64vh,720px);
+}
+
+.signal-hero-field img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 62% center;
+  transform: scale(1.06);
+}
+
+/* THRESHOLD — statement behaves as a detection boundary rather than a quote block. */
+.signal-threshold {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(120px,.38fr) minmax(0,1fr);
+  gap: clamp(40px,6vw,96px);
+  align-items: center;
   margin-bottom: clamp(150px,18vh,220px);
 }
 
-.signal-statement p {
-  width: min(1080px,88%);
-  margin: 0 auto;
-  font-size: clamp(34px,4.1vw,66px);
-  line-height: 1.03;
+.threshold-line {
+  height: 1px;
+  background: rgba(255,255,255,.28);
+}
+
+.signal-threshold p {
+  margin: 0;
+  max-width: 900px;
+  font-size: clamp(28px,3vw,50px);
+  line-height: 1.04;
   letter-spacing: -.035em;
 }
 
-.signal-concept,
-.signal-conditions-head,
-.signal-system {
-  display: grid;
-  grid-template-columns: minmax(140px,.42fr) minmax(0,1fr);
-  gap: clamp(48px,7vw,120px);
-  align-items: start;
+.signal-threshold p span {
+  display: block;
 }
 
+.signal-threshold p span:nth-child(2) {
+  margin-left: 10%;
+}
+
+.signal-threshold p span:nth-child(3) {
+  margin-left: 24%;
+}
+
+/* CONCEPT — body → trace → field is the page's transformation rule. */
 .signal-concept {
-  margin-bottom: clamp(140px,16vh,200px);
+  margin-bottom: clamp(150px,18vh,220px);
 }
 
 .section-label {
@@ -89,27 +127,79 @@
   opacity: .72;
 }
 
-.signal-copy {
-  max-width: var(--text-width);
+.signal-concept > .section-label {
+  margin-bottom: clamp(44px,6vh,72px);
 }
 
-.signal-copy p,
-.signal-conditions-head p {
-  margin: 0 0 20px;
-  font-size: clamp(18px,1.55vw,27px);
-  line-height: 1.36;
+.signal-sequence {
+  display: grid;
+  grid-template-columns:
+    minmax(0,1fr)
+    minmax(44px,.22fr)
+    minmax(0,1fr)
+    minmax(44px,.22fr)
+    minmax(0,1fr);
+  align-items: start;
 }
 
+.signal-stage {
+  min-width: 0;
+}
+
+.signal-stage-index {
+  display: block;
+  margin-bottom: 18px;
+  font-size: 10px;
+  letter-spacing: .08em;
+  opacity: .48;
+}
+
+.signal-stage h2 {
+  margin: 0 0 30px;
+  font-size: clamp(36px,3.6vw,62px);
+  line-height: .94;
+  letter-spacing: -.045em;
+  font-weight: 400;
+}
+
+.signal-stage p {
+  margin: 0;
+  max-width: 360px;
+  font-size: clamp(16px,1.22vw,20px);
+  line-height: 1.45;
+  opacity: .78;
+}
+
+.signal-sequence-link {
+  height: 1px;
+  margin: clamp(58px,5.5vw,84px) 16px 0;
+  background: rgba(255,255,255,.23);
+}
+
+/* SIGNAL CONDITIONS — intentionally systematic for comparison. */
 .signal-conditions {
   margin-bottom: clamp(150px,17vh,210px);
+}
+
+.signal-conditions-head,
+.signal-composite-head,
+.signal-system {
+  display: grid;
+  grid-template-columns: minmax(140px,.42fr) minmax(0,1fr);
+  gap: clamp(48px,7vw,120px);
+  align-items: start;
 }
 
 .signal-conditions-head {
   margin-bottom: clamp(46px,6vh,72px);
 }
 
-.signal-conditions-head p {
+.signal-conditions-head p,
+.signal-composite-head p {
+  margin: 0;
   max-width: var(--text-width);
+  font-size: clamp(18px,1.55vw,27px);
+  line-height: 1.36;
 }
 
 .signal-grid {
@@ -148,6 +238,26 @@
   opacity: .58;
 }
 
+/* REASSEMBLED FIELD — first complete view of the composite. */
+.signal-composite {
+  margin-bottom: clamp(150px,17vh,210px);
+}
+
+.signal-composite-head {
+  margin-bottom: clamp(44px,6vh,70px);
+}
+
+.signal-composite figure {
+  margin: 0;
+}
+
+.signal-composite img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* VIDEO */
 .signal-video-section {
   width: min(78%,1180px);
   margin-bottom: clamp(150px,17vh,210px);
@@ -169,6 +279,7 @@
   background: #000;
 }
 
+/* SYSTEM */
 .signal-system {
   padding-top: 28px;
   border-top: 1px solid rgba(255,255,255,.22);
@@ -186,14 +297,22 @@
 }
 
 @media (max-width:1100px) and (min-width:761px) {
-  .signal-concept,
+  .signal-hero {
+    grid-template-columns: minmax(220px,.72fr) minmax(68px,.2fr) minmax(0,1.2fr);
+  }
+
   .signal-conditions-head,
+  .signal-composite-head,
   .signal-system {
     gap: 56px;
   }
 
-  .signal-cover {
-    width: 84%;
+  .signal-stage h2 {
+    font-size: clamp(34px,4.2vw,48px);
+  }
+
+  .signal-stage p {
+    font-size: 15px;
   }
 }
 
@@ -210,13 +329,19 @@
   }
 
   .signal-hero {
+    display: block;
+    min-height: 0;
     margin-top: 36px;
     margin-bottom: 90px;
   }
 
+  .signal-hero-copy {
+    padding-top: 0;
+  }
+
   .signal-hero h1 {
-    font-size: clamp(28px,7vw,34px);
-    line-height: .98;
+    font-size: clamp(30px,8vw,38px);
+    line-height: .96;
     letter-spacing: -.035em;
     font-weight: 600;
   }
@@ -227,27 +352,86 @@
     line-height: 1.4;
   }
 
-  .signal-cover {
-    width: 100%;
-    max-width: none;
-    margin-top: 34px;
+  .signal-hero-gap {
+    height: 42px;
   }
 
-  .signal-statement,
+  .signal-hero-field {
+    min-height: 0;
+    height: 62vw;
+  }
+
+  .signal-hero-field img {
+    transform: none;
+    object-position: center;
+  }
+
+  .signal-threshold,
   .signal-concept,
   .signal-conditions,
+  .signal-composite,
   .signal-video-section {
     margin-bottom: 90px;
   }
 
-  .signal-statement p {
-    width: 100%;
-    font-size: clamp(28px,8.5vw,38px);
-    line-height: 1.04;
+  .signal-threshold {
+    display: block;
   }
 
-  .signal-concept,
+  .threshold-line {
+    width: 38%;
+    margin-bottom: 24px;
+  }
+
+  .signal-threshold p {
+    font-size: clamp(25px,7.4vw,34px);
+    line-height: 1.05;
+  }
+
+  .signal-threshold p span:nth-child(2),
+  .signal-threshold p span:nth-child(3) {
+    margin-left: 0;
+  }
+
+  .signal-concept > .section-label {
+    margin-bottom: 28px;
+  }
+
+  .signal-sequence {
+    display: block;
+  }
+
+  .signal-stage {
+    padding: 0 0 34px;
+  }
+
+  .signal-stage + .signal-stage {
+    padding-top: 34px;
+  }
+
+  .signal-stage-index {
+    margin-bottom: 12px;
+    font-size: 9px;
+  }
+
+  .signal-stage h2 {
+    margin-bottom: 18px;
+    font-size: clamp(28px,8vw,38px);
+  }
+
+  .signal-stage p {
+    max-width: none;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .signal-sequence-link {
+    width: 28%;
+    margin: 0 0 34px;
+  }
+
   .signal-conditions-head,
+  .signal-composite-head,
   .signal-system {
     display: block;
   }
@@ -257,13 +441,14 @@
     font-size: 10px;
   }
 
-  .signal-copy p,
-  .signal-conditions-head p {
+  .signal-conditions-head p,
+  .signal-composite-head p {
     font-size: 15px;
     line-height: 1.5;
   }
 
-  .signal-conditions-head {
+  .signal-conditions-head,
+  .signal-composite-head {
     margin-bottom: 34px;
   }
 
