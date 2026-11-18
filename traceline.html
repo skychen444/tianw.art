@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v6">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v7">
 </head>
 
 <body class="dark-page traceline-page">
@@ -122,6 +122,7 @@
     (() => {
       const flow = document.getElementById('traceFlow');
       const canvas = document.getElementById('traceCanvas');
+      const heroImage = document.querySelector('.trace-hero-image');
       const page = document.querySelector('.traceline-page');
       const header = document.querySelector('.site-header');
       const ctx = canvas ? canvas.getContext('2d') : null;
@@ -150,10 +151,24 @@
 
         ctx.clearRect(0, 0, width, height);
 
-        const narrowing = 1 - progress;
-        const amplitude = 3 + 74 * narrowing;
+        const eased = progress < .08
+          ? 0
+          : progress > .86
+            ? 1
+            : (() => {
+                const t = (progress - .08) / .78;
+                return t * t * (3 - 2 * t);
+              })();
+
+        const narrowing = 1 - eased;
+        const amplitude = 4 + 76 * narrowing;
         const lineCount = 18;
         const step = height / (lineCount + 1);
+
+        const canvasRect = canvas.getBoundingClientRect();
+        const heroRect = heroImage ? heroImage.getBoundingClientRect() : null;
+        const heroLeft = heroRect ? heroRect.left - canvasRect.left : width * .43;
+        const heroRight = heroRect ? heroRect.right - canvasRect.left : width * .91;
 
         ctx.lineWidth = 1;
         ctx.strokeStyle = 'rgba(244,243,239,.46)';
@@ -175,10 +190,16 @@
                 Math.sin(nx * Math.PI * 5.5 + phase * 1.5) * .25 +
                 Math.sin(nx * Math.PI * 10.8 + line * .34) * .15;
 
+              const spread = clamp((baseY / Math.max(1, height)) * 1.8, 0, 1);
+              const startX = heroLeft - spread * heroLeft;
+              const endX = heroRight + spread * (width - heroRight);
+
+              if (x < startX || x > endX) continue;
+
               const passOffset = (pass - 1) * (1.4 + narrowing * 1.6);
               const y = baseY + broad * amplitude * local + passOffset;
 
-              if (x === -16) ctx.moveTo(x, y);
+              if (x <= startX + 10) ctx.moveTo(x, y);
               else ctx.lineTo(x, y);
             }
 
