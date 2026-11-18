@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v12">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v13">
 </head>
 
 <body class="dark-page traceline-page">
@@ -159,11 +159,6 @@
         const v = clamp(t);
         return v * v * (3 - 2 * v);
       };
-
-      const fract = (value) => value - Math.floor(value);
-
-      const hash = (a, b) =>
-        fract(Math.sin(a * 127.1 + b * 311.7) * 43758.5453123);
 
       const fract = (value) => value - Math.floor(value);
 
