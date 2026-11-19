@@ -64,7 +64,8 @@
 
 .trace-flow {
   --trace-overlap: 340px;
-  --trace-statement-gap: 260px;
+  --trace-statement-gap: 340px;
+  --trace-s-gap: 120px;
   --trace-statement-height: 180px;
   position: relative;
   height: calc(
@@ -102,9 +103,9 @@
   z-index: 1;
   left: 0;
   right: 0;
-  top: var(--trace-overlap);
+  top: calc(var(--trace-overlap) + var(--trace-s-gap));
   width: 100%;
-  height: calc(100% - var(--trace-overlap));
+  height: calc(100% - var(--trace-overlap) - var(--trace-s-gap));
   display: block;
   pointer-events: none;
 }
@@ -366,6 +367,8 @@
 
   .trace-flow {
     --trace-overlap: 24vw;
+    --trace-statement-gap: 72px;
+    --trace-s-gap: 28px;
     --trace-statement-gap: 72px;
     height: calc(
       var(--trace-overlap) +
