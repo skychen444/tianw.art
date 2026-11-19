@@ -317,6 +317,35 @@
   margin-top: clamp(72px,10vh,100px);
 }
 
+
+@media (min-width: 1800px) {
+  .signal-page {
+    --content-width: 92%;
+  }
+
+  .signal-page .site-name,
+  .signal-page .site-nav a {
+    font-size: 18px;
+  }
+
+  .signal-hero h1 {
+    font-size: 126px;
+  }
+
+  .signal-meta {
+    font-size: 22px;
+  }
+
+  .signal-conditions-head p,
+  .signal-composite-head p {
+    font-size: 29px;
+  }
+
+  .signal-system p {
+    font-size: 22px;
+  }
+}
+
 @media (max-width:1100px) and (min-width:761px) {
   .signal-hero {
     grid-template-columns: minmax(220px,.72fr) minmax(68px,.2fr) minmax(0,1.2fr);
