@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v10">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v8">
 </head>
 
 <body class="dark-page traceline-page">
@@ -143,19 +143,6 @@
       };
 
       const traceSeeds = [
-        // Upper-left edge crossings already visible in the source artwork.
-        { x: 14 / 2048, y: 286 / 1079, dx: -.94, dy: -.34 },
-        { x: 18 / 2048, y: 356 / 1079, dx: -.91, dy: -.18 },
-        { x: 16 / 2048, y: 430 / 1079, dx: -.96, dy: .10 },
-        { x: 20 / 2048, y: 515 / 1079, dx: -.89, dy: .28 },
-
-        // Upper-right edge crossings already visible in the source artwork.
-        { x: 2034 / 2048, y: 272 / 1079, dx: .92, dy: -.30 },
-        { x: 2030 / 2048, y: 348 / 1079, dx: .96, dy: -.08 },
-        { x: 2032 / 2048, y: 448 / 1079, dx: .93, dy: .20 },
-        { x: 2028 / 2048, y: 542 / 1079, dx: .88, dy: .34 },
-
-        // Existing PR #22 lower crossings remain unchanged.
         { x: 1723 / 2048, y: 646 / 1079, dx: .330, dy: .944 },
         { x: 1316 / 2048, y: 647 / 1079, dx: .447, dy: .894 },
         { x: 1194 / 2048, y: 708 / 1079, dx: .919, dy: .394 },
@@ -249,12 +236,7 @@
             y - Math.sin(startAngle) * 10
           );
 
-          const availableDistance =
-            horizontalSign > 0
-              ? Math.max(0, width - startX)
-              : Math.max(0, startX);
-
-          const maxDistance = availableDistance * .75;
+          const maxDistance = width * 1.15;
           const step = 8;
 
           for (let distance = 0; distance <= maxDistance; distance += step) {
@@ -277,39 +259,6 @@
           }
 
           drawPath(path);
-
-          const retrace = new Path2D();
-          x = startX;
-          y = startY;
-          retrace.moveTo(
-            x - Math.cos(startAngle) * 8,
-            y - Math.sin(startAngle) * 8 + 3
-          );
-
-          for (let distance = 0; distance <= maxDistance; distance += step) {
-            const settle = smoothstep(distance / 210);
-            const angle = startAngle + angleDelta * settle;
-            const normalX = -Math.sin(angle);
-            const normalY = Math.cos(angle);
-            const wave =
-              Math.sin(distance * .018 + index * .83 + .28) *
-              waveAmplitude *
-              .82 *
-              (1 - settle * .48);
-
-            x += Math.cos(angle) * step;
-            y += Math.sin(angle) * step;
-
-            retrace.lineTo(
-              x + normalX * wave,
-              y + normalY * wave + 3
-            );
-
-            if (x < -80 || x > width + 80 || y > height + 80) break;
-          }
-
-          ctx.globalAlpha = .28;
-          drawPath(retrace);
         });
 
         ctx.globalAlpha = 1;
