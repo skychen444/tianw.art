@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261120-v15">
+  <link rel="stylesheet" href="css/traceline.css?v=20261120-v16">
 </head>
 
 <body class="dark-page traceline-page">
@@ -133,8 +133,10 @@
       const sCtx = sCanvas ? sCanvas.getContext('2d') : null;
 
       let raf = 0;
+      let sRaf = 0;
       let progress = 0;
       let sProgress = 0;
+      let sTargetProgress = 0;
 
       const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 
@@ -447,6 +449,23 @@
         sCtx.globalAlpha = 1;
       };
 
+      const animateSZone = () => {
+        sRaf = 0;
+
+        const delta = sTargetProgress - sProgress;
+        if (Math.abs(delta) < .001) {
+          sProgress = sTargetProgress;
+          drawSZone();
+          return;
+        }
+
+        // Smoothly chase the scroll target so fast wheel/trackpad input
+        // still reveals the intermediate narrowing states.
+        sProgress += delta * .085;
+        drawSZone();
+        sRaf = requestAnimationFrame(animateSZone);
+      };
+
       const update = () => {
         raf = 0;
 
@@ -475,13 +494,13 @@
               ? scrollY + conceptRect.top - innerHeight * .18
               : startScroll + innerHeight * 1.5;
 
-            sProgress = clamp(
+            sTargetProgress = clamp(
               (scrollY - startScroll) /
               Math.max(1, endScroll - startScroll)
             );
           }
 
-          drawSZone();
+          if (!sRaf) sRaf = requestAnimationFrame(animateSZone);
         }
 
         if (header) {
