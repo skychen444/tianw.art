@@ -65,7 +65,7 @@
 .trace-flow {
   --trace-overlap: 340px;
   --trace-statement-gap: 340px;
-  --trace-s-gap: 120px;
+  --trace-s-gap: 240px;
   --trace-statement-height: 180px;
   position: relative;
   height: calc(
@@ -368,7 +368,7 @@
   .trace-flow {
     --trace-overlap: 24vw;
     --trace-statement-gap: 72px;
-    --trace-s-gap: 28px;
+    --trace-s-gap: 48px;
     --trace-statement-gap: 72px;
     height: calc(
       var(--trace-overlap) +
