@@ -64,7 +64,7 @@
 
 .trace-flow {
   --trace-overlap: clamp(250px, 34vh, 340px);
-  --trace-statement-gap: clamp(180px, 20vh, 260px);
+  --trace-statement-gap: 260px;
   --trace-statement-height: 180px;
   position: relative;
   height: calc(
