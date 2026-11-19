@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261119-v8">
+  <link rel="stylesheet" href="css/traceline.css?v=20261119-v11">
 </head>
 
 <body class="dark-page traceline-page">
@@ -158,6 +158,23 @@
         return v * v * (3 - 2 * v);
       };
 
+      const fract = (value) => value - Math.floor(value);
+
+      const hash = (x, seed) =>
+        fract(Math.sin(x * 127.1 + seed * 311.7) * 43758.5453123);
+
+      // Lightweight coherent value-noise for the portfolio page.
+      // It preserves the original sketch's logic: each trace has its own seed,
+      // variation comes from noise rather than a sine wave, and curvature never reaches 0.
+      const noise1D = (x, seed) => {
+        const i = Math.floor(x);
+        const f = x - i;
+        const u = f * f * (3 - 2 * f);
+        const a = hash(i, seed);
+        const b = hash(i + 1, seed);
+        return a + (b - a) * u;
+      };
+
       const drawTrace = () => {
         if (!canvas || !ctx || !heroImage) return;
 
@@ -183,27 +200,40 @@
         const imageX = imageRect.left - canvasRect.left;
         const imageY = imageRect.top - canvasRect.top;
 
+        // Original sketch logic:
+        // wear increases -> curvature falls from 1 to 0.15, never to a straight line.
         const effect = smoothstep((progress - .10) / .82);
-        const waveAmplitude = 28 - effect * 24;
+        const curvature = 1 - effect * .85;
+
+        // Match the source sketch proportions (baseSpanX 700 / ampY 200).
+        const referenceSpan = Math.max(520, Math.min(width * .46, 760));
+        const ampY = referenceSpan * (200 / 700);
 
         ctx.lineWidth = 1;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
-        const drawPath = (path) => {
+        const drawPath = (path, alpha = .58) => {
           ctx.strokeStyle = 'rgba(244,243,239,.42)';
-          ctx.globalAlpha = .72;
+          ctx.globalAlpha = alpha;
           ctx.stroke(path);
 
+          // Keep the generated continuation invisible over the artwork itself.
+          // The original image remains untouched; the path visually begins at its source point.
           ctx.save();
           ctx.beginPath();
           ctx.rect(imageX, imageY, imageRect.width, imageRect.height);
           ctx.clip();
-          ctx.strokeStyle = 'rgba(18,18,18,.72)';
-          ctx.globalAlpha = .72;
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.globalAlpha = 1;
           ctx.stroke(path);
           ctx.restore();
+          ctx.globalCompositeOperation = 'source-over';
         };
+
+        // Eight PR #22 source points × four related traces = 32 lines,
+        // close to the original sketch's traceCount = 30.
+        const familyOffsets = [-1.05, -.34, .34, 1.05];
 
         traceSeeds.forEach((seed, index) => {
           const sourceX = seed.x * heroImage.naturalWidth;
@@ -214,7 +244,7 @@
           const startY =
             imageRect.top - canvasRect.top - cropY + sourceY * scale;
 
-          if (startY < -40 || startY > height + 40) return;
+          if (startY < -60 || startY > height + 60) return;
 
           const startAngle = Math.atan2(seed.dy, seed.dx);
           const horizontalSign =
@@ -227,38 +257,68 @@
           while (angleDelta > Math.PI) angleDelta -= Math.PI * 2;
           while (angleDelta < -Math.PI) angleDelta += Math.PI * 2;
 
-          const path = new Path2D();
-          let x = startX;
-          let y = startY;
+          const availableDistance =
+            horizontalSign > 0
+              ? Math.max(width - startX, width * .72)
+              : Math.max(startX, width * .72);
 
-          path.moveTo(
-            x - Math.cos(startAngle) * 10,
-            y - Math.sin(startAngle) * 10
-          );
+          // The continuation reaches roughly 75% of the surrounding field.
+          const maxDistance = availableDistance * .92;
+          const step = 7;
 
-          const maxDistance = width * 1.15;
-          const step = 8;
+          familyOffsets.forEach((familyOffset, familyIndex) => {
+            const path = new Path2D();
+            const traceSeed = 80 + index * 13 + familyIndex * 3.7;
 
-          for (let distance = 0; distance <= maxDistance; distance += step) {
-            const settle = smoothstep(distance / 210);
-            const angle = startAngle + angleDelta * settle;
-            const normalX = -Math.sin(angle);
-            const normalY = Math.cos(angle);
-            const wave =
-              Math.sin(distance * .018 + index * .83) * waveAmplitude * (1 - settle * .48);
+            let x = startX;
+            let y = startY;
 
-            x += Math.cos(angle) * step;
-            y += Math.sin(angle) * step;
+            path.moveTo(x, y);
 
-            path.lineTo(
-              x + normalX * wave,
-              y + normalY * wave
-            );
+            for (let distance = 0; distance <= maxDistance; distance += step) {
+              // Preserve the source tangent at the connection point,
+              // then let the path settle toward the original sketch's horizontal span.
+              const settle = smoothstep(distance / 190);
+              const angle = startAngle + angleDelta * settle;
 
-            if (x < -80 || x > width + 80 || y > height + 80) break;
-          }
+              // Original sketch: noise(i * 0.07, trace.seed) mapped to ±ampY.
+              // Here one source "segment" is approximately 4.7 px, hence ~0.015 noise units / px.
+              const n = noise1D(distance * .015, traceSeed);
+              const noiseY = (n * 2 - 1) * ampY * curvature;
 
-          drawPath(path);
+              // Original traceLines use unique offsetY values.
+              // Ramp that offset from 0 so every family member is physically connected
+              // to the exact PR #22 source point before spreading through the exterior field.
+              const spread =
+                familyOffset *
+                Math.min(innerHeight * .24, imageRect.height * .46) *
+                smoothstep(distance / 240);
+
+              // Tiny drift like the source sketch; also ramps from 0 at the connection.
+              const drift =
+                Math.sin(frameCount * (.003 + familyIndex * .0014) + traceSeed) *
+                10 *
+                curvature *
+                smoothstep(distance / 160);
+
+              x += Math.cos(angle) * step;
+              y += Math.sin(angle) * step;
+
+              path.lineTo(
+                x,
+                y + noiseY * settle + spread + drift
+              );
+
+              if (
+                x < -120 ||
+                x > width + 120 ||
+                y < -height * .55 ||
+                y > height * 1.55
+              ) break;
+            }
+
+            drawPath(path, familyIndex === 1 || familyIndex === 2 ? .60 : .42);
+          });
         });
 
         ctx.globalAlpha = 1;
