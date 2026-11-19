@@ -295,8 +295,9 @@
                 smoothstep(distance / 240);
 
               // Tiny drift like the source sketch; also ramps from 0 at the connection.
+              const driftTime = performance.now() * .06;
               const drift =
-                Math.sin(frameCount * (.003 + familyIndex * .0014) + traceSeed) *
+                Math.sin(driftTime * (.003 + familyIndex * .0014) + traceSeed) *
                 10 *
                 curvature *
                 smoothstep(distance / 160);
