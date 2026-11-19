@@ -124,7 +124,7 @@
       const canvas = document.getElementById('traceCanvas');
       const heroImage = document.querySelector('.trace-hero-image img');
       const statementBlock = document.querySelector('.trace-statement-block');
-      const concept = document.querySelector('.trace-concept');
+      const traceSection = document.querySelector('.trace-section');
       const page = document.querySelector('.traceline-page');
       const header = document.querySelector('.site-header');
       const ctx = canvas ? canvas.getContext('2d') : null;
@@ -134,29 +134,31 @@
 
       const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 
-      const syncStatementGeometry = () => {
-        if (!flow || !statementBlock || !heroImage) return;
+      const syncStatementLayout = () => {
+        if (!flow || !statementBlock) return;
 
-        const flowRect = flow.getBoundingClientRect();
-        const imageRect = heroImage.getBoundingClientRect();
-        const statementHeight = Math.ceil(statementBlock.getBoundingClientRect().height);
-        const gap = innerWidth > 760 ? 260 : 72;
-
-        const statementTop = Math.max(
-          0,
-          Math.round(imageRect.bottom - flowRect.top + gap)
-        );
-
-        flow.style.setProperty('--trace-statement-height', `${statementHeight}px`);
-        flow.style.setProperty('--trace-statement-top', `${statementTop}px`);
         flow.style.setProperty(
-          '--trace-flow-height',
-          `${statementTop + statementHeight + gap}px`
+          '--trace-statement-height',
+          `${Math.ceil(statementBlock.getBoundingClientRect().height)}px`
         );
+
+        if (traceSection) {
+          const flowRect = flow.getBoundingClientRect();
+          const sectionRect = traceSection.getBoundingClientRect();
+
+          flow.style.setProperty(
+            '--trace-content-left',
+            `${Math.round(sectionRect.left - flowRect.left)}px`
+          );
+          flow.style.setProperty(
+            '--trace-content-width',
+            `${Math.round(sectionRect.width)}px`
+          );
+        }
       };
 
       const resizeCanvas = () => {
-        syncStatementGeometry();
+        syncStatementLayout();
         if (!canvas || !ctx) return;
         const rect = canvas.getBoundingClientRect();
         const dpr = Math.min(devicePixelRatio || 1, 2);
