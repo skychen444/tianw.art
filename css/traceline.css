@@ -78,13 +78,13 @@
 }
 
 .trace-ambient-canvas {
+  --trace-canvas-rise: clamp(280px, 34vh, 420px);
   position: absolute;
   left: 0;
   right: 0;
-  top: clamp(-420px, -34vh, -280px);
-  bottom: 0;
+  top: calc(var(--trace-canvas-rise) * -1);
   width: 100%;
-  height: auto;
+  height: calc(100% + var(--trace-canvas-rise));
   display: block;
   pointer-events: none;
 }
