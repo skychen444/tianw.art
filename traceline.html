@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>traceLine — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/traceline.css?v=20261120-v14">
+  <link rel="stylesheet" href="css/traceline.css?v=20261120-v15">
 </head>
 
 <body class="dark-page traceline-page">
@@ -194,6 +194,11 @@
       const smoothstep = (t) => {
         const v = clamp(t);
         return v * v * (3 - 2 * v);
+      };
+
+      const smootherstep = (t) => {
+        const v = clamp(t);
+        return v * v * v * (v * (v * 6 - 15) + 10);
       };
 
       const fract = (value) => value - Math.floor(value);
@@ -389,15 +394,17 @@
 
         // Scroll is the time axis for S-zone only.
         // Curvature narrows but never reaches a fully straight line.
-        const wear = smoothstep(sProgress);
-        const curvature = 1 - wear * .82;
+        // Hold the full five-way state briefly, then narrow over a longer,
+        // softer scroll interval.
+        const narrowing = smootherstep((sProgress - .12) / .88);
+        const curvature = 1 - narrowing * .82;
 
         // Five initial possibilities. Three are progressively removed,
         // leaving two traces at the end of the narrowing sequence.
         const lineStates = [
-          { seed: 211.4, y: .18, fadeStart: .34, fadeEnd: .54 },
-          { seed: 317.8, y: .34, fadeStart: .56, fadeEnd: .72 },
-          { seed: 409.2, y: .50, fadeStart: .76, fadeEnd: .90 },
+          { seed: 211.4, y: .18, fadeStart: .24, fadeEnd: .62 },
+          { seed: 317.8, y: .34, fadeStart: .42, fadeEnd: .80 },
+          { seed: 409.2, y: .50, fadeStart: .60, fadeEnd: .96 },
           { seed: 523.6, y: .66, fadeStart: 1.10, fadeEnd: 1.20 },
           { seed: 617.1, y: .82, fadeStart: 1.10, fadeEnd: 1.20 }
         ];
@@ -413,7 +420,7 @@
               (sProgress - line.fadeStart) /
               Math.max(.001, line.fadeEnd - line.fadeStart)
             );
-            alpha *= 1 - smoothstep(fade);
+            alpha *= 1 - smootherstep(fade);
           }
 
           if (alpha <= .015) return;
@@ -459,13 +466,14 @@
             const concept = document.querySelector('.trace-concept');
             const conceptRect = concept ? concept.getBoundingClientRect() : null;
 
-            // Start only after the hero has been passed.
-            // Finish before Concept enters the upper half of the viewport.
+            // Start only after the hero has substantially passed.
+            // Keep narrowing active much longer, almost until Concept
+            // reaches the upper part of the viewport.
             const startScroll =
-              scrollY + heroRect.bottom - innerHeight * .18;
+              scrollY + heroRect.bottom - innerHeight * .14;
             const endScroll = conceptRect
-              ? scrollY + conceptRect.top - innerHeight * .48
-              : startScroll + innerHeight;
+              ? scrollY + conceptRect.top - innerHeight * .18
+              : startScroll + innerHeight * 1.5;
 
             sProgress = clamp(
               (scrollY - startScroll) /
