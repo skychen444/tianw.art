@@ -267,6 +267,10 @@
           const step = 7;
 
           familyOffsets.forEach((familyOffset, familyIndex) => {
+            // Keep the left side unchanged. On the right side, skip roughly
+            // one in five trace families to reduce visual congestion.
+            if (horizontalSign > 0 && (index + familyIndex) % 5 === 0) return;
+
             const path = new Path2D();
             const traceSeed = 80 + index * 13 + familyIndex * 3.7;
 
