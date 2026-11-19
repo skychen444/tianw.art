@@ -97,6 +97,18 @@
   pointer-events: none;
 }
 
+.trace-s-canvas {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: var(--trace-overlap);
+  width: 100%;
+  height: calc(100% - var(--trace-overlap));
+  display: block;
+  pointer-events: none;
+}
+
 .trace-flow-readout {
   position: absolute;
   z-index: 2;
@@ -456,7 +468,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .trace-ambient-canvas {
+  .trace-ambient-canvas,
+  .trace-s-canvas {
     display: none;
   }
 
