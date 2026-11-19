@@ -78,7 +78,7 @@
 }
 
 .trace-ambient-canvas {
-  --trace-canvas-rise: clamp(280px, 34vh, 420px);
+  --trace-canvas-rise: clamp(520px, 58vh, 760px);
   position: absolute;
   left: 0;
   right: 0;
