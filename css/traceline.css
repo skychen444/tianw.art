@@ -64,11 +64,15 @@
 
 .trace-flow {
   --trace-overlap: 340px;
+  --trace-statement-gap: 260px;
   --trace-statement-height: 180px;
-  --trace-statement-top: 600px;
-  --trace-flow-height: 1040px;
   position: relative;
-  height: var(--trace-flow-height);
+  height: calc(
+    var(--trace-overlap) +
+    var(--trace-statement-gap) +
+    var(--trace-statement-height) +
+    var(--trace-statement-gap)
+  );
   margin:
     calc(var(--trace-overlap) * -1)
     calc(clamp(40px, 4.4vw, 92px) * -1)
@@ -111,9 +115,9 @@
 .trace-statement-block {
   position: absolute;
   z-index: 2;
-  left: max(6%, calc((100vw - 1680px) / 2));
-  top: var(--trace-statement-top);
-  width: min(66%, 1120px);
+  left: var(--trace-content-left, 6%);
+  top: calc(var(--trace-overlap) + var(--trace-statement-gap));
+  width: min(var(--trace-content-width, 88%), 1120px);
   opacity: 1;
   transform: none;
 }
@@ -350,6 +354,13 @@
 
   .trace-flow {
     --trace-overlap: 24vw;
+    --trace-statement-gap: 72px;
+    height: calc(
+      var(--trace-overlap) +
+      var(--trace-statement-gap) +
+      var(--trace-statement-height) +
+      var(--trace-statement-gap)
+    );
     margin-top: calc(var(--trace-overlap) * -1);
     margin-left: -20px;
     margin-right: -20px;
@@ -364,7 +375,7 @@
   .trace-statement-block {
     left: 20px;
     right: 20px;
-    top: var(--trace-statement-top);
+    top: calc(var(--trace-overlap) + var(--trace-statement-gap));
     width: auto;
   }
 
