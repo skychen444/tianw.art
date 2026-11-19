@@ -123,6 +123,7 @@
       const flow = document.getElementById('traceFlow');
       const canvas = document.getElementById('traceCanvas');
       const heroImage = document.querySelector('.trace-hero-image img');
+      const statementBlock = document.querySelector('.trace-statement-block');
       const page = document.querySelector('.traceline-page');
       const header = document.querySelector('.site-header');
       const ctx = canvas ? canvas.getContext('2d') : null;
@@ -132,7 +133,16 @@
 
       const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 
+      const syncStatementHeight = () => {
+        if (!flow || !statementBlock) return;
+        flow.style.setProperty(
+          '--trace-statement-height',
+          `${Math.ceil(statementBlock.getBoundingClientRect().height)}px`
+        );
+      };
+
       const resizeCanvas = () => {
+        syncStatementHeight();
         if (!canvas || !ctx) return;
         const rect = canvas.getBoundingClientRect();
         const dpr = Math.min(devicePixelRatio || 1, 2);
