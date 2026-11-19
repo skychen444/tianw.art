@@ -63,10 +63,18 @@
 }
 
 .trace-flow {
+  --trace-overlap: clamp(250px, 34vh, 340px);
+  --trace-statement-gap: clamp(180px, 20vh, 260px);
+  --trace-statement-height: 180px;
   position: relative;
-  height: 58svh;
+  height: calc(
+    var(--trace-overlap) +
+    var(--trace-statement-gap) +
+    var(--trace-statement-height) +
+    var(--trace-statement-gap)
+  );
   margin:
-    clamp(-340px,-34vh,-250px)
+    calc(var(--trace-overlap) * -1)
     calc(clamp(40px, 4.4vw, 92px) * -1)
     0;
 }
@@ -108,7 +116,7 @@
   position: absolute;
   z-index: 2;
   left: max(6%, calc((100vw - 1680px) / 2));
-  top: 60%;
+  top: calc(var(--trace-overlap) + var(--trace-statement-gap));
   width: min(66%, 1120px);
   opacity: 1;
   transform: none;
@@ -345,8 +353,15 @@
   }
 
   .trace-flow {
-    height: 52svh;
-    margin-top: -24vw;
+    --trace-overlap: 24vw;
+    --trace-statement-gap: 72px;
+    height: calc(
+      var(--trace-overlap) +
+      var(--trace-statement-gap) +
+      var(--trace-statement-height) +
+      var(--trace-statement-gap)
+    );
+    margin-top: calc(var(--trace-overlap) * -1);
     margin-left: -20px;
     margin-right: -20px;
   }
@@ -360,7 +375,7 @@
   .trace-statement-block {
     left: 20px;
     right: 20px;
-    top: 58%;
+    top: calc(var(--trace-overlap) + var(--trace-statement-gap));
     width: auto;
   }
 
