@@ -97,21 +97,15 @@
 .noise-transform {
   position: relative;
   width: var(--content-width);
-  height: 240vh;
   margin: 0 auto clamp(150px, 18vh, 220px);
 }
 
 .noise-transform-sticky {
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  margin-left: calc(50% - 50vw);
+  position: relative;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
 .noise-transform-frame {
@@ -191,12 +185,11 @@
 
   .noise-transform {
     width: 100%;
-    height: 165svh;
     margin-bottom: 110px;
   }
 
   .noise-transform-sticky {
-    height: 100svh;
+    width: 100%;
   }
 
   .noise-transform-frame {
@@ -294,5 +287,48 @@
 
   .noise-transform-frame {
     width: min(72%, 1480px);
+  }
+}
+
+
+.noise-transform-frame {
+  touch-action: pan-x;
+  cursor: ns-resize;
+}
+
+.noise-transform-hint {
+  position: absolute;
+  z-index: 3;
+  top: 14px;
+  left: 16px;
+  font-size: 10px;
+  line-height: 1.35;
+  letter-spacing: .04em;
+  color: rgba(244, 243, 239, .58);
+  pointer-events: none;
+}
+
+.noise-transform-hint-mobile {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .noise-transform-frame {
+    touch-action: none;
+    cursor: default;
+  }
+
+  .noise-transform-hint {
+    top: 10px;
+    left: 10px;
+    font-size: 9px;
+  }
+
+  .noise-transform-hint-desktop {
+    display: none;
+  }
+
+  .noise-transform-hint-mobile {
+    display: inline;
   }
 }
