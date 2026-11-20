@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Noise Portrait — Tian W.</title>
+  <link rel="stylesheet" href="style.css?v=20261118-core">
+  <link rel="stylesheet" href="css/noise-portrait.css?v=20261120-v1">
+</head>
+
+<body class="dark-page noise-portrait-page">
+  <header class="site-header">
+    <a class="site-name" href="index.html">Tian W.</a>
+    <nav class="site-nav">
+      <a class="active" href="works.html">Works</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main class="noise-main">
+    <section class="noise-hero">
+      <div class="noise-title-block">
+        <h1>Noise Portrait</h1>
+        <p class="noise-meta">2026<br>Generative image</p>
+      </div>
+
+      <div class="noise-exhibition-view" aria-label="Noise Portrait exhibition-style presentation">
+        <figure class="noise-artwork">
+          <img
+            src="assets/noise-portrait/noise-portrait-final-b.webp"
+            alt="Noise Portrait, a smoking figure dissolving into coloured algorithmic strokes"
+          >
+        </figure>
+
+        <figure class="noise-label">
+          <img
+            src="assets/noise-portrait/noise-portrait-exhibition-label.webp"
+            alt="Noise Portrait exhibition label"
+          >
+        </figure>
+      </div>
+    </section>
+
+    <a class="back-link noise-back-link" href="works.html">Back to Works</a>
+  </main>
+
+  <script>
+    const header = document.querySelector('.site-header');
+    addEventListener('scroll', () => {
+      header.classList.toggle('header-hidden', scrollY > 70);
+    }, { passive: true });
+  </script>
+</body>
+</html>
