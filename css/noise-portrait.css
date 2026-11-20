@@ -200,12 +200,15 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
-    column-gap: clamp(24px, 1.8vw, 34px);
-    width: 100%;
+    column-gap: clamp(18px, 1.2vw, 24px);
+    width: var(--content-width);
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .noise-statement p {
-    width: min(1450px, 78vw);
+    width: fit-content;
+    max-width: 1450px;
     margin: 0;
     text-align: center;
     font-size: 104px;
