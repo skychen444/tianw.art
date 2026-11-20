@@ -173,8 +173,12 @@
     font-size: 22px;
   }
 
+  .noise-exhibition-view {
+    width: 75%;
+  }
+
   .noise-label {
-    width: clamp(320px, 18vw, 420px);
+    width: clamp(240px, 13.5vw, 315px);
     margin-top: 32px;
   }
 
@@ -184,8 +188,8 @@
   }
 
   .noise-statement p {
-    width: min(1270px, 72%);
-    font-size: 86px;
+    width: min(1450px, 78%);
+    font-size: 104px;
   }
 }
 
