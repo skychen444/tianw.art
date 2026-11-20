@@ -210,18 +210,19 @@
     content: "";
     position: absolute;
     top: 50%;
-    width: clamp(90px, 7vw, 150px);
     height: 1px;
     background: rgba(244, 243, 239, .28);
     transform: translateY(-50%);
   }
 
   .noise-statement p::before {
+    left: calc((100% - 100vw) / 2 + clamp(40px, 4.4vw, 92px));
     right: calc(100% + clamp(28px, 2vw, 42px));
   }
 
   .noise-statement p::after {
     left: calc(100% + clamp(28px, 2vw, 42px));
+    right: calc((100% - 100vw) / 2 + clamp(40px, 4.4vw, 92px));
   }
 }
 
