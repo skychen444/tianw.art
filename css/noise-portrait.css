@@ -175,6 +175,7 @@
 
   .noise-label {
     width: clamp(320px, 18vw, 420px);
+    margin-top: 32px;
   }
 
   .noise-statement {
