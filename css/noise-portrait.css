@@ -197,11 +197,31 @@
   }
 
   .noise-statement p {
+    position: relative;
     width: min(1450px, 78%);
     margin-left: auto;
     margin-right: auto;
     text-align: center;
     font-size: 104px;
+  }
+
+  .noise-statement p::before,
+  .noise-statement p::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: clamp(90px, 7vw, 150px);
+    height: 1px;
+    background: rgba(244, 243, 239, .28);
+    transform: translateY(-50%);
+  }
+
+  .noise-statement p::before {
+    right: calc(100% + clamp(28px, 2vw, 42px));
+  }
+
+  .noise-statement p::after {
+    left: calc(100% + clamp(28px, 2vw, 42px));
   }
 }
 
