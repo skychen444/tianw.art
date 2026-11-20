@@ -558,3 +558,36 @@
   .noise-system .noise-section-label { margin-bottom: 16px; }
   .noise-system p { font-size: 13px; line-height: 1.5; }
 }
+
+
+/* Directional cue for the exhibition label; keep it outside the image. */
+.noise-label::before {
+  content: "→";
+  position: absolute;
+  right: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--paper);
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 400;
+  pointer-events: none;
+}
+
+@media (min-width: 1800px) {
+  .noise-label::before {
+    content: "↓";
+    right: auto;
+    left: 50%;
+    top: auto;
+    bottom: calc(100% + 16px);
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 760px) {
+  .noise-label::before {
+    right: calc(100% + 10px);
+    font-size: 17px;
+  }
+}
