@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Noise Portrait — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/noise-portrait.css?v=20261121-v17">
+  <link rel="stylesheet" href="css/noise-portrait.css?v=20261121-v18">
 </head>
 
 <body class="dark-page noise-portrait-page">
@@ -97,11 +97,9 @@
     });
 
     const transformSection = document.querySelector('.noise-transform');
-    const transformSticky = document.querySelector('.noise-transform-sticky');
     const transformImages = [...document.querySelectorAll('.noise-transform-image')];
     const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
     let transformIndex = 0;
-    let transformLocked = false;
     let wheelAccumulator = 0;
     let wheelReleaseTimer = 0;
 
@@ -112,27 +110,11 @@
       });
     };
 
-    const sectionIsCentered = () => {
-      if (!transformSticky) return false;
-      const rect = transformSticky.getBoundingClientRect();
-      const viewportCenter = innerHeight / 2;
-      const stickyCenter = rect.top + rect.height / 2;
-      return Math.abs(stickyCenter - viewportCenter) < 4;
-    };
+    const transformIsActive = () => {
+      if (!transformSection || !finePointer.matches) return false;
+      const rect = transformSection.getBoundingClientRect();
 
-    const syncLockState = () => {
-      if (!finePointer.matches || !transformSection) {
-        transformLocked = false;
-        return;
-      }
-
-      const sectionRect = transformSection.getBoundingClientRect();
-      const stickyActive =
-        sectionRect.top <= 0 &&
-        sectionRect.bottom >= innerHeight &&
-        sectionIsCentered();
-
-      transformLocked = stickyActive;
+      return rect.top <= 0 && rect.bottom >= innerHeight;
     };
 
     const releaseWheelAccumulator = () => {
@@ -143,7 +125,7 @@
     };
 
     const onTransformWheel = (event) => {
-      if (!finePointer.matches || !transformLocked || transformImages.length === 0) return;
+      if (!finePointer.matches || !transformIsActive() || transformImages.length === 0) return;
 
       const direction = Math.sign(event.deltaY);
       if (direction === 0) return;
@@ -151,20 +133,28 @@
       const atFirst = transformIndex === 0;
       const atLast = transformIndex === transformImages.length - 1;
 
-      if ((direction < 0 && atFirst) || (direction > 0 && atLast)) {
+      if (direction < 0 && atFirst) {
+        wheelAccumulator = 0;
+        return;
+      }
+
+      if (direction > 0 && atLast) {
         wheelAccumulator = 0;
         return;
       }
 
       event.preventDefault();
+
       wheelAccumulator += event.deltaY;
       releaseWheelAccumulator();
 
-      const threshold = 48;
+      const threshold = 36;
       if (Math.abs(wheelAccumulator) < threshold) return;
 
-      const nextIndex = transformIndex + (wheelAccumulator > 0 ? 1 : -1);
-      renderTransformIndex(nextIndex);
+      renderTransformIndex(
+        transformIndex + (wheelAccumulator > 0 ? 1 : -1)
+      );
+
       wheelAccumulator = 0;
     };
 
@@ -184,19 +174,10 @@
     };
 
     renderTransformIndex(0);
-    syncLockState();
     updateTouchTransform();
 
-    addEventListener('scroll', () => {
-      syncLockState();
-      updateTouchTransform();
-    }, { passive: true });
-
-    addEventListener('resize', () => {
-      syncLockState();
-      updateTouchTransform();
-    });
-
+    addEventListener('scroll', updateTouchTransform, { passive: true });
+    addEventListener('resize', updateTouchTransform);
     addEventListener('wheel', onTransformWheel, { passive: false });
   </script>
 </body>
