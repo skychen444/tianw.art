@@ -174,12 +174,21 @@
   }
 
   .noise-exhibition-view {
-    width: 75%;
+    display: grid;
+    grid-template-columns: minmax(0, 75%) minmax(240px, 1fr);
+    column-gap: clamp(44px, 3vw, 72px);
+    align-items: end;
+    width: 100%;
+  }
+
+  .noise-artwork {
+    width: 100%;
   }
 
   .noise-label {
     width: clamp(240px, 13.5vw, 315px);
-    margin-top: 32px;
+    margin: 0 0 clamp(20px, 2vw, 36px);
+    justify-self: start;
   }
 
   .noise-statement {
@@ -189,6 +198,9 @@
 
   .noise-statement p {
     width: min(1450px, 78%);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
     font-size: 104px;
   }
 }
