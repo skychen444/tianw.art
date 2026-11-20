@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Noise Portrait — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/noise-portrait.css?v=20261121-v15">
+  <link rel="stylesheet" href="css/noise-portrait.css?v=20261121-v16">
 </head>
 
 <body class="dark-page noise-portrait-page">
@@ -47,6 +47,18 @@
       <span class="noise-statement-line noise-statement-line-right" aria-hidden="true"></span>
     </section>
 
+    <section class="noise-transform" aria-label="Noise Portrait transformation">
+      <div class="noise-transform-sticky">
+        <div class="noise-transform-frame">
+          <img class="noise-transform-image is-active" src="assets/noise-portrait/noise-portrait-stage-a.webp" alt="">
+          <img class="noise-transform-image" src="assets/noise-portrait/noise-portrait-stage-b.webp" alt="">
+          <img class="noise-transform-image" src="assets/noise-portrait/noise-portrait-stage-c.webp" alt="">
+          <img class="noise-transform-image" src="assets/noise-portrait/noise-portrait-final-a.webp" alt="">
+          <img class="noise-transform-image" src="assets/noise-portrait/noise-portrait-final-b.webp" alt="Noise Portrait transformation from low noise to final image">
+        </div>
+      </div>
+    </section>
+
     <a class="back-link noise-back-link" href="works.html">Back to Works</a>
   </main>
 
@@ -83,6 +95,28 @@
         setLabelExpanded(false);
       }
     });
+
+    const transformSection = document.querySelector('.noise-transform');
+    const transformImages = [...document.querySelectorAll('.noise-transform-image')];
+
+    const updateTransform = () => {
+      if (!transformSection || transformImages.length === 0) return;
+
+      const rect = transformSection.getBoundingClientRect();
+      const scrollable = Math.max(1, transformSection.offsetHeight - innerHeight);
+      const travelled = Math.min(scrollable, Math.max(0, -rect.top));
+      const progress = travelled / scrollable;
+      const scaled = progress * (transformImages.length - 1);
+
+      transformImages.forEach((image, index) => {
+        const opacity = Math.max(0, 1 - Math.abs(scaled - index));
+        image.style.opacity = opacity.toFixed(3);
+      });
+    };
+
+    updateTransform();
+    addEventListener('scroll', updateTransform, { passive: true });
+    addEventListener('resize', updateTransform);
   </script>
 </body>
 </html>
