@@ -130,6 +130,23 @@
   .noise-portrait-page {
     --content-width: 92%;
   }
+
+  .noise-portrait-page .site-name,
+  .noise-portrait-page .site-nav a {
+    font-size: 18px;
+  }
+
+  .noise-title-block h1 {
+    font-size: 126px;
+  }
+
+  .noise-meta {
+    font-size: 22px;
+  }
+
+  .noise-label {
+    width: clamp(320px, 18vw, 420px);
+  }
 }
 
 @media (max-width: 760px) {
