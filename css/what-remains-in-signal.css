@@ -345,6 +345,12 @@
     font-size: 22px;
   }
 
+  .threshold-row-two,
+  .threshold-row-three {
+    width: max-content;
+    margin-left: auto;
+  }
+
 }
 
 @media (max-width:1100px) and (min-width:761px) {
@@ -426,31 +432,40 @@
   }
 
   .threshold-copy {
-    width: max-content;
-    max-width: 72%;
-    margin: 0 18% 0 auto;
-    font-size: clamp(24px,7.2vw,32px);
+    width: min(78vw, 320px);
+    max-width: none;
+    margin: 0 auto;
+    font-size: clamp(23px,6.8vw,30px);
     line-height: 1.02;
     letter-spacing: -.035em;
   }
 
+  .threshold-row-one,
+  .threshold-row-two,
+  .threshold-row-three {
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .threshold-row-two,
+  .threshold-row-three {
+    margin-left: auto;
+  }
+
   .threshold-row-one i {
     left: calc(100% + 8px);
-    width: 34vw;
-    max-width: 128px;
+    width: 56px;
   }
 
   .threshold-row-two .threshold-line-before,
   .threshold-row-three i {
     right: calc(100% + 8px);
-    width: 20vw;
-    max-width: 76px;
+    width: 46px;
   }
 
   .threshold-row-two .threshold-line-after {
     left: calc(100% + 8px);
-    width: 23vw;
-    max-width: 88px;
+    width: 52px;
   }
 
   .threshold-row-three {
