@@ -127,6 +127,7 @@
       const heroImage = document.querySelector('.trace-hero-image img');
       const statementBlock = document.querySelector('.trace-statement-block');
       const traceSection = document.querySelector('.trace-section');
+      const concept = document.querySelector('.trace-concept');
       const page = document.querySelector('.traceline-page');
       const header = document.querySelector('.site-header');
       const ctx = canvas ? canvas.getContext('2d') : null;
@@ -163,23 +164,21 @@
         }
       };
 
+      const resizeDrawingCanvas = (targetCanvas, targetContext, dpr) => {
+        if (!targetCanvas || !targetContext) return;
+
+        const rect = targetCanvas.getBoundingClientRect();
+        targetCanvas.width = Math.max(1, Math.round(rect.width * dpr));
+        targetCanvas.height = Math.max(1, Math.round(rect.height * dpr));
+        targetContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+      };
+
       const resizeCanvas = () => {
         syncStatementLayout();
         const dpr = Math.min(devicePixelRatio || 1, 2);
 
-        if (canvas && ctx) {
-          const rect = canvas.getBoundingClientRect();
-          canvas.width = Math.max(1, Math.round(rect.width * dpr));
-          canvas.height = Math.max(1, Math.round(rect.height * dpr));
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-
-        if (sCanvas && sCtx) {
-          const rect = sCanvas.getBoundingClientRect();
-          sCanvas.width = Math.max(1, Math.round(rect.width * dpr));
-          sCanvas.height = Math.max(1, Math.round(rect.height * dpr));
-          sCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
+        resizeDrawingCanvas(canvas, ctx, dpr);
+        resizeDrawingCanvas(sCanvas, sCtx, dpr);
       };
 
       const traceSeeds = [
@@ -276,8 +275,8 @@
           ctx.globalCompositeOperation = 'source-over';
         };
 
-        // Eight PR #22 source points × four related traces = 32 lines,
-        // close to the original sketch's traceCount = 30.
+        // Eight PR #22 source points feed six related trace families.
+        // Right-moving families are selectively reduced to keep that side less dense.
         const familyOffsets = [-1.75, -1.35, -1.05, -.34, .34, 1.05];
 
         traceSeeds.forEach((seed, index) => {
@@ -482,7 +481,6 @@
 
           if (heroImage) {
             const heroRect = heroImage.getBoundingClientRect();
-            const concept = document.querySelector('.trace-concept');
             const conceptRect = concept ? concept.getBoundingClientRect() : null;
 
             // Begin shortly after the hero has passed, then complete
