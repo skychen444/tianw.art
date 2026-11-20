@@ -345,25 +345,6 @@
     font-size: 22px;
   }
 
-  .threshold-copy {
-    width: min(900px, 68%);
-    max-width: none;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .threshold-row-one i {
-    width: clamp(180px, 20vw, 360px);
-  }
-
-  .threshold-row-two .threshold-line-before,
-  .threshold-row-three i {
-    width: clamp(110px, 12vw, 220px);
-  }
-
-  .threshold-row-two .threshold-line-after {
-    width: clamp(120px, 14vw, 250px);
-  }
 }
 
 @media (max-width:1100px) and (min-width:761px) {
@@ -445,31 +426,35 @@
   }
 
   .threshold-copy {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    font-size: clamp(28px,8vw,36px);
-    line-height: 1.04;
+    width: max-content;
+    max-width: 72%;
+    margin: 0 18% 0 auto;
+    font-size: clamp(24px,7.2vw,32px);
+    line-height: 1.02;
+    letter-spacing: -.035em;
   }
 
   .threshold-row-one i {
-    left: calc(100% + 10px);
-    width: 28px;
+    left: calc(100% + 8px);
+    width: 34vw;
+    max-width: 128px;
   }
 
   .threshold-row-two .threshold-line-before,
   .threshold-row-three i {
-    right: calc(100% + 10px);
-    width: 28px;
+    right: calc(100% + 8px);
+    width: 20vw;
+    max-width: 76px;
   }
 
   .threshold-row-two .threshold-line-after {
-    left: calc(100% + 10px);
-    width: 28px;
+    left: calc(100% + 8px);
+    width: 23vw;
+    max-width: 88px;
   }
 
   .threshold-row-three {
-    margin-top: 4px;
+    margin-top: 2px;
   }
 
   .signal-concept > .section-label {
