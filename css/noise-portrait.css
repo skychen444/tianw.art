@@ -434,7 +434,7 @@
 .noise-process-copy > p:last-child {
   max-width: 760px;
   margin: 0;
-  font-size: clamp(18px, 1.55vw, 27px);
+  font-size: clamp(17px, 1.4vw, 24px);
   line-height: 1.36;
 }
 
@@ -478,7 +478,7 @@
 
   .noise-process-copy > p:last-child {
     max-width: 850px;
-    font-size: 29px;
+    font-size: 26px;
   }
 
   .noise-process-item figcaption {
@@ -504,7 +504,7 @@
 
   .noise-process-copy > p:last-child {
     max-width: none;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.45;
   }
 
