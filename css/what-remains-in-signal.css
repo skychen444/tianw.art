@@ -344,6 +344,26 @@
   .signal-system p {
     font-size: 22px;
   }
+
+  .threshold-copy {
+    width: min(900px, 68%);
+    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .threshold-row-one i {
+    width: clamp(180px, 20vw, 360px);
+  }
+
+  .threshold-row-two .threshold-line-before,
+  .threshold-row-three i {
+    width: clamp(110px, 12vw, 220px);
+  }
+
+  .threshold-row-two .threshold-line-after {
+    width: clamp(120px, 14vw, 250px);
+  }
 }
 
 @media (max-width:1100px) and (min-width:761px) {
@@ -425,27 +445,27 @@
   }
 
   .threshold-copy {
-    width: max-content;
-    max-width: calc(100% - 56px);
-    margin: 0 56px 0 auto;
-    font-size: clamp(29px,8.4vw,40px);
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    font-size: clamp(28px,8vw,36px);
     line-height: 1.04;
   }
 
   .threshold-row-one i {
-    left: calc(100% + 12px);
-    width: 44px;
+    left: calc(100% + 10px);
+    width: 28px;
   }
 
   .threshold-row-two .threshold-line-before,
   .threshold-row-three i {
-    right: calc(100% + 12px);
-    width: 44px;
+    right: calc(100% + 10px);
+    width: 28px;
   }
 
   .threshold-row-two .threshold-line-after {
-    left: calc(100% + 12px);
-    width: 44px;
+    left: calc(100% + 10px);
+    width: 28px;
   }
 
   .threshold-row-three {
