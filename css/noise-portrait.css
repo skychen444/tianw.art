@@ -38,10 +38,7 @@
 }
 
 .noise-exhibition-view {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(150px, .20fr);
-  gap: clamp(28px, 3.2vw, 60px);
-  align-items: end;
+  display: block;
   margin-top: clamp(110px, 13vh, 180px);
 }
 
@@ -58,10 +55,8 @@
 }
 
 .noise-label {
-  width: 100%;
-  max-width: 260px;
-  justify-self: end;
-  margin-bottom: clamp(8px, 1vw, 18px);
+  width: clamp(170px, 15vw, 260px);
+  margin: clamp(24px, 2.2vw, 40px) 0 0 auto;
 }
 
 .noise-back-link {
