@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Noise Portrait — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/noise-portrait.css?v=20261120-v2">
+  <link rel="stylesheet" href="css/noise-portrait.css?v=20261121-v3">
 </head>
 
 <body class="dark-page noise-portrait-page">
@@ -32,7 +32,7 @@
           >
         </figure>
 
-        <figure class="noise-label">
+        <figure class="noise-label" tabindex="0" role="button" aria-label="Enlarge Noise Portrait exhibition label" aria-expanded="false">
           <img
             src="assets/noise-portrait/noise-portrait-exhibition-label.webp"
             alt="Noise Portrait exhibition label"
@@ -49,6 +49,34 @@
     addEventListener('scroll', () => {
       header.classList.toggle('header-hidden', scrollY > 70);
     }, { passive: true });
+
+    const label = document.querySelector('.noise-label');
+
+    const setLabelExpanded = (expanded) => {
+      label.classList.toggle('is-expanded', expanded);
+      label.setAttribute('aria-expanded', String(expanded));
+    };
+
+    label.addEventListener('click', (event) => {
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+      event.stopPropagation();
+      setLabelExpanded(!label.classList.contains('is-expanded'));
+    });
+
+    label.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setLabelExpanded(!label.classList.contains('is-expanded'));
+      } else if (event.key === 'Escape') {
+        setLabelExpanded(false);
+      }
+    });
+
+    document.addEventListener('click', () => {
+      if (!matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        setLabelExpanded(false);
+      }
+    });
   </script>
 </body>
 </html>
