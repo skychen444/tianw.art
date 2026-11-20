@@ -184,7 +184,7 @@
   }
 
   .noise-statement p {
-    width: min(1500px, 84%);
+    width: min(1270px, 72%);
     font-size: 86px;
   }
 }
