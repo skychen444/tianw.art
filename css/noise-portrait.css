@@ -55,8 +55,28 @@
 }
 
 .noise-label {
+  position: relative;
+  z-index: 2;
   width: clamp(170px, 15vw, 260px);
   margin: clamp(24px, 2.2vw, 40px) 0 0 auto;
+  transform-origin: right bottom;
+  transition: transform 420ms cubic-bezier(.22,.61,.36,1);
+  cursor: zoom-in;
+  outline: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .noise-label:hover,
+  .noise-label:focus-visible {
+    z-index: 5;
+    transform: scale(2);
+  }
+}
+
+.noise-label.is-expanded {
+  z-index: 5;
+  transform: scale(1.85);
+  cursor: zoom-out;
 }
 
 .noise-back-link {
@@ -102,5 +122,18 @@
 
   .noise-back-link {
     margin-top: 90px;
+  }
+}
+
+
+@media (min-width: 1800px) {
+  .noise-portrait-page {
+    --content-width: 92%;
+  }
+}
+
+@media (max-width: 760px) {
+  .noise-label {
+    transform-origin: right top;
   }
 }
