@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Noise Portrait — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/noise-portrait.css?v=20261121-v22">
+  <link rel="stylesheet" href="css/noise-portrait.css?v=20261121-v23">
 </head>
 
 <body class="dark-page noise-portrait-page">
@@ -50,6 +50,10 @@
     <section class="noise-transform" aria-label="Noise Portrait transformation">
       <div class="noise-transform-sticky">
         <div class="noise-transform-frame">
+          <div class="noise-transform-hint" aria-hidden="true">
+            <span class="noise-transform-hint-desktop">Scroll over the image to reveal the noise.</span>
+            <span class="noise-transform-hint-mobile">Swipe over the image to reveal the noise.</span>
+          </div>
           <img class="noise-transform-image is-active" src="assets/noise-portrait/noise-portrait-stage-a.webp" alt="">
           <img class="noise-transform-image" src="assets/noise-portrait/noise-portrait-stage-b.webp" alt="">
           <img class="noise-transform-image" src="assets/noise-portrait/noise-portrait-stage-c.webp" alt="">
@@ -96,14 +100,12 @@
       }
     });
 
-    const transformSection = document.querySelector('.noise-transform');
-    const transformSticky = document.querySelector('.noise-transform-sticky');
     const transformFrame = document.querySelector('.noise-transform-frame');
     const transformImages = [...document.querySelectorAll('.noise-transform-image')];
     const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
     let transformIndex = 0;
     let wheelAccumulator = 0;
-    let wheelReleaseTimer = 0;
+    let touchStartY = null;
 
     const renderTransformIndex = (index) => {
       transformIndex = Math.max(0, Math.min(transformImages.length - 1, index));
@@ -112,79 +114,56 @@
       });
     };
 
-    const transformIsActive = () => {
-      if (!transformSection || !finePointer.matches) return false;
-
-      const rect = transformSection.getBoundingClientRect();
-
-      return (
-        rect.top <= 0 &&
-        rect.bottom >= innerHeight
-      );
-    };
-
-    const releaseWheelAccumulator = () => {
-      clearTimeout(wheelReleaseTimer);
-      wheelReleaseTimer = setTimeout(() => {
-        wheelAccumulator = 0;
-      }, 140);
+    const advanceTransform = (direction) => {
+      const nextIndex = transformIndex + direction;
+      if (nextIndex < 0 || nextIndex >= transformImages.length) return false;
+      renderTransformIndex(nextIndex);
+      return true;
     };
 
     const onTransformWheel = (event) => {
-      if (!finePointer.matches || !transformIsActive() || transformImages.length === 0) return;
-
-      const direction = Math.sign(event.deltaY);
-      if (direction === 0) return;
-
-      const atFirst = transformIndex === 0;
-      const atLast = transformIndex === transformImages.length - 1;
-
-      if (direction < 0 && atFirst) {
-        wheelAccumulator = 0;
-        return;
-      }
-
-      if (direction > 0 && atLast) {
-        wheelAccumulator = 0;
-        return;
-      }
+      if (!finePointer.matches) return;
 
       event.preventDefault();
-
       wheelAccumulator += event.deltaY;
-      releaseWheelAccumulator();
 
-      const threshold = 36;
+      const threshold = 42;
       if (Math.abs(wheelAccumulator) < threshold) return;
 
-      renderTransformIndex(
-        transformIndex + (wheelAccumulator > 0 ? 1 : -1)
-      );
-
+      advanceTransform(wheelAccumulator > 0 ? 1 : -1);
       wheelAccumulator = 0;
     };
 
-    const updateTouchTransform = () => {
-      if (finePointer.matches || !transformSection || transformImages.length === 0) return;
+    const onTouchStart = (event) => {
+      if (finePointer.matches) return;
+      touchStartY = event.touches[0]?.clientY ?? null;
+    };
 
-      const rect = transformSection.getBoundingClientRect();
-      const scrollable = Math.max(1, transformSection.offsetHeight - innerHeight);
-      const travelled = Math.min(scrollable, Math.max(0, -rect.top));
-      const progress = travelled / scrollable;
-      const scaled = progress * (transformImages.length - 1);
+    const onTouchMove = (event) => {
+      if (finePointer.matches || touchStartY === null) return;
 
-      transformImages.forEach((image, index) => {
-        const opacity = Math.max(0, 1 - Math.abs(scaled - index));
-        image.style.opacity = opacity.toFixed(3);
-      });
+      const currentY = event.touches[0]?.clientY;
+      if (currentY == null) return;
+
+      const deltaY = touchStartY - currentY;
+      const threshold = 34;
+      if (Math.abs(deltaY) < threshold) return;
+
+      event.preventDefault();
+      advanceTransform(deltaY > 0 ? 1 : -1);
+      touchStartY = currentY;
+    };
+
+    const onTouchEnd = () => {
+      touchStartY = null;
     };
 
     renderTransformIndex(0);
-    updateTouchTransform();
 
-    addEventListener('scroll', updateTouchTransform, { passive: true });
-    addEventListener('resize', updateTouchTransform);
-    addEventListener('wheel', onTransformWheel, { passive: false });
+    transformFrame?.addEventListener('wheel', onTransformWheel, { passive: false });
+    transformFrame?.addEventListener('touchstart', onTouchStart, { passive: true });
+    transformFrame?.addEventListener('touchmove', onTouchMove, { passive: false });
+    transformFrame?.addEventListener('touchend', onTouchEnd, { passive: true });
   </script>
 </body>
 </html>
