@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Noise Portrait — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/noise-portrait.css?v=20261121-v20">
+  <link rel="stylesheet" href="css/noise-portrait.css?v=20261121-v21">
 </head>
 
 <body class="dark-page noise-portrait-page">
@@ -113,14 +113,11 @@
     };
 
     const transformIsActive = () => {
-      if (!transformSticky || !finePointer.matches) return false;
+      if (!transformSection || !finePointer.matches) return false;
 
-      const stickyRect = transformSticky.getBoundingClientRect();
+      const rect = transformSection.getBoundingClientRect();
 
-      return (
-        stickyRect.top <= 1 &&
-        stickyRect.bottom >= innerHeight - 1
-      );
+      return rect.top < innerHeight && rect.bottom > 0;
     };
 
     const releaseWheelAccumulator = () => {
@@ -184,7 +181,7 @@
 
     addEventListener('scroll', updateTouchTransform, { passive: true });
     addEventListener('resize', updateTouchTransform);
-    transformSticky?.addEventListener('wheel', onTransformWheel, { passive: false });
+    addEventListener('wheel', onTransformWheel, { passive: false });
   </script>
 </body>
 </html>
