@@ -359,7 +359,7 @@
 
 .noise-concept-copy p {
   margin: 0 0 1.05em;
-  font-size: clamp(17px, 1.4vw, 24px);
+  font-size: clamp(18px, 1.55vw, 27px);
   line-height: 1.36;
   letter-spacing: 0;
   font-weight: 400;
@@ -384,7 +384,7 @@
   }
 
   .noise-concept-copy p {
-    font-size: 26px;
+    font-size: 29px;
     line-height: 1.36;
   }
 }
@@ -407,7 +407,7 @@
 
   .noise-concept-copy p {
     margin-bottom: 1.1em;
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.45;
     letter-spacing: 0;
   }
@@ -434,7 +434,7 @@
 .noise-process-copy > p:last-child {
   max-width: 760px;
   margin: 0;
-  font-size: clamp(18px, 1.55vw, 27px);
+  font-size: clamp(17px, 1.4vw, 24px);
   line-height: 1.36;
 }
 
@@ -478,7 +478,7 @@
 
   .noise-process-copy > p:last-child {
     max-width: 850px;
-    font-size: 29px;
+    font-size: 26px;
   }
 
   .noise-process-item figcaption {
@@ -504,7 +504,7 @@
 
   .noise-process-copy > p:last-child {
     max-width: none;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.45;
   }
 
