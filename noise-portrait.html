@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Noise Portrait — Tian W.</title>
   <link rel="stylesheet" href="style.css?v=20261118-core">
-  <link rel="stylesheet" href="css/noise-portrait.css?v=20261121-v19">
+  <link rel="stylesheet" href="css/noise-portrait.css?v=20261121-v20">
 </head>
 
 <body class="dark-page noise-portrait-page">
@@ -97,6 +97,7 @@
     });
 
     const transformSection = document.querySelector('.noise-transform');
+    const transformSticky = document.querySelector('.noise-transform-sticky');
     const transformFrame = document.querySelector('.noise-transform-frame');
     const transformImages = [...document.querySelectorAll('.noise-transform-image')];
     const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
@@ -112,14 +113,14 @@
     };
 
     const transformIsActive = () => {
-      if (!transformFrame || !finePointer.matches) return false;
+      if (!transformSticky || !finePointer.matches) return false;
 
-      const frameRect = transformFrame.getBoundingClientRect();
-      const fullyVisible =
-        frameRect.top >= 0 &&
-        frameRect.bottom <= innerHeight;
+      const stickyRect = transformSticky.getBoundingClientRect();
 
-      return fullyVisible;
+      return (
+        stickyRect.top <= 1 &&
+        stickyRect.bottom >= innerHeight - 1
+      );
     };
 
     const releaseWheelAccumulator = () => {
@@ -183,7 +184,7 @@
 
     addEventListener('scroll', updateTouchTransform, { passive: true });
     addEventListener('resize', updateTouchTransform);
-    addEventListener('wheel', onTransformWheel, { passive: false });
+    transformSticky?.addEventListener('wheel', onTransformWheel, { passive: false });
   </script>
 </body>
 </html>
