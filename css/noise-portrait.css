@@ -97,7 +97,7 @@
 .noise-transform {
   position: relative;
   width: var(--content-width);
-  height: 180vh;
+  height: 200vh;
   margin: 0 auto clamp(150px, 18vh, 220px);
 }
 
@@ -123,7 +123,7 @@
   height: 100%;
   object-fit: contain;
   opacity: 0;
-  transition: opacity 120ms linear;
+  transition: opacity 260ms ease;
 }
 
 .noise-transform-image.is-active {
