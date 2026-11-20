@@ -567,7 +567,7 @@
   right: calc(100% + 14px);
   top: 50%;
   transform: translateY(-50%);
-  color: var(--paper);
+  color: rgba(244, 243, 239, .5);
   font-size: 20px;
   line-height: 1;
   font-weight: 400;
