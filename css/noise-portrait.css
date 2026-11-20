@@ -518,3 +518,43 @@
     font-size: 11px;
   }
 }
+
+
+/* System — follows the Almost Readable section hierarchy. */
+.noise-system {
+  width: var(--content-width);
+  margin: 0 auto clamp(110px, 14vh, 180px);
+  display: grid;
+  grid-template-columns: .45fr 1fr;
+  gap: 8vw;
+  align-items: start;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, .2);
+}
+
+.noise-system .noise-section-label {
+  margin: 0;
+}
+
+.noise-system p {
+  margin: 0;
+  max-width: 760px;
+  font-size: clamp(17px, 1.4vw, 21px);
+  line-height: 1.45;
+}
+
+@media (min-width: 1800px) {
+  .noise-system p { font-size: 22px; }
+}
+
+@media (max-width: 760px) {
+  .noise-system {
+    width: 100%;
+    display: block;
+    padding-top: 18px;
+    margin-bottom: 12vh;
+  }
+
+  .noise-system .noise-section-label { margin-bottom: 16px; }
+  .noise-system p { font-size: 13px; line-height: 1.5; }
+}
