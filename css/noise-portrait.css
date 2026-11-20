@@ -17,6 +17,7 @@
 }
 
 .noise-hero,
+.noise-statement,
 .noise-back-link {
   width: var(--content-width);
   margin-left: auto;
@@ -79,9 +80,23 @@
   cursor: zoom-out;
 }
 
+.noise-statement {
+  margin-top: clamp(150px, 19vh, 240px);
+  margin-bottom: clamp(150px, 18vh, 220px);
+}
+
+.noise-statement p {
+  width: min(1120px, 82%);
+  margin: 0;
+  font-size: clamp(38px, 4.6vw, 76px);
+  line-height: 1.01;
+  letter-spacing: -.04em;
+  font-weight: 400;
+}
+
 .noise-back-link {
   display: block;
-  margin-top: clamp(110px, 14vh, 180px);
+  margin-top: 0;
 }
 
 @media (max-width: 760px) {
@@ -93,6 +108,7 @@
   }
 
   .noise-hero,
+  .noise-statement,
   .noise-back-link {
     width: 100%;
   }
@@ -120,8 +136,21 @@
     margin: 18px 0 0 auto;
   }
 
+  .noise-statement {
+    margin-top: 110px;
+    margin-bottom: 110px;
+  }
+
+  .noise-statement p {
+    width: 92%;
+    font-size: clamp(28px, 8.8vw, 40px);
+    line-height: 1.02;
+    letter-spacing: -.035em;
+    font-weight: 500;
+  }
+
   .noise-back-link {
-    margin-top: 90px;
+    margin-top: 0;
   }
 }
 
@@ -146,6 +175,11 @@
 
   .noise-label {
     width: clamp(320px, 18vw, 420px);
+  }
+
+  .noise-statement p {
+    width: min(1180px, 72%);
+    font-size: 76px;
   }
 }
 
