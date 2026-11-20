@@ -485,14 +485,13 @@
             const concept = document.querySelector('.trace-concept');
             const conceptRect = concept ? concept.getBoundingClientRect() : null;
 
-            // Start only after the hero has substantially passed.
-            // Keep narrowing active much longer, almost until Concept
-            // reaches the upper part of the viewport.
+            // Begin shortly after the hero has passed, then complete
+            // the visible narrowing before Concept enters the main view.
             const startScroll =
-              scrollY + heroRect.bottom - innerHeight * .14;
+              scrollY + heroRect.bottom - innerHeight * .28;
             const endScroll = conceptRect
-              ? scrollY + conceptRect.top - innerHeight * .18
-              : startScroll + innerHeight * 1.5;
+              ? scrollY + conceptRect.top - innerHeight * .68
+              : startScroll + innerHeight;
 
             sTargetProgress = clamp(
               (scrollY - startScroll) /
