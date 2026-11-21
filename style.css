@@ -161,6 +161,7 @@
   .dark-page .about-layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 510px);
     column-gap: clamp(48px, 6vw, 110px);
+    padding-right: clamp(96px, 9vw, 150px);
     margin-top: clamp(100px, 14vh, 150px);
     align-items: start;
   }
@@ -174,7 +175,6 @@
     max-width: 510px;
     justify-self: end;
     min-width: 0;
-    transform: translateX(-clamp(96px, 9vw, 150px));
     padding-top: 70px;
   }
   .dark-page .about-copy > p {
