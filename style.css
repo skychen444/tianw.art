@@ -128,3 +128,11 @@
 @media (max-width: 760px) {
   .about-copy > p { font-size: 15px; }
 }
+
+/* About heading: slightly above the copy, inset from the content edge. */
+@media (min-width: 761px) {
+  .dark-page .about-layout h1 {
+    margin-left: clamp(32px, 4vw, 64px);
+    transform: translateY(-48px);
+  }
+}
