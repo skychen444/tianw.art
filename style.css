@@ -170,7 +170,10 @@
     transform: none;
   }
   .dark-page .about-copy {
+    width: min(100%, 510px);
     max-width: 510px;
+    justify-self: end;
+    min-width: 0;
     padding-top: 70px;
   }
   .dark-page .about-copy > p {
