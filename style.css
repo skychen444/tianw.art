@@ -90,7 +90,7 @@
 /* About — keep the entire desktop content block below the visual guide. */
 @media (min-width: 761px) {
   .dark-page .about-layout {
-    margin-top: 30vh;
+    margin-top: calc(30vh - 4.5em);
   }
 }
 
@@ -105,7 +105,7 @@
 }
 
 .about-copy > p {
-  font-size: clamp(16px, 1.4vw, 21px);
+  font-size: clamp(calc(16px + 1pt), calc(1.4vw + 1pt), calc(21px + 1pt));
 }
 
 .about-education {
@@ -126,7 +126,7 @@
 .about-education + .contact { margin-top: 7vh; }
 
 @media (max-width: 760px) {
-  .about-copy > p { font-size: 15px; }
+  .about-copy > p { font-size: calc(15px + 1pt); }
 }
 
 /* About heading: slightly above the copy, inset from the content edge. */
