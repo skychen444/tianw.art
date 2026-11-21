@@ -174,7 +174,7 @@
     max-width: 510px;
     justify-self: end;
     min-width: 0;
-    transform: translateX(-clamp(48px, 5vw, 80px));
+    transform: translateX(-clamp(96px, 9vw, 150px));
     padding-top: 70px;
   }
   .dark-page .about-copy > p {
