@@ -85,3 +85,39 @@
     margin-left:clamp(72px,6vw,108px);
   }
 }
+
+
+/* About — align outer bounds with Works; retain the two-column composition. */
+@media (min-width: 761px) {
+  .dark-page:has(.about-layout) .page {
+    width: min(88%, 1680px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.about-copy > p {
+  font-size: clamp(16px, 1.4vw, 21px);
+}
+
+.about-education {
+  margin-top: 9vh;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, .2);
+}
+.about-meta-label {
+  font-size: var(--small);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.about-education p {
+  margin: 0;
+  font-size: var(--small);
+  line-height: 1.7;
+}
+.about-education + .contact { margin-top: 7vh; }
+
+@media (max-width: 760px) {
+  .about-copy > p { font-size: 15px; }
+}
