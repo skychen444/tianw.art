@@ -133,7 +133,7 @@
 @media (min-width: 761px) {
   .dark-page .about-layout h1 {
     margin-left: clamp(32px, 4vw, 64px);
-    transform: translateY(-48px);
+    transform: translateY(calc(-48px - 1em));
   }
 }
 
