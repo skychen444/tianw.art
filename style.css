@@ -213,12 +213,12 @@
     padding-right: clamp(80px, 6vw, 130px);
   }
   .dark-page .about-layout h1 {
-    font-size: clamp(128px, 7.4vw, 172px);
+    font-size: clamp(144px, 8.4vw, 196px);
   }
   .dark-page .about-copy {
     width: 100%;
     max-width: 590px;
-    padding-top: 85px;
+    padding-top: calc(85px + 1.4em);
   }
   .dark-page .about-copy > p {
     font-size: clamp(23px, 1.15vw, 27px);
