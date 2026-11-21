@@ -202,3 +202,32 @@
   }
   .dark-page .about-copy { padding-bottom: 70px; }
 }
+
+/* About: wide-display composition (ProArt-class desktop viewports).
+   Keep the laptop grid untouched; scale the typography and use the
+   existing centered Works content boundary instead of screen coordinates. */
+@media (min-width: 1800px) {
+  .dark-page .about-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 590px);
+    column-gap: clamp(90px, 6vw, 140px);
+    padding-right: clamp(80px, 6vw, 130px);
+  }
+  .dark-page .about-layout h1 {
+    font-size: clamp(128px, 7.4vw, 172px);
+  }
+  .dark-page .about-copy {
+    width: 100%;
+    max-width: 590px;
+    padding-top: 85px;
+  }
+  .dark-page .about-copy > p {
+    font-size: clamp(23px, 1.15vw, 27px);
+    line-height: 1.4;
+    margin-bottom: 38px;
+  }
+  .dark-page .about-education p,
+  .dark-page .about-meta-label,
+  .dark-page .about-education + .contact {
+    font-size: clamp(17px, .9vw, 20px);
+  }
+}
