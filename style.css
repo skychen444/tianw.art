@@ -87,30 +87,11 @@
 }
 
 
-/* About — keep the entire desktop content block below the visual guide. */
-@media (min-width: 761px) {
-  .dark-page .about-layout {
-    margin-top: calc(30vh - 4.5em);
-  }
-}
-
-/* About — align outer bounds with Works; retain the two-column composition. */
-@media (min-width: 761px) {
-  .dark-page:has(.about-layout) .page {
-    width: min(88%, 1680px);
-    margin-inline: auto;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.about-copy > p {
-  font-size: clamp(calc(16px + 1pt), calc(1.4vw + 1pt), calc(21px + 1pt));
-}
-
+/* About page: shared metadata, desktop grid, and wide-display adjustments.
+   Keep the 760px mobile layout defined in the base stylesheet. */
 .about-education {
-  margin-top: 9vh;
-  padding-top: 22px;
+  margin-top: 3em;
+  padding-top: 18px;
   border-top: 1px solid rgba(255, 255, 255, .2);
 }
 .about-meta-label {
@@ -123,41 +104,22 @@
   font-size: var(--small);
   line-height: 1.7;
 }
-.about-education + .contact { margin-top: 7vh; }
+.about-education + .contact {
+  margin-top: 3em;
+  padding-top: 18px;
+}
 
 @media (max-width: 760px) {
   .about-copy > p { font-size: calc(15px + 1pt); }
 }
 
-/* About heading: slightly above the copy, inset from the content edge. */
 @media (min-width: 761px) {
-  .dark-page .about-layout h1 {
-    margin-left: clamp(32px, 4vw, 64px);
-    transform: translateY(calc(-48px - 1em));
+  .dark-page:has(.about-layout) .page {
+    width: min(88%, 1680px);
+    margin-inline: auto;
+    padding-left: 0;
+    padding-right: 0;
   }
-}
-
-
-/* About: align the start of the right column with the large title's baseline. */
-@media (min-width: 761px) {
-  .dark-page .about-copy {
-    padding-top: calc(1.2em + 36px);
-  }
-}
-
-/* Keep roughly two lines of breathing room between About groups. */
-.dark-page .about-education {
-  margin-top: 3em;
-  padding-top: 18px;
-}
-.dark-page .about-education + .contact {
-  margin-top: 3em;
-  padding-top: 18px;
-}
-
-
-/* About architectural grid — laptop is the desktop master composition. */
-@media (min-width: 761px) {
   .dark-page .about-layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 510px);
     column-gap: clamp(48px, 6vw, 110px);
@@ -176,6 +138,7 @@
     justify-self: end;
     min-width: 0;
     padding-top: 70px;
+    padding-bottom: 70px;
   }
   .dark-page .about-copy > p {
     font-size: 20px;
@@ -186,26 +149,18 @@
   .dark-page .about-education + .contact {
     margin-top: 32px;
     padding-top: 18px;
+    border-top: 1px solid #383838;
   }
-  .dark-page .about-education {
-    margin-top: 40px;
-  }
+  .dark-page .about-education { margin-top: 40px; }
   .dark-page .about-education p,
   .dark-page .about-meta-label,
   .dark-page .about-education + .contact {
     font-size: 15px;
     line-height: 1.65;
   }
-  .dark-page .about-education,
-  .dark-page .about-education + .contact {
-    border-top: 1px solid #383838;
-  }
-  .dark-page .about-copy { padding-bottom: 70px; }
 }
 
-/* About: wide-display composition (ProArt-class desktop viewports).
-   Keep the laptop grid untouched; scale the typography and use the
-   existing centered Works content boundary instead of screen coordinates. */
+/* ProArt-class wide desktop viewports. */
 @media (min-width: 1800px) {
   .dark-page .about-layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 590px);
