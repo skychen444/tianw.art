@@ -87,6 +87,13 @@
 }
 
 
+/* About — keep the entire desktop content block below the visual guide. */
+@media (min-width: 761px) {
+  .dark-page .about-layout {
+    margin-top: 30vh;
+  }
+}
+
 /* About — align outer bounds with Works; retain the two-column composition. */
 @media (min-width: 761px) {
   .dark-page:has(.about-layout) .page {
