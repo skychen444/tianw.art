@@ -136,3 +136,21 @@
     transform: translateY(-48px);
   }
 }
+
+
+/* About: align the start of the right column with the large title's baseline. */
+@media (min-width: 761px) {
+  .dark-page .about-copy {
+    padding-top: calc(1.2em + 36px);
+  }
+}
+
+/* Keep roughly two lines of breathing room between About groups. */
+.dark-page .about-education {
+  margin-top: 3em;
+  padding-top: 18px;
+}
+.dark-page .about-education + .contact {
+  margin-top: 3em;
+  padding-top: 18px;
+}
